@@ -11,7 +11,7 @@ import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(value = "/endpoint")
 public class SignalingServer {
-   
+
     private String host;
     private int number; 
 
