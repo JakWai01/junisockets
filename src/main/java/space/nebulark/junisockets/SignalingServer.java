@@ -191,6 +191,38 @@ public class SignalingServer extends WebSocketServer {
         setConnectionLostTimeout(100);
     }
 
+    private void handleKnock(IKnockData data, WebSocket conn) {
+
+    }
+
+    private void handleOffer(IOfferData data) {
+        
+    }
+
+    private void handleAnswer(IAnswerData data) {
+
+    }
+
+    private void handleCandidate(ICandidateData data) {
+
+    }
+
+    private void handleBind(IBindData data) {
+
+    }
+
+    private void handleAccepting(IAcceptData data) {
+
+    }
+
+    private void handleShutdown(IShutdownData data) {
+
+    }
+
+    private void handleConnect(IConnectData data) {
+        
+    }
+
     
   public static void main(String[] args) throws InterruptedException, IOException {
     int port = 8887; 
