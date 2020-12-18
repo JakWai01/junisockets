@@ -12,11 +12,11 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import space.nebulark.junisockets.operations.ESIGNALING_OPCODES;
+import space.nebulark.junisockets.operations.ESignalingOperationCode;
 
 public class SignalingServer extends WebSocketServer {
 
-   final static Logger logger = Logger.getLogger(SignalingServer.class);
+    final static Logger logger = Logger.getLogger(SignalingServer.class);
 
     public SignalingServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -48,7 +48,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     @Override
-    public void onMessage(WebSocket conn,  String message) {
+    public void onMessage(WebSocket conn, String message) {
         broadcast(message);
         System.out.println(conn + ": " + message);
 
@@ -57,130 +57,85 @@ public class SignalingServer extends WebSocketServer {
         });
         newThread.start();
     }
-    
 
     // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
-    private void handleOperation(ESIGNALING_OPCODES operation) {
-    
-        switch (operation) {
-            case KNOCK: {
-                
-                // log add data
-                logger.debug("Received knock");
-                
+    private void handleOperation(String message) {
 
-                // call handleknock
-                Thread newThread = new Thread(() -> {
-                    // handleKnock();
-                });
-                newThread.start();
-            
-                break;
-            }
+        if (message == ESignalingOperationCode.KNOCK.getValue()) {
 
-            case OFFER: {
+            logger.debug("Received knock");
 
-                // log add data
-                logger.debug("Received offer");
+            Thread thread = new Thread(() -> {
+                handleKnock();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.OFFER.getValue()) {
 
-                Thread newThread = new Thread(() -> {
-                    // handleOffer();
-                });
-                newThread.start();
+            logger.debug("Received offer");
 
-                break;
-            }
+            Thread thread = new Thread(() -> {
+                handleOffer();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.ANSWER.getValue()) {
 
-            case ANSWER: {
+            logger.debug("Received answer");
 
-                // log add data
-                logger.debug("Received answer");
+            Thread thread = new Thread(() -> {
+                handleAnswer();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.CANDIDATE.getValue()) {
 
-                Thread newThread = new Thread(() -> {
+            logger.debug("Received candidate");
 
-                });
-                newThread.start();
+            Thread thread = new Thread(() -> {
+                handleCandidate();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.BIND.getValue()) {
 
-                break;
-            }
+            logger.debug("Received bind");
 
-            case CANDIDATE: {
-                
-                // log add data
-                logger.debug("Received candidate");
+            Thread thread = new Thread(() -> {
+                handleBind();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.ACCEPTING.getValue()) {
 
-                Thread newThread = new Thread(() -> {
+            logger.debug("Received accepting");
 
-                });
-                newThread.start();
+            Thread thread = new Thread(() -> {
+                handleAccepting();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.SHUTDOWN.getValue()) {
 
-                break;
-            }
+            logger.debug("Received shutdown");
 
-            case BIND: {
+            Thread thread = new Thread(() -> {
+                handleShutdown();
+            });
+            thread.start();
+        } else if (message == ESignalingOperationCode.CONNECT.getValue()) {
 
-                // log add data
-                logger.debug("Received bind");
+            logger.debug("Received connect");
 
-                Thread newThread = new Thread(() -> {
-
-                });
-                newThread.start();
-
-                break;
-            }
-
-            case ACCEPTING: {
-                
-                // log add data
-                logger.debug("Received accepting");
-
-                Thread newThread = new Thread(() -> {
-
-                });
-                newThread.start();
-
-                break;
-            }
-
-            case SHUTDOWN: {
-
-                // log add data
-                logger.debug("Received shutdown");
-
-                Thread newThread = new Thread(() -> {
-
-                });
-                newThread.start();
-
-                break;
-            }
-
-            case CONNECT: {
-
-                // log add data
-                logger.debug("Received conncet");
-
-                Thread newThread = new Thread(() -> {
-
-                });
-                newThread.start();
-
-                break;
-            }
-
-            default: {
-                
-                // throw custom exception
-            }
+            Thread thread = new Thread(() -> {
+                handleConnect();
+            });
+            thread.start();
+        } else {
+            // Custom error messsage
         }
     }
 
-    @Override 
+    @Override
     public void onError(WebSocket conn, Exception ex) {
         ex.printStackTrace();
         if (conn != null) {
-                  // some errors like port binding failed may not be assignable to a specific websocket
+            // some errors like port binding failed may not be assignable to a specific
+            // websocket
         }
     }
 
@@ -191,63 +146,62 @@ public class SignalingServer extends WebSocketServer {
         setConnectionLostTimeout(100);
     }
 
-    private void handleKnock(IKnockData data, WebSocket conn) {
+    private void handleKnock() {
         // check for right debug level, add data
         logger.debug("Handling knock");
 
     }
 
-    private void handleOffer(IOfferData data) {
-        // check for right debug level, add data      
+    private void handleOffer() {
+        // check for right debug level, add data
         logger.debug("Handling offer");
 
     }
 
-    private void handleAnswer(IAnswerData data) {
+    private void handleAnswer() {
         // check for right debug level, add data
         logger.debug("Handling answer");
 
     }
 
-    private void handleCandidate(ICandidateData data) {
+    private void handleCandidate() {
         // check for right debug level, add data
         logger.debug("Handling candidate");
 
     }
 
-    private void handleBind(IBindData data) {
+    private void handleBind() {
         // check for right debug level, add data
         logger.debug("Handling bind");
 
     }
 
-    private void handleAccepting(IAcceptData data) {
+    private void handleAccepting() {
         // check for right debug level, add data
         logger.debug("Handling accepting");
 
     }
 
-    private void handleShutdown(IShutdownData data) {
+    private void handleShutdown() {
         // check for right debug level, add data
         logger.debug("Handling shutdown");
 
     }
 
-    private void handleConnect(IConnectData data) {
+    private void handleConnect() {
         // check for right debug leve, add data
         logger.debug("Handling connect");
 
     }
 
-    
-  public static void main(String[] args) throws InterruptedException, IOException {
-    int port = 8887; 
-    try {
-      port = Integer.parseInt(args[0]);
-    } catch (Exception ex) {
+    public static void main(String[] args) throws InterruptedException, IOException {
+        int port = 8887;
+        try {
+            port = Integer.parseInt(args[0]);
+        } catch (Exception ex) {
+        }
+        ChatServer s = new ChatServer(port);
+        s.start();
+        System.out.println("ChatServer started on port: " + s.getPort());
     }
-    ChatServer s = new ChatServer(port);
-    s.start();
-    System.out.println("ChatServer started on port: " + s.getPort());
-  }
 }
