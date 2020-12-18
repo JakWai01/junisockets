@@ -65,75 +65,75 @@ public class SignalingServer extends WebSocketServer {
 
         System.out.println("Handling Operation");
         // equals
-        // if (message == ESignalingOperationCode.KNOCK.getValue()) {
+        if (message.equals(ESignalingOperationCode.KNOCK.getValue())) {
 
-        //     logger.debug("Received knock");
+            logger.debug("Received knock");
 
-        //     Thread thread = new Thread(() -> {
-        //         handleKnock();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.OFFER.getValue()) {
+            Thread thread = new Thread(() -> {
+                handleKnock();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.OFFER.getValue())) {
 
-        //     logger.debug("Received offer");
+            logger.debug("Received offer");
 
-        //     Thread thread = new Thread(() -> {
-        //         handleOffer();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.ANSWER.getValue()) {
+            Thread thread = new Thread(() -> {
+                handleOffer();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.ANSWER.getValue())) {
 
-        //     logger.debug("Received answer");
+            logger.debug("Received answer");
 
-        //     Thread thread = new Thread(() -> {
-        //         handleAnswer();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.CANDIDATE.getValue()) {
+            Thread thread = new Thread(() -> {
+                handleAnswer();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.CANDIDATE.getValue())) {
 
-        //     logger.debug("Received candidate");
+            logger.debug("Received candidate");
 
-        //     Thread thread = new Thread(() -> {
-        //         handleCandidate();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.BIND.getValue()) {
+            Thread thread = new Thread(() -> {
+                handleCandidate();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.BIND.getValue())) {    
+        
+            logger.debug("Received bind");
 
-        //     logger.debug("Received bind");
+            Thread thread = new Thread(() -> {
+                handleBind();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.ACCEPTING.getValue())) {
 
-        //     Thread thread = new Thread(() -> {
-        //         handleBind();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.ACCEPTING.getValue()) {
+            logger.debug("Received accepting");
 
-        //     logger.debug("Received accepting");
+            Thread thread = new Thread(() -> {
+                handleAccepting();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
 
-        //     Thread thread = new Thread(() -> {
-        //         handleAccepting();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.SHUTDOWN.getValue()) {
+            logger.debug("Received shutdown");
 
-        //     logger.debug("Received shutdown");
+            Thread thread = new Thread(() -> {
+                handleShutdown();
+            });
+            thread.start();
+        } else if (message.equals(ESignalingOperationCode.CONNECT.getValue())) {
 
-        //     Thread thread = new Thread(() -> {
-        //         handleShutdown();
-        //     });
-        //     thread.start();
-        // } else if (message == ESignalingOperationCode.CONNECT.getValue()) {
+            logger.debug("Received connect");
 
-        //     logger.debug("Received connect");
-
-        //     Thread thread = new Thread(() -> {
-        //         handleConnect();
-        //     });
-        //     thread.start();
-        // } else {
-        //     // Custom error messsage
-        //     System.out.println("None of the above");
-        //     logger.debug("None of the above");
-        // }
+            Thread thread = new Thread(() -> {
+                handleConnect();
+            });
+            thread.start();
+        } else {
+            // Custom error messsage
+            System.out.println("None of the above");
+            logger.debug("None of the above");
+        }
     }
 
     @Override
