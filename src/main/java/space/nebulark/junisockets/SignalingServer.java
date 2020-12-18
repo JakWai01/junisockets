@@ -52,10 +52,10 @@ public class SignalingServer extends WebSocketServer {
         broadcast(message);
         System.out.println(conn + ": " + message);
 
-        //Thread newThread = new Thread(() -> {
+        Thread newThread = new Thread(() -> {
         handleOperation(message);
-        //});
-        //newThread.start();
+        });
+        newThread.start();
 
 
     }
@@ -122,7 +122,6 @@ public class SignalingServer extends WebSocketServer {
             });
             thread.start();
         } else if (message.equals(ESignalingOperationCode.CONNECT.getValue())) {
-
             logger.debug("Received connect");
 
             Thread thread = new Thread(() -> {
