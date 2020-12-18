@@ -11,6 +11,8 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import space.nebulark.junisockets.operations.ESIGNALING_OPCODES;
+
 public class SignalingServer extends WebSocketServer {
 
     public SignalingServer(int port) throws UnknownHostException {
@@ -42,8 +44,53 @@ public class SignalingServer extends WebSocketServer {
     public void onMessage(WebSocket conn,  String message) {
         broadcast(message);
         System.out.println(conn + ": " + message);
+
+        // handleOperation will be called here
     }
     
+
+    // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
+    private void handleOperation(ESIGNALING_OPCODES operation) {
+    
+        switch (operation) {
+            case KNOCK: {
+
+            }
+
+            case OFFER: {
+
+            }
+
+            case ANSWER: {
+
+            }
+
+            case CANDIDATE: {
+
+            }
+
+            case BIND: {
+
+            }
+
+            case ACCEPTING: {
+
+            }
+
+            case SHUTDOWN: {
+
+            }
+
+            case CONNECT: {
+
+            }
+
+            default: {
+
+            }
+        }
+    }
+
     @Override 
     public void onError(WebSocket conn, Exception ex) {
         ex.printStackTrace();
@@ -61,7 +108,7 @@ public class SignalingServer extends WebSocketServer {
 
     
   public static void main(String[] args) throws InterruptedException, IOException {
-    int port = 8887; // 843 flash policy port
+    int port = 8887; 
     try {
       port = Integer.parseInt(args[0]);
     } catch (Exception ex) {
