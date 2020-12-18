@@ -1,8 +1,6 @@
-space/nebulark/junisockets/operations/ESIGNALING_OPCODES.class
-space/nebulark/junisockets/ChatServer.class
-space/nebulark/junisockets/SignalingServer$1.class
 space/nebulark/junisockets/SignalingServer.class
 space/nebulark/junisockets/ChatClient$2.class
 space/nebulark/junisockets/ChatClient.class
-space/nebulark/junisockets/operations/ISignalingOperation.class
+space/nebulark/junisockets/operations/ESignalingOperationCode.class
+space/nebulark/junisockets/ChatServer.class
 space/nebulark/junisockets/ChatClient$1.class

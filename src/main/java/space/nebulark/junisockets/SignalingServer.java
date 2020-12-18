@@ -53,9 +53,11 @@ public class SignalingServer extends WebSocketServer {
         System.out.println(conn + ": " + message);
 
         Thread newThread = new Thread(() -> {
-            // handleOperation
+            handleOperation(message);
         });
         newThread.start();
+
+
     }
 
     // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
@@ -127,6 +129,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else {
             // Custom error messsage
+            logger.debug("None of the above");
         }
     }
 
