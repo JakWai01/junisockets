@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -14,6 +15,8 @@ import org.java_websocket.server.WebSocketServer;
 import space.nebulark.junisockets.operations.ESIGNALING_OPCODES;
 
 public class SignalingServer extends WebSocketServer {
+
+   final static Logger logger = Logger.getLogger(SignalingServer.class);
 
     public SignalingServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -29,6 +32,8 @@ public class SignalingServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        logger.debug("Opening signaling server");
+
         conn.send("Welcome to the server!");
         broadcast("new connection: " + handshake.getResourceDescriptor());
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + "entered the room!");
@@ -36,6 +41,8 @@ public class SignalingServer extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        logger.debug("Shutting down signaling server");
+
         broadcast(conn + " has left the room!");
         System.out.println(conn + " has left the room!");
     }
@@ -45,7 +52,10 @@ public class SignalingServer extends WebSocketServer {
         broadcast(message);
         System.out.println(conn + ": " + message);
 
-        // handleOperation will be called here
+        Thread newThread = new Thread(() -> {
+            // handleOperation
+        });
+        newThread.start();
     }
     
 
@@ -55,7 +65,8 @@ public class SignalingServer extends WebSocketServer {
         switch (operation) {
             case KNOCK: {
                 
-                // log
+                // log add data
+                logger.debug("Received knock");
                 
 
                 // call handleknock
@@ -69,7 +80,8 @@ public class SignalingServer extends WebSocketServer {
 
             case OFFER: {
 
-                // log
+                // log add data
+                logger.debug("Received offer");
 
                 Thread newThread = new Thread(() -> {
                     // handleOffer();
@@ -81,7 +93,8 @@ public class SignalingServer extends WebSocketServer {
 
             case ANSWER: {
 
-                // log
+                // log add data
+                logger.debug("Received answer");
 
                 Thread newThread = new Thread(() -> {
 
@@ -93,7 +106,8 @@ public class SignalingServer extends WebSocketServer {
 
             case CANDIDATE: {
                 
-                // log
+                // log add data
+                logger.debug("Received candidate");
 
                 Thread newThread = new Thread(() -> {
 
@@ -105,7 +119,8 @@ public class SignalingServer extends WebSocketServer {
 
             case BIND: {
 
-                // log
+                // log add data
+                logger.debug("Received bind");
 
                 Thread newThread = new Thread(() -> {
 
@@ -117,7 +132,8 @@ public class SignalingServer extends WebSocketServer {
 
             case ACCEPTING: {
                 
-                // log
+                // log add data
+                logger.debug("Received accepting");
 
                 Thread newThread = new Thread(() -> {
 
@@ -129,7 +145,8 @@ public class SignalingServer extends WebSocketServer {
 
             case SHUTDOWN: {
 
-                // log
+                // log add data
+                logger.debug("Received shutdown");
 
                 Thread newThread = new Thread(() -> {
 
@@ -141,7 +158,8 @@ public class SignalingServer extends WebSocketServer {
 
             case CONNECT: {
 
-                // log
+                // log add data
+                logger.debug("Received conncet");
 
                 Thread newThread = new Thread(() -> {
 
