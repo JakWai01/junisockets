@@ -192,35 +192,51 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private void handleKnock(IKnockData data, WebSocket conn) {
+        // check for right debug level, add data
+        logger.debug("Handling knock");
 
     }
 
     private void handleOffer(IOfferData data) {
-        
+        // check for right debug level, add data      
+        logger.debug("Handling offer");
+
     }
 
     private void handleAnswer(IAnswerData data) {
+        // check for right debug level, add data
+        logger.debug("Handling answer");
 
     }
 
     private void handleCandidate(ICandidateData data) {
+        // check for right debug level, add data
+        logger.debug("Handling candidate");
 
     }
 
     private void handleBind(IBindData data) {
+        // check for right debug level, add data
+        logger.debug("Handling bind");
 
     }
 
     private void handleAccepting(IAcceptData data) {
+        // check for right debug level, add data
+        logger.debug("Handling accepting");
 
     }
 
     private void handleShutdown(IShutdownData data) {
+        // check for right debug level, add data
+        logger.debug("Handling shutdown");
 
     }
 
     private void handleConnect(IConnectData data) {
-        
+        // check for right debug leve, add data
+        logger.debug("Handling connect");
+
     }
 
     
