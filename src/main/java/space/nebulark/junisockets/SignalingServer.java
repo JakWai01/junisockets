@@ -1,6 +1,8 @@
 package space.nebulark.junisockets;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
@@ -11,8 +13,6 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-
-import space.nebulark.junisockets.operations.ESignalingOperationCode;
 
 public class SignalingServer extends WebSocketServer {
 
@@ -52,85 +52,88 @@ public class SignalingServer extends WebSocketServer {
         broadcast(message);
         System.out.println(conn + ": " + message);
 
-        Thread newThread = new Thread(() -> {
-            handleOperation(message);
-        });
-        newThread.start();
+        //Thread newThread = new Thread(() -> {
+        handleOperation(message);
+        //});
+        //newThread.start();
 
 
     }
 
     // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
-    private void handleOperation(String message) {
+    private static void handleOperation(String message) {
 
-        if (message == ESignalingOperationCode.KNOCK.getValue()) {
+        System.out.println("Handling Operation");
+        // equals
+        // if (message == ESignalingOperationCode.KNOCK.getValue()) {
 
-            logger.debug("Received knock");
+        //     logger.debug("Received knock");
 
-            Thread thread = new Thread(() -> {
-                handleKnock();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.OFFER.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleKnock();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.OFFER.getValue()) {
 
-            logger.debug("Received offer");
+        //     logger.debug("Received offer");
 
-            Thread thread = new Thread(() -> {
-                handleOffer();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.ANSWER.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleOffer();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.ANSWER.getValue()) {
 
-            logger.debug("Received answer");
+        //     logger.debug("Received answer");
 
-            Thread thread = new Thread(() -> {
-                handleAnswer();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.CANDIDATE.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleAnswer();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.CANDIDATE.getValue()) {
 
-            logger.debug("Received candidate");
+        //     logger.debug("Received candidate");
 
-            Thread thread = new Thread(() -> {
-                handleCandidate();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.BIND.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleCandidate();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.BIND.getValue()) {
 
-            logger.debug("Received bind");
+        //     logger.debug("Received bind");
 
-            Thread thread = new Thread(() -> {
-                handleBind();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.ACCEPTING.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleBind();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.ACCEPTING.getValue()) {
 
-            logger.debug("Received accepting");
+        //     logger.debug("Received accepting");
 
-            Thread thread = new Thread(() -> {
-                handleAccepting();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.SHUTDOWN.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleAccepting();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.SHUTDOWN.getValue()) {
 
-            logger.debug("Received shutdown");
+        //     logger.debug("Received shutdown");
 
-            Thread thread = new Thread(() -> {
-                handleShutdown();
-            });
-            thread.start();
-        } else if (message == ESignalingOperationCode.CONNECT.getValue()) {
+        //     Thread thread = new Thread(() -> {
+        //         handleShutdown();
+        //     });
+        //     thread.start();
+        // } else if (message == ESignalingOperationCode.CONNECT.getValue()) {
 
-            logger.debug("Received connect");
+        //     logger.debug("Received connect");
 
-            Thread thread = new Thread(() -> {
-                handleConnect();
-            });
-            thread.start();
-        } else {
-            // Custom error messsage
-            logger.debug("None of the above");
-        }
+        //     Thread thread = new Thread(() -> {
+        //         handleConnect();
+        //     });
+        //     thread.start();
+        // } else {
+        //     // Custom error messsage
+        //     System.out.println("None of the above");
+        //     logger.debug("None of the above");
+        // }
     }
 
     @Override
@@ -149,62 +152,71 @@ public class SignalingServer extends WebSocketServer {
         setConnectionLostTimeout(100);
     }
 
-    private void handleKnock() {
+    private static void handleKnock() {
         // check for right debug level, add data
         logger.debug("Handling knock");
 
     }
-
-    private void handleOffer() {
+    public static void handleOffer() {
         // check for right debug level, add data
         logger.debug("Handling offer");
 
     }
 
-    private void handleAnswer() {
+    private static void handleAnswer() {
         // check for right debug level, add data
         logger.debug("Handling answer");
 
     }
 
-    private void handleCandidate() {
+    private static void handleCandidate() {
         // check for right debug level, add data
         logger.debug("Handling candidate");
 
     }
 
-    private void handleBind() {
+    private static void handleBind() {
         // check for right debug level, add data
         logger.debug("Handling bind");
 
     }
 
-    private void handleAccepting() {
+    private static void handleAccepting() {
         // check for right debug level, add data
         logger.debug("Handling accepting");
 
     }
 
-    private void handleShutdown() {
+    private static void handleShutdown() {
         // check for right debug level, add data
         logger.debug("Handling shutdown");
 
     }
 
-    private void handleConnect() {
+    private static void handleConnect() {
         // check for right debug leve, add data
         logger.debug("Handling connect");
 
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        int port = 8887;
+        int port = 8891;
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
         }
-        ChatServer s = new ChatServer(port);
+        SignalingServer s = new SignalingServer(port);
         s.start();
         System.out.println("ChatServer started on port: " + s.getPort());
+
+        BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
+        while (true) {
+            String in = sysin.readLine();
+            s.broadcast(in);
+            if (in.equals("exit")) {
+                s.stop(1000);
+                break;
+            }
+        }
     }
 }

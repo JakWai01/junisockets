@@ -1,4 +1,3 @@
-/home/jakobwaibel/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/operations/ESignalingOperationCode.java
-/home/jakobwaibel/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/ChatClient.java
-/home/jakobwaibel/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/SignalingServer.java
-/home/jakobwaibel/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/ChatServer.java
+/root/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/SignalingServer.java
+/root/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/operations/ESignalingOperationCode.java
+/root/Documents/repos/junisockets/src/main/java/space/nebulark/junisockets/ChatClient.java
