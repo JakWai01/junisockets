@@ -49,6 +49,11 @@
   </build>
   <dependencies>
     <dependency>
+  <groupId>org.java-websocket</groupId>
+  <artifactId>Java-WebSocket</artifactId>
+  <version>1.5.1</version>
+</dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>5.7.0-M1</version>
@@ -109,7 +114,7 @@
   <properties>
     <appLicense>AGPL-3.0</appLicense>
     <maven.compiler.target>14</maven.compiler.target>
-    <mainClass>space.nebulark.junisockets.Main</mainClass>
+    <mainClass>space.nebulark.junisockets.ChatServer</mainClass>
     <maven.compiler.source>14</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
