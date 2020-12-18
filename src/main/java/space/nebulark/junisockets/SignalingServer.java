@@ -54,39 +54,106 @@ public class SignalingServer extends WebSocketServer {
     
         switch (operation) {
             case KNOCK: {
+                
+                // log
+                
 
+                // call handleknock
+                Thread newThread = new Thread(() -> {
+                    // handleKnock();
+                });
+                newThread.start();
+            
+                break;
             }
 
             case OFFER: {
 
+                // log
+
+                Thread newThread = new Thread(() -> {
+                    // handleOffer();
+                });
+                newThread.start();
+
+                break;
             }
 
             case ANSWER: {
 
+                // log
+
+                Thread newThread = new Thread(() -> {
+
+                });
+                newThread.start();
+
+                break;
             }
 
             case CANDIDATE: {
+                
+                // log
 
+                Thread newThread = new Thread(() -> {
+
+                });
+                newThread.start();
+
+                break;
             }
 
             case BIND: {
 
+                // log
+
+                Thread newThread = new Thread(() -> {
+
+                });
+                newThread.start();
+
+                break;
             }
 
             case ACCEPTING: {
+                
+                // log
 
+                Thread newThread = new Thread(() -> {
+
+                });
+                newThread.start();
+
+                break;
             }
 
             case SHUTDOWN: {
 
+                // log
+
+                Thread newThread = new Thread(() -> {
+
+                });
+                newThread.start();
+
+                break;
             }
 
             case CONNECT: {
 
+                // log
+
+                Thread newThread = new Thread(() -> {
+
+                });
+                newThread.start();
+
+                break;
             }
 
             default: {
-
+                
+                // throw custom exception
             }
         }
     }
