@@ -9,13 +9,15 @@ import org.json.simple.parser.ParseException;
 public class SignalingService {
     Logger logger = Logger.getLogger(SignalingService.class);
 
-    private void send(WebSocket conn) {
+    private void send(WebSocket conn, Object operation) {
         // add operation
         logger.debug("Sending");
 
+        String jsonOperation = ((JSONObject)operation).toJSONString();
+
         if (conn != null) {
             // transform object to json in here
-            conn.send("Hallo");
+            conn.send(jsonOperation);
         } else {
             // throw new custom error
         }
