@@ -7,6 +7,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
@@ -239,6 +242,36 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     private void createIPAddress(String subnet) {
         logger.trace("Creating IP address" + subnet);
+
+        try {
+            if (!this.subnets.containsKey(subnet)) {
+                // ensure that put is the right method and we do not need to provide actual values in the HashMap
+                this.subnets.put(subnet, new HashMap());
+            }
+        
+            final Set<String> existingMembers = subnets.keySet();
+
+            List<String> existingMembersSorted = existingMembers.stream().collect(Collectors.toList());
+
+            // does this actually work?
+            Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2)); 
+
+            // Find the next free suffix 
+            final int newSuffix = 0;
+
+            if (newSuffix > 255) {
+                //return "-1";
+            }
+
+            // use MMember here
+            final Integer[] newMember = new Integer[]{3}; 
+
+            this.subnets.get(subnet).put(newSuffix, newMember);
+
+            // return this.toIPAddress(subnet, newSuffix);
+        } finally {
+            // release lock (mutex)
+        }
     }
 
     private void createTCPAddress(String ipAddress) {
