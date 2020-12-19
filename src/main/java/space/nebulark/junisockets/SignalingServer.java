@@ -7,6 +7,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
+
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -71,24 +74,35 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         JSONObject operation = (JSONObject) jsonObj;
 
-        handleOperation(operation);
-
+        handleOperation(operation, conn);
 
     }
 
     // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
-    private static void handleOperation(JSONObject operation) {
+    private static void handleOperation(JSONObject operation, WebSocket conn) {
 
         System.out.println("Handling Operation");
         // equals
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
             logger.debug("Received knock");
+            System.out.println("Received knock");
+            // Bis hier funktioniert alles
 
-            // Create knock object here 
+
+            // Think about that again
+            //Knock knock =  new Knock((IKnockData)operation.get("data"));
             
+            //Mapper mapper = DozerBeanMapperBuilder.buildDefault();
+
+            //Knock knock = mapper.map(operation, Knock.class);
+
+            System.out.println(operation.get("data"));
+        
+            //System.out.println(knock.data.subnet);
+
             Thread thread = new Thread(() -> {
-                handleKnock();
+                handleKnock(operation.get("data"), conn);
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
@@ -169,10 +183,16 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         setConnectionLostTimeout(100);
     }
 
-    private static void handleKnock() {
+    private static void handleKnock(Object data, WebSocket conn) {
         // check for right debug level, add data
         logger.debug("Handling knock");
 
+        System.out.println("data: " + data);
+        System.out.println("conn: " + conn);
+
+        // const id = await this.createIPAdress(data.subnet);
+
+        // send something back
     }
     public static void handleOffer() {
         // check for right debug level, add data
@@ -216,8 +236,44 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     }
 
+    private void createIPAddress(String subnet) {
+        logger.trace("Creating IP address" + subnet);
+    }
+
+    private void createTCPAddress(String ipAddress) {
+        logger.trace("Creating TCP address" + ipAddress);
+    }
+
+    private void claimTCPAddress(String tcpAddress) {
+        logger.trace("Claiming TCP address" + tcpAddress);
+    }
+
+    private void removeIPAddress(String ipAddress) {
+        logger.trace("Removing IP address" + ipAddress);
+    }
+
+    private void removeTCPAddress(String tcpAddress) {
+        logger.trace("Removing TCP address" + tcpAddress);
+    }
+
+    private void toIPAddress(String subnet, int suffix) {
+        logger.trace("Converting to IP address" + subnet + suffix);
+    }
+
+    private void toTCPAddress(String ipAddress, int port) {
+        logger.trace("Converting to TCP address" + ipAddress + port);
+    }   
+    
+    private void parseIPAddress(String ipAddress) {
+        logger.trace("Parsing IP address" + ipAddress);
+    }
+
+    private void parseTCPAddress(String tcpAddress) {
+        logger.trace("Parsing TCP address" + tcpAddress);
+    }
+
     public static void main(String[] args) throws InterruptedException, IOException {
-        int port = 8891;
+        int port = 8892;
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
