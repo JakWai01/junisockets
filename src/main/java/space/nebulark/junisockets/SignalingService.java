@@ -2,6 +2,9 @@ package space.nebulark.junisockets;
 
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class SignalingService {
     Logger logger = Logger.getLogger(SignalingService.class);
@@ -18,44 +21,50 @@ public class SignalingService {
         }
     }
 
+    private void receive(String message) throws ParseException {
 
-    private void receive(String message) {
+        JSONParser parser = new JSONParser();
 
+        Object jsonObj = parser.parse(message);
+
+        JSONObject operation = (JSONObject) jsonObj;
+
+        // now we can access the keys with jsonObject.
         // transform json to string here
-
+        String operationCode = (String) operation.get("opcode");
         // Add operation code here
-        logger.debug("Received operation: " + message);
-
-        if (message.equals(ESignalingOperationCode.KNOCK.getValue())) {
-            logger.trace("Received operation knock" + message);
+        logger.debug("Received operation: " + operation);
+        
+        if (operationCode.equals(ESignalingOperationCode.KNOCK.getValue())) {
+            logger.trace("Received operation knock" + operationCode);
 
             // return new Knock(operation.data as IKnockData);
-        } else if (message.equals(ESignalingOperationCode.OFFER.getValue())) {
-            logger.trace("Received operation offer" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.OFFER.getValue())) {
+            logger.trace("Received operation offer" + operationCode);
 
             // return new Offer(operation.data as IOfferData);
-        } else if (message.equals(ESignalingOperationCode.ANSWER.getValue())) {
-            logger.trace("Received operation answer" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.ANSWER.getValue())) {
+            logger.trace("Received operation answer" + operationCode);
 
             // return new Answer(operation.data as IAnswerData);
-        } else if (message.equals(ESignalingOperationCode.CANDIDATE.getValue())) {
-            logger.trace("Received operation candidate" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.CANDIDATE.getValue())) {
+            logger.trace("Received operation candidate" + operationCode);
 
             // return new Candidate(operation.data as ICandidateData);
-        } else if (message.equals(ESignalingOperationCode.BIND.getValue())) {
-            logger.trace("Received operation bind" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.BIND.getValue())) {
+            logger.trace("Received operation bind" + operationCode);
 
             // return new Bind(operation.data as IBindData);
-        } else if (message.equals(ESignalingOperationCode.ACCEPTING.getValue())) {
-            logger.trace("Received operation accepting" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.ACCEPTING.getValue())) {
+            logger.trace("Received operation accepting" + operationCode);
 
             // return new Accepting(operation.data as IAcceptingData);
-        } else if (message.equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
-            logger.trace("Received operation shutdown" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
+            logger.trace("Received operation shutdown" + operationCode);
 
             // return new Shutdown(operation.data as IShutdownData);
-        } else if (message.equals(ESignalingOperationCode.CONNECT.getValue())) {
-            logger.trace("Received operation connect" + message);
+        } else if (operationCode.equals(ESignalingOperationCode.CONNECT.getValue())) {
+            logger.trace("Received operation connect" + operationCode);
 
             // return new Connect(operation.data as IConnectData);
         } else {
