@@ -23,7 +23,7 @@ public interface ISignalingService {
         }
     }
 
-    default void receive(String message) throws ParseException {
+    default JSONObject receive(String message) throws ParseException {
 
         JSONParser parser = new JSONParser();
 
@@ -38,9 +38,11 @@ public interface ISignalingService {
         logger.debug("Received operation: " + operation);
         
         if (operationCode.equals(ESignalingOperationCode.KNOCK.getValue())) {
-            logger.trace("Received operation knock" + operationCode);
+            logger.trace("Received operation knock" + operation.get("data"));
 
-            // return new Knock(operation.data as IKnockData);
+            // maybe just send operation data, create object manually
+            //return new Knock((IKnockData)operation.get("opcode"));
+            return (JSONObject)operation.get("data");
         } else if (operationCode.equals(ESignalingOperationCode.OFFER.getValue())) {
             logger.trace("Received operation offer" + operationCode);
 
@@ -71,6 +73,10 @@ public interface ISignalingService {
             // return new Connect(operation.data as IConnectData);
         } else {
             // throw new custom exception
+            
         }
+
+        // Just to always return a JSONObject
+        return new JSONObject();
     }
 }

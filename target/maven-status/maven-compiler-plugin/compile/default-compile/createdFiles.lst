@@ -1,3 +1,6 @@
 space/nebulark/junisockets/SignalingServer.class
-space/nebulark/junisockets/ISignalingService.class
 space/nebulark/junisockets/ESignalingOperationCode.class
+space/nebulark/junisockets/Knock.class
+space/nebulark/junisockets/IKnockData.class
+space/nebulark/junisockets/ISignalingService.class
+space/nebulark/junisockets/ISignalingOperation.class
