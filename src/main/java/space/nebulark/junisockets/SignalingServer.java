@@ -249,15 +249,31 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 this.subnets.put(subnet, new HashMap());
             }
         
-            final Set<String> existingMembers = subnets.keySet();
+            final Set<Integer> existingMembers = subnets.get(subnet).keySet();
 
-            List<String> existingMembersSorted = existingMembers.stream().collect(Collectors.toList());
+            List<Integer> existingMembersSorted = existingMembers.stream().collect(Collectors.toList());
 
             // does this actually work?
             Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2)); 
 
             // Find the next free suffix 
-            final int newSuffix = 0;
+            // Wir brauchen die Integer, die muessen sortiert werden
+            int index = 0;
+            
+            int newSuffix = 0;
+            
+            for (int suffix : existingMembersSorted) {
+                if (suffix != index) {
+                    newSuffix = index;
+
+                    break;
+                }
+
+                index++;
+            }
+
+
+
 
             if (newSuffix > 255) {
                 //return "-1";
