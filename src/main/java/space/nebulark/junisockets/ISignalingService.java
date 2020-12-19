@@ -23,7 +23,7 @@ public interface ISignalingService {
         }
     }
 
-    default JSONObject receive(String message) throws ParseException {
+    default Object receive(String message) throws ParseException {
 
         JSONParser parser = new JSONParser();
 
@@ -42,7 +42,7 @@ public interface ISignalingService {
 
             // maybe just send operation data, create object manually
             //return new Knock((IKnockData)operation.get("opcode"));
-            return (JSONObject)operation.get("data");
+            //return (JSONObject)operation;
         } else if (operationCode.equals(ESignalingOperationCode.OFFER.getValue())) {
             logger.trace("Received operation offer" + operationCode);
 

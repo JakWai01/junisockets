@@ -13,6 +13,10 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 public class SignalingServer extends WebSocketServer implements ISignalingService {
 
@@ -53,29 +57,41 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     public void onMessage(WebSocket conn, String message) {
         broadcast(message);
         System.out.println(conn + ": " + message);
+            
+        // This needs to be a jsonobject
+        JSONParser parser = new JSONParser();
+        
+        Object jsonObj = null;
+        
+        try {
+			jsonObj = parser.parse(message);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
-        Thread newThread = new Thread(() -> {
-        handleOperation(message);
-        });
-        newThread.start();
+        JSONObject operation = (JSONObject) jsonObj;
+
+        handleOperation(operation);
 
 
     }
 
     // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
-    private static void handleOperation(String message) {
+    private static void handleOperation(JSONObject operation) {
 
         System.out.println("Handling Operation");
         // equals
-        if (message.equals(ESignalingOperationCode.KNOCK.getValue())) {
+        if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
             logger.debug("Received knock");
 
+            // Create knock object here 
+            
             Thread thread = new Thread(() -> {
                 handleKnock();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.OFFER.getValue())) {
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
 
             logger.debug("Received offer");
 
@@ -83,7 +99,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 handleOffer();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.ANSWER.getValue())) {
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.ANSWER.getValue())) {
 
             logger.debug("Received answer");
 
@@ -91,7 +107,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 handleAnswer();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.CANDIDATE.getValue())) {
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.CANDIDATE.getValue())) {
 
             logger.debug("Received candidate");
 
@@ -99,7 +115,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 handleCandidate();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.BIND.getValue())) {    
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.BIND.getValue())) {    
         
             logger.debug("Received bind");
 
@@ -107,7 +123,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 handleBind();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.ACCEPTING.getValue())) {
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPTING.getValue())) {
 
             logger.debug("Received accepting");
 
@@ -115,7 +131,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 handleAccepting();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
 
             logger.debug("Received shutdown");
 
@@ -123,7 +139,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 handleShutdown();
             });
             thread.start();
-        } else if (message.equals(ESignalingOperationCode.CONNECT.getValue())) {
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.CONNECT.getValue())) {
             logger.debug("Received connect");
 
             Thread thread = new Thread(() -> {
