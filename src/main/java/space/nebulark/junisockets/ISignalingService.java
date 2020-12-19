@@ -6,10 +6,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class SignalingService {
-    Logger logger = Logger.getLogger(SignalingService.class);
+public interface ISignalingService {
+    Logger logger = Logger.getLogger(ISignalingService.class);
 
-    private void send(WebSocket conn, Object operation) {
+    default void send(WebSocket conn, Object operation) {
         // add operation
         logger.debug("Sending");
 
@@ -23,7 +23,7 @@ public class SignalingService {
         }
     }
 
-    private void receive(String message) throws ParseException {
+    default void receive(String message) throws ParseException {
 
         JSONParser parser = new JSONParser();
 

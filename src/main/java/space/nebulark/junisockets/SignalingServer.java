@@ -14,7 +14,7 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-public class SignalingServer extends WebSocketServer {
+public class SignalingServer extends WebSocketServer implements ISignalingService {
 
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
@@ -35,6 +35,8 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Opening signaling server");
 
         conn.send("Welcome to the server!");
+        //Object operation = null; 
+        //send(conn, operation);
         broadcast("new connection: " + handshake.getResourceDescriptor());
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + "entered the room!");
     }
