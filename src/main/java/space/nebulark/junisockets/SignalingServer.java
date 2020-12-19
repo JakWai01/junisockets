@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
-
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import com.github.dozermapper.core.Mapper;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
@@ -235,6 +233,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Handling connect");
 
     }
+
+    // Create MMember instead of Integer[]
+    private HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
 
     private void createIPAddress(String subnet) {
         logger.trace("Creating IP address" + subnet);
