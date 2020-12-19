@@ -103,7 +103,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             //System.out.println(knock.data.subnet);
 
             Thread thread = new Thread(() -> {
-                handleKnock(operation.get("data"), conn);
+                handleKnock((JSONObject)operation.get("data"), conn);
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
@@ -184,14 +184,30 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         setConnectionLostTimeout(100);
     }
 
-    private static void handleKnock(Object data, WebSocket conn) {
+    // create a custom send method to handle the broadcast and custom sends
+    private static void handleKnock(JSONObject data, WebSocket conn) {
         // check for right debug level, add data
         logger.debug("Handling knock");
 
         System.out.println("data: " + data);
         System.out.println("conn: " + conn);
 
-        // const id = await this.createIPAdress(data.subnet);
+        String subnet = (String)data.get("subnet");
+
+        final String id = createIPAddress(subnet);
+
+        if (id != "-1") {
+            // send(conn, new Acknowledgement({id, rejected: false}));
+            // check if Knock is working correctly
+        } else {
+            // send()
+            
+            // check if this log messsage is okay
+            logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
+
+            return;
+        }
+        // get access to data.subnet
 
         // send something back
     }
@@ -238,15 +254,15 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     // Create MMember instead of Integer[]
-    private HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
+    private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
 
-    private void createIPAddress(String subnet) {
+    private static String createIPAddress(String subnet) {
         logger.trace("Creating IP address" + subnet);
 
         try {
-            if (!this.subnets.containsKey(subnet)) {
+            if (!subnets.containsKey(subnet)) {
                 // ensure that put is the right method and we do not need to provide actual values in the HashMap
-                this.subnets.put(subnet, new HashMap());
+                subnets.put(subnet, new HashMap());
             }
         
             final Set<Integer> existingMembers = subnets.get(subnet).keySet();
@@ -272,19 +288,17 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 index++;
             }
 
-
-
-
             if (newSuffix > 255) {
-                //return "-1";
+                return "-1";
             }
 
             // use MMember here
-            final Integer[] newMember = new Integer[]{3}; 
+            Integer[] newMember = {};
 
-            this.subnets.get(subnet).put(newSuffix, newMember);
+            subnets.get(subnet).put(newSuffix, newMember); // We ensure above
 
-            // return this.toIPAddress(subnet, newSuffix);
+            return toIPAddress(subnet, newSuffix);
+
         } finally {
             // release lock (mutex)
         }
@@ -306,8 +320,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.trace("Removing TCP address" + tcpAddress);
     }
 
-    private void toIPAddress(String subnet, int suffix) {
+    private static String toIPAddress(String subnet, int suffix) {
         logger.trace("Converting to IP address" + subnet + suffix);
+
+        String ipAddress = subnet + "." + suffix;
+
+        return ipAddress;
     }
 
     private void toTCPAddress(String ipAddress, int port) {
