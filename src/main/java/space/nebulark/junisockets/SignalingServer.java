@@ -24,7 +24,7 @@ import org.json.simple.parser.ParseException;
 public class SignalingServer extends WebSocketServer implements ISignalingService {
 
     private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
-    //private HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
+    private HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
     
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
@@ -224,7 +224,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     private static void handleBind() {
         logger.trace("Handling bind");
-
     }
 
     private static void handleAccepting() {
