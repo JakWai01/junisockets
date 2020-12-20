@@ -8,7 +8,6 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -43,8 +42,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Opening signaling server");
 
         conn.send("Welcome to the server!");
-        //Object operation = null; 
-        //send(conn, operation);
+        
         broadcast("new connection: " + handshake.getResourceDescriptor());
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + "entered the room!");
     }
@@ -62,7 +60,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         broadcast(message);
         System.out.println(conn + ": " + message);
             
-        // This needs to be a jsonobject
         JSONParser parser = new JSONParser();
         
         Object jsonObj = null;
@@ -79,28 +76,14 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     }
 
-    // (operation: ISignalingOperation<TSignalingData>, client: WebSocket)
     private static void handleOperation(JSONObject operation, WebSocket conn) {
 
-        System.out.println("Handling Operation");
-        // equals
+        logger.trace("Handling operation: " + operation + conn);
+
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
             logger.debug("Received knock");
             System.out.println("Received knock");
-            // Bis hier funktioniert alles
-
-
-            // Think about that again
-            //Knock knock =  new Knock((IKnockData)operation.get("data"));
-            
-            //Mapper mapper = DozerBeanMapperBuilder.buildDefault();
-
-            //Knock knock = mapper.map(operation, Knock.class);
-
-            //System.out.println(operation.get("data"));
-        
-            //System.out.println(knock.data.subnet);
 
             Thread thread = new Thread(() -> {
                 handleKnock((JSONObject)operation.get("data"), conn);
@@ -162,9 +145,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             });
             thread.start();
         } else {
-            // Custom error messsage
-            System.out.println("None of the above");
-            logger.debug("None of the above");
+            // Custom error messsage instead of error
+            logger.fatal("Unimplemented Operation");
         }
     }
 
@@ -184,13 +166,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         setConnectionLostTimeout(100);
     }
 
-    // create a custom send method to handle the broadcast and custom sends
     private static void handleKnock(JSONObject data, WebSocket conn) {
-        // check for right debug level, add data
-        logger.debug("Handling knock");
-
-//        System.out.println("data: " + data);
-//        System.out.println("conn: " + conn);
+        
+        logger.trace("Handling knock");
 
         String subnet = (String)data.get("subnet");
 
@@ -199,59 +177,47 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         System.out.println(id);
 
         if (id != "-1") {
-            // send(conn, new Acknowledgement({id, rejected: false}));
-            // check if Knock is working correctly
+        
         } else {
-            // send()
             
-            // check if this log messsage is okay
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
 
             return;
         }
-        // get access to data.subnet
 
-        // send something back
     }
     public static void handleOffer() {
-        // check for right debug level, add data
-        logger.debug("Handling offer");
+        logger.trace("Handling offer");
 
     }
 
     private static void handleAnswer() {
-        // check for right debug level, add data
-        logger.debug("Handling answer");
+        logger.trace("Handling answer");
 
     }
 
     private static void handleCandidate() {
-        // check for right debug level, add data
-        logger.debug("Handling candidate");
+        logger.trace("Handling candidate");
 
     }
 
     private static void handleBind() {
-        // check for right debug level, add data
-        logger.debug("Handling bind");
+        logger.trace("Handling bind");
 
     }
 
     private static void handleAccepting() {
-        // check for right debug level, add data
-        logger.debug("Handling accepting");
+        logger.trace("Handling accepting");
 
     }
 
     private static void handleShutdown() {
-        // check for right debug level, add data
-        logger.debug("Handling shutdown");
+        logger.trace("Handling shutdown");
 
     }
 
     private static void handleConnect() {
-        // check for right debug leve, add data
-        logger.debug("Handling connect");
+        logger.trace("Handling connect");
 
     }
 
