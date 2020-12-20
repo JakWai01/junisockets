@@ -237,7 +237,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         } else {
             logger.debug("Accepting bind" + data);
 
-            claimTCPAddress(data.get("alias"));
+            claimTCPAddress((String)data.get("alias"));
 
             aliases.put((String)data.get("alias"), new MAlias((String)data.get("id"), false));
 
@@ -314,7 +314,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.trace("Creating TCP address" + ipAddress);
     }
 
-    private void claimTCPAddress(String tcpAddress) {
+    private static void claimTCPAddress(String tcpAddress) {
         logger.trace("Claiming TCP address" + tcpAddress);
 
         // lock 
@@ -384,12 +384,16 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.trace("Converting to TCP address" + ipAddress + port);
     }   
     
-    private String[] parseIPAddress(String ipAddress) {
+    private static String[] parseIPAddress(String ipAddress) {
         logger.trace("Parsing IP address" + ipAddress);
+
+        return ipAddress.split(".");
     }
 
-    private String[] parseTCPAddress(String tcpAddress) {
+    private static String[] parseTCPAddress(String tcpAddress) {
         logger.trace("Parsing TCP address" + tcpAddress);
+
+        return tcpAddress.split(":");
     }
 
     private static void send(WebSocket conn, Acknowledgement operation) {
