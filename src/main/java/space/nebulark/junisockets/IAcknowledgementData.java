@@ -1,6 +1,6 @@
 package space.nebulark.junisockets;
 
-public class IAcknowledgementData {
-    String id; 
-    boolean rejected;
+public interface IAcknowledgementData {
+    String id = null; 
+    boolean rejected = false;
 }
