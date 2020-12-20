@@ -195,7 +195,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         final WebSocket client = clients.get(data.get("answererId"));
 
         Thread thread = new Thread(() -> {
-            send(client, new Offer(data.get("offererId"), data.get("answererId"), data.get("offer")));
+            send(client, new Offer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("offer")));
             logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
         });
         thread.start();
