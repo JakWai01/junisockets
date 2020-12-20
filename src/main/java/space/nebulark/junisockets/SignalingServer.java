@@ -316,6 +316,52 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     private void claimTCPAddress(String tcpAddress) {
         logger.trace("Claiming TCP address" + tcpAddress);
+
+        // lock 
+
+        try {
+            // const { ipAddress, port } = parseTCPAddress(tcpAddress);
+            final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
+            final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
+
+            // Is this right for MMember?
+            Integer[] arr = new Integer[0];
+
+            if (subnets.containsKey(partsIPAddress[0])) {
+                if (!(subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1])))) {
+                    subnets.get(partsIPAddress[0]).put(Integer.parseInt(partsIPAddress[1]), arr);
+                }
+                
+                int count = 0;
+                //if(subnets.get(partsIPAddress[0]).get(partsIPAddress[1]).get("ports")
+                for (int i = 0; i < subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length; i++) {
+                    if (subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[i] == Integer.parseInt(partsTCPAddress[1])) {
+                        count++;
+                    }
+                }
+
+                if (count == 0) {
+                    Integer[] copy = new Integer[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length + 1];
+
+                    for (int j = 0; j < subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length; j++) {
+                        copy[j] = subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[j];
+                    }
+
+                    copy[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length-1] = Integer.parseInt(partsTCPAddress[0]);
+
+                    // is this viable?
+                    subnets.get(partsIPAddress[0]).replace(Integer.parseInt(partsIPAddress[1]), copy);
+                } else {
+                    // throw new PortAlreadyAllocatedError();
+                    logger.fatal("Port already allocated");
+                }
+            } else {
+                // throw new SubnetDoesNotExistError();
+                logger.fatal("Subnet does not exist");
+            }
+        } finally {
+            // release() 
+        }
     }
 
     private void removeIPAddress(String ipAddress) {
@@ -338,11 +384,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.trace("Converting to TCP address" + ipAddress + port);
     }   
     
-    private void parseIPAddress(String ipAddress) {
+    private String[] parseIPAddress(String ipAddress) {
         logger.trace("Parsing IP address" + ipAddress);
     }
 
-    private void parseTCPAddress(String tcpAddress) {
+    private String[] parseTCPAddress(String tcpAddress) {
         logger.trace("Parsing TCP address" + tcpAddress);
     }
 
