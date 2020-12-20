@@ -177,9 +177,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         System.out.println(id);
 
         if (id != "-1") {
-        
+            send(conn, new Acknowledgement(id, false));
         } else {
-            
+            send(conn, new Acknowledgement(id, true));
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
 
             return;
@@ -302,8 +302,20 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.trace("Parsing TCP address" + tcpAddress);
     }
 
+    private static void send(WebSocket conn, Acknowledgement operation) {
+        // Probably change this debug information to json
+        logger.debug("Sending" + operation); 
+        
+        if (conn != null) { 
+            conn.send("{\"id\":\"" + operation.getId() + "\", \"rejected\":" + operation.getRejected() + "}");
+        } else {
+            // create new ClientClosedError() custom exception
+            logger.fatal("Client closed");
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException, IOException {
-        int port = 8890;
+        int port = 8891;
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
