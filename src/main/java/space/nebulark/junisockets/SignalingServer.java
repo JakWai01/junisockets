@@ -262,7 +262,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         try {
             if (!subnets.containsKey(subnet)) {
                 // ensure that put is the right method and we do not need to provide actual values in the HashMap
-                subnets.put(subnet, new HashMap());
+                subnets.put(subnet, new HashMap<Integer, Integer[]>());
             }
         
             final Set<Integer> existingMembers = subnets.get(subnet).keySet();
@@ -287,6 +287,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                 index++;
             }
+
+            index = 0;
 
             if (newSuffix > 255) {
                 return "-1";
