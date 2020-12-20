@@ -23,6 +23,9 @@ import org.json.simple.parser.ParseException;
 
 public class SignalingServer extends WebSocketServer implements ISignalingService {
 
+    private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
+    //private HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
+    
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
     public SignalingServer(int port) throws UnknownHostException {
@@ -94,7 +97,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received offer");
 
             Thread thread = new Thread(() -> {
-                handleOffer();
+                handleOffer((JSONObject)operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ANSWER.getValue())) {
@@ -186,8 +189,16 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
 
     }
-    public static void handleOffer() {
+    public static void handleOffer(JSONObject data) {
         logger.trace("Handling offer");
+
+        final WebSocket client = clients.get(data.get("answererId"));
+
+        Thread thread = new Thread(() -> {
+            send(client, new Offer(data.get("offererId"), data.get("answererId"), data.get("offer")));
+            logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
+        });
+        thread.start();
 
     }
 
@@ -235,7 +246,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2)); 
         
-            
             boolean foundSuffix = false;
             int newSuffix = 0;
            
