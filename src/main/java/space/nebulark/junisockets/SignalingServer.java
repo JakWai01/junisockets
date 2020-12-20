@@ -105,7 +105,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received answer");
 
             Thread thread = new Thread(() -> {
-                handleAnswer();
+                handleAnswer((JSONObject)operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.CANDIDATE.getValue())) {
@@ -113,7 +113,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received candidate");
 
             Thread thread = new Thread(() -> {
-                handleCandidate();
+                handleCandidate((JSONObject)operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.BIND.getValue())) {    
@@ -121,7 +121,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received bind");
 
             Thread thread = new Thread(() -> {
-                handleBind();
+                handleBind((JSONObject)operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPTING.getValue())) {
@@ -246,7 +246,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 Object key = clients.keySet().toArray()[i];
                 send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), true));
 
-                logger.debug("Send alias" + i + data);
+                logger.debug("Sent alias" + i + data);
             }
         }
     }
