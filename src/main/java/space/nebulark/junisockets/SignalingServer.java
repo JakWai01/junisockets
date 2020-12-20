@@ -212,9 +212,14 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Send answer" + data);
     }
 
-    private static void handleCandidate() {
-        logger.trace("Handling candidate");
+    private static void handleCandidate(JSONObject data) {
+        logger.trace("Handling candidate" + data);
 
+        final WebSocket client = clients.get(data.get("answeerId"));
+
+        send(client, new Candidate((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("candidate")));
+
+        logger.debug("Sent candidate" + data);
     }
 
     private static void handleBind() {
