@@ -190,7 +190,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     }
     public static void handleOffer(JSONObject data) {
-        logger.trace("Handling offer");
+        logger.trace("Handling offer: " + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
 
@@ -202,9 +202,14 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     }
 
-    private static void handleAnswer() {
-        logger.trace("Handling answer");
+    private static void handleAnswer(JSONObject data) {
+        logger.trace("Handling answer: " + data);
 
+        final WebSocket client = clients.get(data.get("offererId"));
+
+        send(client, new Answer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("answer")));
+
+        logger.debug("Send answer" + data);
     }
 
     private static void handleCandidate() {
