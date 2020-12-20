@@ -98,7 +98,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             //Knock knock = mapper.map(operation, Knock.class);
 
-            System.out.println(operation.get("data"));
+            //System.out.println(operation.get("data"));
         
             //System.out.println(knock.data.subnet);
 
@@ -189,12 +189,14 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         // check for right debug level, add data
         logger.debug("Handling knock");
 
-        System.out.println("data: " + data);
-        System.out.println("conn: " + conn);
+//        System.out.println("data: " + data);
+//        System.out.println("conn: " + conn);
 
         String subnet = (String)data.get("subnet");
 
         final String id = createIPAddress(subnet);
+
+        System.out.println(id);
 
         if (id != "-1") {
             // send(conn, new Acknowledgement({id, rejected: false}));
@@ -254,6 +256,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     // Create MMember instead of Integer[]
+    // Unexpected character when sending many messages
     private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
 
     private static String createIPAddress(String subnet) {
@@ -265,40 +268,51 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 subnets.put(subnet, new HashMap<Integer, Integer[]>());
             }
         
-            final Set<Integer> existingMembers = subnets.get(subnet).keySet();
 
-            List<Integer> existingMembersSorted = existingMembers.stream().collect(Collectors.toList());
 
-            // does this actually work?
+            List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
+
             Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2)); 
-
-            // Find the next free suffix 
-            // Wir brauchen die Integer, die muessen sortiert werden
-            int index = 0;
+        
             
+            boolean foundSuffix = false;
             int newSuffix = 0;
+           
+            System.out.println(existingMembersSorted);
             
-            for (int suffix : existingMembersSorted) {
-                if (suffix != index) {
-                    newSuffix = index;
+            // this always expands but does not check if one between is free
+            // newSuffix = existingMembersSorted.size() + 1;
+    
+            
+            for (int i = 0; i < existingMembersSorted.size(); i++) { 
 
-                    break;
+                if (i != existingMembersSorted.get(i)) {
+                    newSuffix = i;
+                    foundSuffix = true;       
                 }
-
-                index++;
             }
 
-            index = 0;
+            if (!foundSuffix) {
+                newSuffix = existingMembersSorted.size() + 1; 
+            }
+            
+            System.out.println("newSuffix: " + newSuffix);
+
 
             if (newSuffix > 255) {
                 return "-1";
             }
 
             // use MMember here
-            Integer[] newMember = {};
+            Integer[] newMember = new Integer[0];
 
+            System.out.println(newMember);
+            // this newMember is a hash
+
+            // Add new entry to subnet so the newSuffix needs to be different, otherwhise we just overwrite (currently)
             subnets.get(subnet).put(newSuffix, newMember); // We ensure above
 
+            // this looks somewhat weird
             return toIPAddress(subnet, newSuffix);
 
         } finally {
@@ -343,7 +357,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        int port = 8892;
+        int port = 8890;
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
