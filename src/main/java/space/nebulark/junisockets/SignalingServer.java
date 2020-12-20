@@ -255,8 +255,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     }
 
-    // Create MMember instead of Integer[]
-    // Unexpected character when sending many messages
     private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
 
     private static String createIPAddress(String subnet) {
@@ -264,12 +262,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         try {
             if (!subnets.containsKey(subnet)) {
-                // ensure that put is the right method and we do not need to provide actual values in the HashMap
                 subnets.put(subnet, new HashMap<Integer, Integer[]>());
             }
         
-
-
             List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
 
             Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2)); 
@@ -278,12 +273,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             boolean foundSuffix = false;
             int newSuffix = 0;
            
-            System.out.println(existingMembersSorted);
-            
-            // this always expands but does not check if one between is free
-            // newSuffix = existingMembersSorted.size() + 1;
-    
-            
             for (int i = 0; i < existingMembersSorted.size(); i++) { 
 
                 if (i != existingMembersSorted.get(i)) {
@@ -293,26 +282,17 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             }
 
             if (!foundSuffix) {
-                newSuffix = existingMembersSorted.size() + 1; 
+                newSuffix = existingMembersSorted.size(); 
             }
-            
-            System.out.println("newSuffix: " + newSuffix);
-
 
             if (newSuffix > 255) {
                 return "-1";
             }
 
-            // use MMember here
             Integer[] newMember = new Integer[0];
 
-            System.out.println(newMember);
-            // this newMember is a hash
-
-            // Add new entry to subnet so the newSuffix needs to be different, otherwhise we just overwrite (currently)
             subnets.get(subnet).put(newSuffix, newMember); // We ensure above
 
-            // this looks somewhat weird
             return toIPAddress(subnet, newSuffix);
 
         } finally {
