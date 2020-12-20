@@ -24,7 +24,7 @@ import org.json.simple.parser.ParseException;
 public class SignalingServer extends WebSocketServer implements ISignalingService {
 
     private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
-    private HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
+    private static HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
     
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
@@ -188,6 +188,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             return;
         }
 
+
+        // for each 
+
     }
     public static void handleOffer(JSONObject data) {
         logger.trace("Handling offer: " + data);
@@ -222,8 +225,30 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sent candidate" + data);
     }
 
-    private static void handleBind() {
+    private static void handleBind(JSONObject data) {
         logger.trace("Handling bind");
+
+        if (aliases.containsKey(data.get("alias"))) {
+            logger.debug("Rejecting bind, alias already taken" + data);
+
+            final WebSocket client = clients.get(data.get("id"));   
+            
+            send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false));
+        } else {
+            logger.debug("Accepting bind" + data);
+
+            claimTCPAddress(data.get("alias"));
+
+            aliases.put((String)data.get("alias"), new MAlias((String)data.get("id"), false));
+
+            // Check this forEach at the end
+            for (int i = 0; i < clients.size(); i++) {
+                Object key = clients.keySet().toArray()[i];
+                send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), true));
+
+                logger.debug("Send alias" + i + data);
+            }
+        }
     }
 
     private static void handleAccepting() {
