@@ -53,10 +53,48 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        logger.debug("Shutting down signaling server");
+        
+        String id = "";
+        
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(clients.keySet().toArray()[i]) == conn) {
+                id = (String)clients.keySet().toArray()[i];       
+            }
+        }
 
-        broadcast(conn + " has left the room!");
-        System.out.println(conn + " has left the room!");
+        logger.debug("Registering goodbye" + id);
+
+        if (clients.containsKey("id")) {
+
+            clients.remove("id");
+
+            // for Each alias removeIPAddress, removeTCPAddress and broadcast
+            for (int i = 0; i < aliases.size(); i++) {
+                
+                if(aliases.keySet().toArray()[i] == id) {
+                    aliases.remove(aliases.keySet().toArray()[i]);
+                    removeIPAddress((String)aliases.keySet().toArray()[i]);
+                    removeTCPAddress((String)aliases.keySet().toArray()[i]);
+
+                    for (int j = 0; j < clients.size(); j++) {
+                        send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[i], false));
+
+                        logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < clients.size(); i++) {
+                        send(clients.get(aliases.keySet().toArray()[i]), new Goodbye(id));
+
+                        logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
+            }
+        } else {
+            // throw new ClientDoesNotExistError;
+        }
+        
+        logger.debug("Client disconnected" + id);
+        
     }
 
     @Override
@@ -199,6 +237,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             }
         }
 
+        clients.put(id, conn);
+        
+        logger.trace("Client connected" + id);
     }
     public static void handleOffer(JSONObject data) {
         logger.trace("Handling offer: " + data);
