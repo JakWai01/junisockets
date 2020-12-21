@@ -411,6 +411,36 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     private void removeTCPAddress(String tcpAddress) {
         logger.trace("Removing TCP address" + tcpAddress);
+
+        // lock
+
+        try {
+            final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
+            final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
+
+            if (subnets.containsKey(partsIPAddress[0])) {
+                if (subnets.get(partsIPAddress[0]).containsKey(partsIPAddress[1])) {
+                    
+                    // only take values that aren't the port from the TCPAddress
+                    Integer[] copy = new Integer[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length - 1];
+
+                    int count = 0;
+
+                    for (int j = 0; j < subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length; j++) {
+                        if (subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[j] != Integer.parseInt(partsTCPAddress[1])) {
+                            copy[count] = subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[j];
+                            count++;
+                        } else {
+                            continue;
+                        }
+                    }
+                    // is this viable?
+                    subnets.get(partsIPAddress[0]).replace(Integer.parseInt(partsIPAddress[1]), copy);
+                }
+            }
+        } finally {
+            // release();
+        }
     }
 
     private static String toIPAddress(String subnet, int suffix) {
