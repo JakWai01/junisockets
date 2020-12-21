@@ -394,6 +394,19 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     private void removeIPAddress(String ipAddress) {
         logger.trace("Removing IP address" + ipAddress);
+
+        // lock
+        try {
+            final String[] partsIPAddress = parseIPAddress(ipAddress);
+
+            if (subnets.containsKey(partsIPAddress[0])) {
+                if (subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1]))) {
+                    subnets.get(partsIPAddress[0]).remove(Integer.parseInt(partsIPAddress[1])); // We ensure above
+                }
+            }
+        } finally {
+            // release
+        }
     }
 
     private void removeTCPAddress(String tcpAddress) {
