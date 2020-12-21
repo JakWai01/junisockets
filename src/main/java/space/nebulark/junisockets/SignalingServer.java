@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +145,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received connect");
 
             Thread thread = new Thread(() -> {
-                handleConnect();
+                handleConnect((JSONObject)operation.get("data"));
             });
             thread.start();
         } else {
@@ -384,7 +385,47 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     private static String createTCPAddress(String ipAddress) {
         logger.trace("Creating TCP address" + ipAddress);
 
-        return "";
+        // lock
+
+        try {
+            final String[] partsIPAddress = parseIPAddress(ipAddress);
+
+            if (subnets.containsKey(partsIPAddress[0])) {
+                if (subnets.get(partsIPAddress[0]).containsKey(partsIPAddress[1])) {
+                    int[] intArray = Arrays.stream(subnets.get(partsIPAddress[0]).get(partsIPAddress[1])).mapToInt(Integer::intValue).toArray();
+                    
+                    mergeSort(intArray);
+                    
+                    int newPort = 0;
+                    // Find next free port
+                    for (int i = 0; i < intArray.length; i++) {
+                        if (intArray[i] != i) {
+                            newPort = i;
+                        }
+                    }
+
+                    int[] copy = new int[intArray.length + 1];
+
+                    for (int i = 0; i < intArray.length; i++) {
+                        copy[i] = intArray[i];
+                    }
+
+                    copy[copy.length-1] = newPort;
+
+                    Integer[] arr = Arrays.stream( copy ).boxed().toArray( Integer[]::new );
+
+                    subnets.get(partsIPAddress[0]).replace(Integer.parseInt(partsIPAddress[1]), arr);
+
+                    return toTCPAddress(toIPAddress(partsIPAddress[0], Integer.parseInt(partsIPAddress[1])), newPort);
+                } else {
+                    // throw new SuffixDoesNotExistError();
+                }
+            } else {
+                // throw new SubnetDoesNotExistError();
+            }
+        } finally {
+            // release()
+        }
     }
 
     private static void claimTCPAddress(String tcpAddress) {
@@ -496,8 +537,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         return ipAddress;
     }
 
-    private void toTCPAddress(String ipAddress, int port) {
+    private static String toTCPAddress(String ipAddress, int port) {
         logger.trace("Converting to TCP address" + ipAddress + port);
+
+        String tcpAddress = ipAddress + ":" + port;
+
+        return tcpAddress;
     }   
     
     private static String[] parseIPAddress(String ipAddress) {
