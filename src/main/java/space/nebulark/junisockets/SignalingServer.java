@@ -129,7 +129,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received accepting");
 
             Thread thread = new Thread(() -> {
-                handleAccepting();
+                handleAccepting((JSONObject)operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
@@ -137,7 +137,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Received shutdown");
 
             Thread thread = new Thread(() -> {
-                handleShutdown();
+                handleShutdown((JSONObject)operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.CONNECT.getValue())) {
@@ -268,8 +268,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         if(aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
-            removeTCPAddress(data.get("alias"));
-            removeIPAddress(data.get("alias"));
+            removeTCPAddress((String)data.get("alias"));
+            removeIPAddress((String)data.get("alias"));
 
             logger.debug("Accepting shutdown" + data);
 
@@ -392,7 +392,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private void removeIPAddress(String ipAddress) {
+    private static void removeIPAddress(String ipAddress) {
         logger.trace("Removing IP address" + ipAddress);
 
         // lock
@@ -409,7 +409,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private void removeTCPAddress(String tcpAddress) {
+    private static void removeTCPAddress(String tcpAddress) {
         logger.trace("Removing TCP address" + tcpAddress);
 
         // lock
