@@ -289,10 +289,53 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private static void handleConnect() {
+    private static void handleConnect(JSONObject data) {
         logger.trace("Handling connect");
 
-    }
+        final String clientAlias = createTCPAddress((String)data.get("id"));
+        final WebSocket client = clients.get(data.get("id"));
+        
+        if (!aliases.containsKey(data.get("remoteAlias")) || aliases.get(data.get("remoteAlias")).getAccepting()) {
+            logger.debug("Rejecting connect, remote alias does not exists" + data);
+
+            removeTCPAddress(clientAlias);
+
+            // constructor overloaden
+            send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false, (String)data.get("clientConnectionId")));
+        } else {
+            logger.debug("Accepting connect" + data);
+        
+            aliases.put(clientAlias, new MAlias((String)data.get("id"), false));
+
+            final Alias clientAliasMessage = new Alias((String)data.get("id"), (String)data.get("alias"), true, (String)data.get("clientConnectionId"), true);
+
+            send(client, clientAliasMessage);
+
+            logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
+
+            final MAlias serverId = aliases.get(data.get("remoteAlias"));
+            final WebSocket server = clients.get(serverId.getId());
+
+            final Alias serverAliasMessage = new Alias((String)data.get("id"), clientAlias, true);
+
+            send(server, serverAliasMessage);
+
+            logger.debug("Send alias for connection to server" + data + serverAliasMessage);
+
+            final Accept serverAcceptMessage = new Accept((String)data.get("remoteAlias"), clientAlias);
+
+            // send implementieren
+            send(server, serverAcceptMessage);
+
+            logger.debug("Send accept to server" + data + serverAcceptMessage);
+
+            final Alias serverALiasForClientsMessage = new Alias((String)serverId.getId(), (String)data.get("remoteAlias"), true, (String)data.get("clientConnectionId"));
+
+            send(client, serverALiasForClientsMessage);
+
+            logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
+        }
+    }   
 
     private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
 
@@ -338,8 +381,10 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private void createTCPAddress(String ipAddress) {
+    private static String createTCPAddress(String ipAddress) {
         logger.trace("Creating TCP address" + ipAddress);
+
+        return "";
     }
 
     private static void claimTCPAddress(String tcpAddress) {
@@ -419,7 +464,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
             if (subnets.containsKey(partsIPAddress[0])) {
-                if (subnets.get(partsIPAddress[0]).containsKey(partsIPAddress[1])) {
+                if (subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1]))) {
                     
                     // only take values that aren't the port from the TCPAddress
                     Integer[] copy = new Integer[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length - 1];
