@@ -571,6 +571,18 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.fatal("Client closed");
         }
     }
+
+    public static void send(WebSocket conn, Accept operation) {
+
+        logger.debug("Sending" + operation);
+
+        if (conn != null) {
+            conn.send("{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":" + operation.getClientAlias() + "}");
+        } else {
+
+            logger.fatal("Client closed");
+        }
+    }
     public static void main(String[] args) throws InterruptedException, IOException {
         int port = 8891;
         try {
