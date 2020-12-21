@@ -391,10 +391,10 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             final String[] partsIPAddress = parseIPAddress(ipAddress);
 
             if (subnets.containsKey(partsIPAddress[0])) {
-                if (subnets.get(partsIPAddress[0]).containsKey(partsIPAddress[1])) {
-                    int[] intArray = Arrays.stream(subnets.get(partsIPAddress[0]).get(partsIPAddress[1])).mapToInt(Integer::intValue).toArray();
+                if (subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1]))) {
+                    int[] intArray = Arrays.stream(subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))).mapToInt(Integer::intValue).toArray();
                     
-                    mergeSort(intArray);
+                    Arrays.sort(intArray);
                     
                     int newPort = 0;
                     // Find next free port
@@ -425,6 +425,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             }
         } finally {
             // release()
+
+            // can I return here?
+            return "";
         }
     }
 
