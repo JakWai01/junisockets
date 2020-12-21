@@ -7,4 +7,8 @@ public class MMember {
     public MMember(int[] ports) {
         this.ports = ports;
     }
+
+    public int[] getPorts() {
+        return ports;
+    }
 }

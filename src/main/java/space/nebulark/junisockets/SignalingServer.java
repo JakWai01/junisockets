@@ -425,10 +425,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             }
         } finally {
             // release()
-
-            // can I return here?
-            return "";
         }
+
+        return "";
     }
 
     private static void claimTCPAddress(String tcpAddress) {
@@ -631,6 +630,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.fatal("Client closed");
         }
     }
+
     public static void main(String[] args) throws InterruptedException, IOException {
         int port = 8891;
         try {
