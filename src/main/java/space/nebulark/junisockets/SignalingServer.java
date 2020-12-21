@@ -251,9 +251,16 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private static void handleAccepting() {
+    private static void handleAccepting(JSONObject data) {
         logger.trace("Handling accepting");
 
+        if (!aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
+            logger.debug("Rejecting accepting, alias does not exist" + data);
+        } else {
+            logger.debug("Accepting accepting" + data);
+            
+            aliases.put((String)data.get("alias"), new MAlias((String)data.get("id"), true));
+        }
     }
 
     private static void handleShutdown() {
