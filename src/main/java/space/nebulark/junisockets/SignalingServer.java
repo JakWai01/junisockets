@@ -190,11 +190,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
 
 
-        // for each 
         for (int i = 0; i < clients.size(); i++) {
             if (clients.keySet().toArray()[i] != id) {
                 
                 send(clients.get(clients.keySet().toArray()[i]), new Greeting((String)data.get("offererId"), (String)data.get("answererId")));
+
+                logger.debug("Sent greeting" + data.get("offererId") + data.get("answererId"));
             }
         }
 
@@ -631,6 +632,18 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         if (conn != null) {
             conn.send("{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":" + operation.getClientAlias() + "}");
+        } else {
+
+            logger.fatal("Client closed");
+        }
+    }
+
+    public static void send(WebSocket conn, Greeting operation) {
+        
+        logger.debug("Sending" + operation);
+
+        if (conn != null) {
+            conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "}");
         } else {
 
             logger.fatal("Client closed");
