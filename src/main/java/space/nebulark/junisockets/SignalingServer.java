@@ -263,9 +263,30 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private static void handleShutdown() {
+    private static void handleShutdown(JSONObject data) {
         logger.trace("Handling shutdown");
 
+        if(aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
+            aliases.remove(data.get("alias"));
+            removeTCPAddress(data.get("alias"));
+            removeIPAddress(data.get("alias"));
+
+            logger.debug("Accepting shutdown" + data);
+
+            for (int i = 0; i < clients.size(); i++) {
+                Object key = clients.keySet().toArray()[i];
+                send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), false));
+
+                logger.debug("Sent alias" + i + data);
+            }
+
+        } else { 
+            logger.debug("Rejecting shutdown, alias not taken or incorrect client ID" + data);
+
+            final WebSocket client = clients.get(data.get("id"));
+
+            send(client, new Alias((String)data.get("id"), (String)data.get("alias"), true));
+        }
     }
 
     private static void handleConnect() {
