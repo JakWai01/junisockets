@@ -191,6 +191,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
 
         // for each 
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.keySet().toArray()[i] != id) {
+                
+                send(clients.get(clients.keySet().toArray()[i]), new Greeting((String)data.get("offererId"), (String)data.get("answererId")));
+            }
+        }
 
     }
     public static void handleOffer(JSONObject data) {
