@@ -8,7 +8,9 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -624,9 +626,21 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation); 
         
         if (conn != null) { 
-            //conn.send("{\"id\":\"" + operation.getId() + "\", \"rejected\":" + operation.getRejected() + "}");
-            // send json with opcode and data
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"id\":\"" + operation.getId() + "\", \"rejected\":" + operation.getRejected() + "}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("id", (String)operation.getId());
+            m1.put("rejected", operation.getRejected());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
+            
         } else {
             // create new ClientClosedError() custom exception
             logger.fatal("Client closed");
@@ -639,7 +653,24 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         if (conn != null) {
             //conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}");
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\"\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"offer\":\"" + operation.getOffer() + "\"}}");
+            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"offer\":\"" + operation.getOffer() + "\"}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("answererId", operation.getAnswererId());
+            m1.put("offer", operation.getOffer());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
+             
+
         } else {
 
             logger.fatal("Client closed");
@@ -651,7 +682,22 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"answer\":\"" + operation.getAnswer() + "\"}}");
+            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"answer\":\"" + operation.getAnswer() + "\"}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("answererId", operation.getAnswererId());
+            m1.put("answer", operation.getAnswer());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
         } else {
 
             logger.fatal("Client closed");
@@ -663,7 +709,22 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"candidate\":\"" + operation.getCandidate() + "\"}}");
+            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"candidate\":\"" + operation.getCandidate() + "\"}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("answererId", operation.getAnswererId());
+            m1.put("candidate", operation.getCandidate());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
         } else {
 
             logger.fatal("Client closed");
@@ -675,7 +736,22 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
         
         if (conn != null) {
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"id\":\"" + operation.getId()  + "\", \"alias\":" + operation.getAlias() + "\", \"set\":\"" + operation.getSet() + "\"}}");
+            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"id\":\"" + operation.getId()  + "\", \"alias\":\"" + operation.getAlias() + "\", \"set\":\"" + operation.getSet() + "\"}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("id", (String)operation.getId());
+            m1.put("alias", operation.getAlias());
+            m1.put("set", operation.getSet());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
         } else {
 
             logger.fatal("Client closed");
@@ -687,7 +763,21 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":\"" + operation.getClientAlias() + "\"}}");
+            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":\"" + operation.getClientAlias() + "\"}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("boundAlias", (String)operation.getBoundAlias());
+            m1.put("clientAlias", operation.getClientAlias());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
         } else {
 
             logger.fatal("Client closed");
@@ -700,7 +790,21 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         if (conn != null) {
             //conn.send("{\"offererId\":" + operation.getOffererId() + ", \"answererId\":" + operation.getAnswererId() + "}");
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\"}}");
+            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\"}}");
+
+            JSONObject obj = new JSONObject();
+            String jsonText;
+
+            Map m1 = new LinkedHashMap();
+            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("answererId", operation.getAnswererId());
+            
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            conn.send(jsonText);
 
         } else {
 
