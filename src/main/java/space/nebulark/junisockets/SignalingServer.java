@@ -440,9 +440,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         try {
             final String[] partsIPAddress = parseIPAddress(ipAddress);
 
-            if (subnets.containsKey(partsIPAddress[0])) {
-                if (subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1]))) {
-                    int[] intArray = Arrays.stream(subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))).mapToInt(Integer::intValue).toArray();
+            String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+
+            if (subnets.containsKey(subnet)) {
+                if (subnets.get(subnet).containsKey(Integer.parseInt(partsIPAddress[3]))) {
+                    int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))).mapToInt(Integer::intValue).toArray();
                     
                     Arrays.sort(intArray);
                     
@@ -464,9 +466,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                     Integer[] arr = Arrays.stream( copy ).boxed().toArray( Integer[]::new );
 
-                    subnets.get(partsIPAddress[0]).replace(Integer.parseInt(partsIPAddress[1]), arr);
+                    subnets.get(subnet).replace(Integer.parseInt(partsIPAddress[3]), arr);
 
-                    return toTCPAddress(toIPAddress(partsIPAddress[0], Integer.parseInt(partsIPAddress[1])), newPort);
+                    return toTCPAddress(toIPAddress(subnet, Integer.parseInt(partsIPAddress[3])), newPort);
                 } else {
                     // throw new SuffixDoesNotExistError();
                 }
@@ -541,9 +543,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         try {
             final String[] partsIPAddress = parseIPAddress(ipAddress);
 
-            if (subnets.containsKey(partsIPAddress[0])) {
-                if (subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1]))) {
-                    subnets.get(partsIPAddress[0]).remove(Integer.parseInt(partsIPAddress[1])); // We ensure above
+            String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+
+            if (subnets.containsKey(subnet)) {
+                if (subnets.get(subnet).containsKey(Integer.parseInt(partsIPAddress[3]))) {
+                    subnets.get(subnet).remove(Integer.parseInt(partsIPAddress[3])); // We ensure above
                 }
             }
         } finally {
@@ -560,24 +564,26 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
-            if (subnets.containsKey(partsIPAddress[0])) {
-                if (subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1]))) {
+            String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+
+            if (subnets.containsKey(subnet)) {
+                if (subnets.get(subnet).containsKey(Integer.parseInt(partsIPAddress[3]))) {
                     
                     // only take values that aren't the port from the TCPAddress
-                    Integer[] copy = new Integer[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length - 1];
+                    Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length - 1];
 
                     int count = 0;
 
-                    for (int j = 0; j < subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length; j++) {
-                        if (subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[j] != Integer.parseInt(partsTCPAddress[1])) {
-                            copy[count] = subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[j];
+                    for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length; j++) {
+                        if (subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))[j] != Integer.parseInt(partsTCPAddress[3])) {
+                            copy[count] = subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))[j]; 
                             count++;
                         } else {
                             continue;
                         }
                     }
                     // is this viable?
-                    subnets.get(partsIPAddress[0]).replace(Integer.parseInt(partsIPAddress[1]), copy);
+                    subnets.get(subnet).replace(Integer.parseInt(partsIPAddress[3]), copy);
                 }
             }
         } finally {
