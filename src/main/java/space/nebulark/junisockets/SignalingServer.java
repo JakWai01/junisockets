@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -494,6 +495,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
+            
+
             // Is this right for MMember?
             Integer[] arr = new Integer[0];
 
@@ -521,7 +524,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                         copy[j] = subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))[j];
                     }
 
-                    copy[subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length-1] = Integer.parseInt(subnet);
+                    copy[copy.length-1] = Integer.parseInt(partsTCPAddress[1]);
 
                     // is this viable?
                     subnets.get(subnet).replace(Integer.parseInt(partsIPAddress[3]), copy);
@@ -611,8 +614,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     
     private static String[] parseIPAddress(String ipAddress) {
         logger.trace("Parsing IP address" + ipAddress);
-
-        return ipAddress.split(".");
+       
+        return ipAddress.split(Pattern.quote("."));
     }
 
     private static String[] parseTCPAddress(String tcpAddress) {
