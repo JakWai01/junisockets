@@ -45,9 +45,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         logger.debug("Opening signaling server");
 
-        conn.send("Welcome to the server!");
+        // conn.send("Welcome to the server!");
         
-        broadcast("new connection: " + handshake.getResourceDescriptor());
+        // broadcast("new connection: " + handshake.getResourceDescriptor());
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + "entered the room!");
     }
 
@@ -99,8 +99,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        broadcast(message);
-        System.out.println(conn + ": " + message);
+        // broadcast(message);
+        // System.out.println(conn + ": " + message);
             
         JSONParser parser = new JSONParser();
         
@@ -227,12 +227,14 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             return;
         }
 
-
         for (int i = 0; i < clients.size(); i++) {
             if (clients.keySet().toArray()[i] != id) {
+                // client not connected
+                // this if will probably not be useful
+                if (clients.size() != 0) {
+                    send(clients.get(clients.keySet().toArray()[i]), new Greeting((String)(clients.keySet().toArray()[i]), id));
+                }
                 
-                send(clients.get(clients.keySet().toArray()[i]), new Greeting((String)data.get("offererId"), (String)data.get("answererId")));
-
                 logger.debug("Sent greeting" + data.get("offererId") + data.get("answererId"));
             }
         }
@@ -491,30 +493,34 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             // Is this right for MMember?
             Integer[] arr = new Integer[0];
 
-            if (subnets.containsKey(partsIPAddress[0])) {
-                if (!(subnets.get(partsIPAddress[0]).containsKey(Integer.parseInt(partsIPAddress[1])))) {
-                    subnets.get(partsIPAddress[0]).put(Integer.parseInt(partsIPAddress[1]), arr);
+            String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+
+            
+
+            if (subnets.containsKey(subnet)) {
+                if (!(subnets.get(subnet).containsKey(Integer.parseInt(partsIPAddress[3])))) {
+                    subnets.get(subnet).put(Integer.parseInt(partsIPAddress[3]), arr);
                 }
                 
                 int count = 0;
                 //if(subnets.get(partsIPAddress[0]).get(partsIPAddress[1]).get("ports")
-                for (int i = 0; i < subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length; i++) {
-                    if (subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[i] == Integer.parseInt(partsTCPAddress[1])) {
+                for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length; i++) {
+                    if (subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))[i] == Integer.parseInt(partsTCPAddress[1])) {
                         count++;
                     }
                 }
 
                 if (count == 0) {
-                    Integer[] copy = new Integer[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length + 1];
+                    Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length + 1];
 
-                    for (int j = 0; j < subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length; j++) {
-                        copy[j] = subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1]))[j];
+                    for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length; j++) {
+                        copy[j] = subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))[j];
                     }
 
-                    copy[subnets.get(partsIPAddress[0]).get(Integer.parseInt(partsIPAddress[1])).length-1] = Integer.parseInt(partsTCPAddress[0]);
+                    copy[subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length-1] = Integer.parseInt(subnet);
 
                     // is this viable?
-                    subnets.get(partsIPAddress[0]).replace(Integer.parseInt(partsIPAddress[1]), copy);
+                    subnets.get(subnet).replace(Integer.parseInt(partsIPAddress[3]), copy);
                 } else {
                     // throw new PortAlreadyAllocatedError();
                     logger.fatal("Port already allocated");
@@ -612,7 +618,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation); 
         
         if (conn != null) { 
-            conn.send("{\"id\":\"" + operation.getId() + "\", \"rejected\":" + operation.getRejected() + "}");
+            //conn.send("{\"id\":\"" + operation.getId() + "\", \"rejected\":" + operation.getRejected() + "}");
+            // send json with opcode and data
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"id\":\"" + operation.getId() + "\", \"rejected\":" + operation.getRejected() + "}}");
         } else {
             // create new ClientClosedError() custom exception
             logger.fatal("Client closed");
@@ -624,7 +632,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}");
+            //conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\"\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}}");
         } else {
 
             logger.fatal("Client closed");
@@ -684,7 +693,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "}");
+            //conn.send("{\"offererId\":" + operation.getOffererId() + ", \"answererId\":" + operation.getAnswererId() + "}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\"}}");
+
         } else {
 
             logger.fatal("Client closed");
@@ -692,14 +703,14 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        int port = 8891;
+        int port = 8892;
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
         }
         SignalingServer s = new SignalingServer(port);
         s.start();
-        System.out.println("ChatServer started on port: " + s.getPort());
+        System.out.println("SignalingServer started on port: " + s.getPort());
 
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
         while (true) {

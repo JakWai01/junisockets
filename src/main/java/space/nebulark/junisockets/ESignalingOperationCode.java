@@ -3,7 +3,7 @@ package space.nebulark.junisockets;
 public enum ESignalingOperationCode { 
     GOODBYE("goodbye"),
     KNOCK("knock"),
-    ACKNOWLEDGED("acknowledgement"),
+    ACKNOWLEDGED("acknowledged"),
     GREETING("greeting"),
     OFFER("offer"),
     ANSWER("answer"),
