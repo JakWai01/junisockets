@@ -79,8 +79,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     removeIPAddress((String)aliases.keySet().toArray()[i]);
                     removeTCPAddress((String)aliases.keySet().toArray()[i]);
 
+                    System.out.println((String)aliases.keySet().toArray()[i]);
+
                     for (int j = 0; j < clients.size(); j++) {
-                        send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[i], false));
+                        // changed last i to j 
+                        send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[j], false));
 
                         logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
                     }
@@ -749,6 +752,10 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             m1.put("alias", operation.getAlias());
             m1.put("set", operation.getSet());
             
+            if (operation.getClientConnectionId() != null) {
+                m1.put("clientConnectionId", operation.getClientConnectionId());
+            }
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
