@@ -639,7 +639,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         if (conn != null) {
             //conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}");
-            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\"\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\"\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"offer\":\"" + operation.getOffer() + "\"}}");
         } else {
 
             logger.fatal("Client closed");
@@ -651,7 +651,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"answer\":" + operation.getAnswer() + "}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"answer\":\"" + operation.getAnswer() + "\"}}");
         } else {
 
             logger.fatal("Client closed");
@@ -663,7 +663,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"candidate\":" + operation.getCandidate() + "}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"candidate\":\"" + operation.getCandidate() + "\"}}");
         } else {
 
             logger.fatal("Client closed");
@@ -675,7 +675,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
         
         if (conn != null) {
-            conn.send("{\"id\":\"" + operation.getId()  + "\", \"alias\":" + operation.getAlias() + "\", \"set\":" + operation.getSet() + "}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"id\":\"" + operation.getId()  + "\", \"alias\":" + operation.getAlias() + "\", \"set\":\"" + operation.getSet() + "\"}}");
         } else {
 
             logger.fatal("Client closed");
@@ -687,7 +687,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            conn.send("{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":" + operation.getClientAlias() + "}");
+            conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":\"" + operation.getClientAlias() + "\"}}");
         } else {
 
             logger.fatal("Client closed");
