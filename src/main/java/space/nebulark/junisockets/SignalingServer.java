@@ -65,7 +65,7 @@ public class SignalingServer extends WebSocketServer {
 
         logger.debug("Registering goodbye" + id);
 
-        if (clients.containsKey("id")) {
+        if (clients.containsKey(id)) {
 
             clients.remove(id);
 
@@ -85,12 +85,15 @@ public class SignalingServer extends WebSocketServer {
                 }
             }
 
-            for (int i = 0; i < clients.size(); i++) {
-                String currentKey = (String)aliases.keySet().toArray()[i];
-                send(clients.get(currentKey), new Goodbye(id));
-
-                logger.debug("Sent alias" + id + currentKey);
-            }
+           // for (int i = 0; i < clients.size(); i++) {
+               // System.out.println("Entered for loop");
+                //if (clients.size() > 1) {
+                 //   System.out.println("Entered if");
+                    //String currentKey = (String)aliases.keySet().toArray()[i];
+                    send(new Goodbye(id));
+                    logger.debug("Sent alias" + id);
+             //   }
+           // }
         } else {
             // throw new ClientDoesNotExistError;
         }
@@ -887,11 +890,12 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    public static void send(WebSocket conn, Goodbye operation) {
+    public void send(Goodbye operation) {
 
         logger.debug("Sending" + operation);
 
-        if (conn != null) {
+        
+            System.out.println("Entered connection");
             JSONObject obj = new JSONObject();
             String jsonText;
             
@@ -904,14 +908,13 @@ public class SignalingServer extends WebSocketServer {
             jsonText = obj.toString();
 
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                broadcast(jsonText);
             });
 
             thread.start();
-        } else {
 
             logger.fatal("Client closed");
-        }
+      
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
