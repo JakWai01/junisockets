@@ -83,7 +83,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                     for (int j = 0; j < clients.size(); j++) {
                         // changed last i to j 
-                        send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[j], false));
+                        send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[i], false));
 
                         logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
                     }
