@@ -25,7 +25,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
-public class SignalingServer extends WebSocketServer implements ISignalingService {
+public class SignalingServer extends WebSocketServer {
 
     private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
     private static HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
@@ -53,7 +53,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        
         String id = "";
         
         for (int i = 0; i < clients.size(); i++) {
@@ -77,8 +76,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     aliases.remove(key);
                     removeIPAddress(key);
                     removeTCPAddress(key);
-
-                    System.out.println(key);
 
                     for (int j = 0; j < clients.size(); j++) {
                         send(clients.get(key), new Alias(id, key, false));
@@ -128,7 +125,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
             logger.debug("Received knock");
-            System.out.println("Received knock");
 
             Thread thread = new Thread(() -> {
                 handleKnock((JSONObject)operation.get("data"), conn);
@@ -206,7 +202,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     @Override
     public void onStart() {
-        System.out.println("Server started!");
         setConnectionLostTimeout(0);
         setConnectionLostTimeout(100);
     }
@@ -219,8 +214,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         final String id = createIPAddress(subnet);
 
-        System.out.println(id);
-
         if (id != "-1") {
             send(conn, new Acknowledgement(id, false));
         } else {
@@ -231,14 +224,18 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
 
         for (int i = 0; i < clients.size(); i++) {
-            String currentKey = (String)clients.keySet().toArray()[i];
-            if (currentKey != id) {
-                // this if will probably not be useful
-                if (clients.size() != 0) {
-                    send(clients.get(currentKey), new Greeting(currentKey, id));
-                }
+            String existingId = (String)clients.keySet().toArray()[i];
+            WebSocket existingClient = clients.get(existingId);
+
+            if (existingId != id) {
+
+                Thread thread = new Thread(() -> {
+                    send(existingClient, new Greeting(existingId, id));
+                    logger.debug("Sent greeting" + existingId + id);
+                });
                 
-                logger.debug("Sent greeting" + data.get("offererId") + data.get("answererId"));
+                thread.start();
+                
             }
         }
 
@@ -798,7 +795,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             Map m1 = new LinkedHashMap();
             m1.put("id", (String)operation.getId());
-            System.out.println("Alias:" + operation.getAlias());
             m1.put("alias", operation.getAlias());
             m1.put("set", operation.getSet());
             
@@ -885,6 +881,33 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
          
             thread.start();
 
+        } else {
+
+            logger.fatal("Client closed");
+        }
+    }
+
+    public static void send(WebSocket conn, Goodbye operation) {
+
+        logger.debug("Sending" + operation);
+
+        if (conn != null) {
+            JSONObject obj = new JSONObject();
+            String jsonText;
+            
+            Map m1 = new JSONObject();
+            m1.put("id", operation.getId());
+
+            obj.put("data", m1);
+            obj.put("opcode", operation.opcode.getValue());
+
+            jsonText = obj.toString();
+
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+
+            thread.start();
         } else {
 
             logger.fatal("Client closed");
