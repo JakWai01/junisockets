@@ -51,7 +51,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         // conn.send("Welcome to the server!");
         
         // broadcast("new connection: " + handshake.getResourceDescriptor());
-        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + "entered the room!");
+        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         if (clients.containsKey("id")) {
 
-            clients.remove("id");
+            clients.remove(id);
 
             // for Each alias removeIPAddress, removeTCPAddress and broadcast
             for (int i = 0; i < aliases.size(); i++) {
