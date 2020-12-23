@@ -350,7 +350,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                 Thread thread = new Thread(() -> {
                     send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), false));
-                    logger.debug("Sent alias" + i + data);
+                    logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
