@@ -48,9 +48,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         logger.debug("Opening signaling server");
 
-        // conn.send("Welcome to the server!");
-        
-        // broadcast("new connection: " + handshake.getResourceDescriptor());
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
     }
 
@@ -71,7 +68,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             clients.remove(id);
 
-            // for Each alias removeIPAddress, removeTCPAddress and broadcast
             for (int i = 0; i < aliases.size(); i++) {
                 
                 if(aliases.keySet().toArray()[i] == id) {
@@ -82,7 +78,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     System.out.println((String)aliases.keySet().toArray()[i]);
 
                     for (int j = 0; j < clients.size(); j++) {
-                        // changed last i to j 
                         send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[i], false));
 
                         logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
@@ -105,8 +100,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        // broadcast(message);
-        // System.out.println(conn + ": " + message);
             
         JSONParser parser = new JSONParser();
         
@@ -235,7 +228,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         for (int i = 0; i < clients.size(); i++) {
             if (clients.keySet().toArray()[i] != id) {
-                // client not connected
                 // this if will probably not be useful
                 if (clients.size() != 0) {
                     send(clients.get(clients.keySet().toArray()[i]), new Greeting((String)(clients.keySet().toArray()[i]), id));
@@ -283,7 +275,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     private static void handleBind(JSONObject data) {
-        logger.trace("Handling bind");
+        logger.trace("Handling bind" + data);
 
         if (aliases.containsKey(data.get("alias"))) {
             logger.debug("Rejecting bind, alias already taken" + data);
@@ -298,9 +290,9 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             aliases.put((String)data.get("alias"), new MAlias((String)data.get("id"), false));
 
-            // Check this forEach at the end
             for (int i = 0; i < clients.size(); i++) {
                 Object key = clients.keySet().toArray()[i];
+                
                 send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), true));
 
                 logger.debug("Sent alias" + i + data);
@@ -357,14 +349,16 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             removeTCPAddress(clientAlias);
 
-            // constructor overloaden
             send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false, (String)data.get("clientConnectionId")));
         } else {
             logger.debug("Accepting connect" + data);
         
             aliases.put(clientAlias, new MAlias((String)data.get("id"), false));
 
-            final Alias clientAliasMessage = new Alias((String)data.get("id"), (String)data.get("alias"), true, (String)data.get("clientConnectionId"), true);
+            System.out.println("Remote alias: " + (String)data.get("alias"));
+            System.out.println("Id:" + (String)data.get("id"));
+            // Hier ist der alias null 
+            final Alias clientAliasMessage = new Alias((String)data.get("id"), clientAlias, true, (String)data.get("clientConnectionId"), true);
 
             send(client, clientAliasMessage);
 
@@ -381,11 +375,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             final Accept serverAcceptMessage = new Accept((String)data.get("remoteAlias"), clientAlias);
 
-            // send implementieren
             send(server, serverAcceptMessage);
 
             logger.debug("Send accept to server" + data + serverAcceptMessage);
 
+            System.out.println("Remote alias: " + (String)data.get("remoteAlias"));
+            System.out.println("Id:" + (String)serverId.getId());
             final Alias serverALiasForClientsMessage = new Alias((String)serverId.getId(), (String)data.get("remoteAlias"), true, (String)data.get("clientConnectionId"));
 
             send(client, serverALiasForClientsMessage);
@@ -494,18 +489,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         // lock 
 
         try {
-            // const { ipAddress, port } = parseTCPAddress(tcpAddress);
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
-            
-
-            // Is this right for MMember?
             Integer[] arr = new Integer[0];
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-
-            
 
             if (subnets.containsKey(subnet)) {
                 if (!(subnets.get(subnet).containsKey(Integer.parseInt(partsIPAddress[3])))) {
@@ -513,7 +502,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 }
                 
                 int count = 0;
-                //if(subnets.get(partsIPAddress[0]).get(partsIPAddress[1]).get("ports")
                 for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length; i++) {
                     if (subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3]))[i] == Integer.parseInt(partsTCPAddress[1])) {
                         count++;
@@ -529,7 +517,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                     copy[copy.length-1] = Integer.parseInt(partsTCPAddress[1]);
 
-                    // is this viable?
                     subnets.get(subnet).replace(Integer.parseInt(partsIPAddress[3]), copy);
                 } else {
                     // throw new PortAlreadyAllocatedError();
@@ -567,7 +554,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.trace("Removing TCP address" + tcpAddress);
 
         // lock
-
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
@@ -577,7 +563,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(partsIPAddress[3]))) {
                     
-                    // only take values that aren't the port from the TCPAddress
                     Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(partsIPAddress[3])).length - 1];
 
                     int count = 0;
@@ -590,7 +575,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                             continue;
                         }
                     }
-                    // is this viable?
                     subnets.get(subnet).replace(Integer.parseInt(partsIPAddress[3]), copy);
                 }
             }
@@ -628,7 +612,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     private static void send(WebSocket conn, Acknowledgement operation) {
-        // Probably change this debug information to json
         logger.debug("Sending" + operation); 
         
         if (conn != null) { 
@@ -658,8 +641,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            //conn.send("{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":" + operation.getAnswererId() + "\", \"offer\":" + operation.getOffer() + "}");
-            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"offer\":\"" + operation.getOffer() + "\"}}");
 
             JSONObject obj = new JSONObject();
             String jsonText;
@@ -749,11 +730,17 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             Map m1 = new LinkedHashMap();
             m1.put("id", (String)operation.getId());
+            System.out.println("Alias:" + operation.getAlias());
             m1.put("alias", operation.getAlias());
             m1.put("set", operation.getSet());
             
             if (operation.getClientConnectionId() != null) {
                 m1.put("clientConnectionId", operation.getClientConnectionId());
+            }
+
+            // I only add it if it is true
+            if(operation.getIsConnectionAlias()) {
+                m1.put("isConnectionAlias", operation.getIsConnectionAlias());
             }
 
             obj.put("data", m1);
