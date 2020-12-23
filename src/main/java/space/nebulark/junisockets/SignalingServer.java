@@ -57,8 +57,10 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         String id = "";
         
         for (int i = 0; i < clients.size(); i++) {
-            if (clients.get(clients.keySet().toArray()[i]) == conn) {
-                id = (String)clients.keySet().toArray()[i];       
+            String currentKey = (String)clients.keySet().toArray()[i];
+            
+            if (clients.get(currentKey) == conn) {
+                id = currentKey;       
             }
         }
 
@@ -69,26 +71,28 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             clients.remove(id);
 
             for (int i = 0; i < aliases.size(); i++) {
-                
-                if((String)aliases.keySet().toArray()[i] == id) {
-                    aliases.remove(aliases.keySet().toArray()[i]);
-                    removeIPAddress((String)aliases.keySet().toArray()[i]);
-                    removeTCPAddress((String)aliases.keySet().toArray()[i]);
+                String currentKey = (String)aliases.keySet().toArray()[i];
+                if(currentKey == id) {
+                    String key = currentKey;
+                    aliases.remove(key);
+                    removeIPAddress(key);
+                    removeTCPAddress(key);
 
-                    System.out.println((String)aliases.keySet().toArray()[i]);
+                    System.out.println(key);
 
                     for (int j = 0; j < clients.size(); j++) {
-                        send(clients.get(aliases.keySet().toArray()[j]), new Alias(id, (String)aliases.keySet().toArray()[i], false));
+                        send(clients.get(key), new Alias(id, key, false));
 
-                        logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
+                        logger.debug("Sent alias" + id + key);
                     }
                 }
             }
 
             for (int i = 0; i < clients.size(); i++) {
-                        send(clients.get(aliases.keySet().toArray()[i]), new Goodbye(id));
+                String currentKey = (String)aliases.keySet().toArray()[i];
+                send(clients.get(currentKey), new Goodbye(id));
 
-                        logger.debug("Sent alias" + id + (String)aliases.keySet().toArray()[i]);
+                logger.debug("Sent alias" + id + currentKey);
             }
         } else {
             // throw new ClientDoesNotExistError;
@@ -227,10 +231,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
 
         for (int i = 0; i < clients.size(); i++) {
-            if (clients.keySet().toArray()[i] != id) {
+            String currentKey = (String)clients.keySet().toArray()[i];
+            if (currentKey != id) {
                 // this if will probably not be useful
                 if (clients.size() != 0) {
-                    send(clients.get(clients.keySet().toArray()[i]), new Greeting((String)(clients.keySet().toArray()[i]), id));
+                    send(clients.get(currentKey), new Greeting(currentKey, id));
                 }
                 
                 logger.debug("Sent greeting" + data.get("offererId") + data.get("answererId"));
@@ -250,6 +255,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             send(client, new Offer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("offer")));
             logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
         });
+
         thread.start();
 
     }
@@ -259,9 +265,13 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         final WebSocket client = clients.get(data.get("offererId"));
 
-        send(client, new Answer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("answer")));
+        Thread thread = new Thread(() -> {
+            send(client, new Answer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("answer")));
+            logger.debug("Send answer" + data);
+        });
+        
+        thread.start();
 
-        logger.debug("Send answer" + data);
     }
 
     private static void handleCandidate(JSONObject data) {
@@ -269,9 +279,13 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         final WebSocket client = clients.get(data.get("answererId"));
 
-        send(client, new Candidate((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("candidate")));
+        Thread thread = new Thread(() -> {
+            send(client, new Candidate((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("candidate")));
+            logger.debug("Sent candidate" + data);
+        });
+        
+        thread.start();
 
-        logger.debug("Sent candidate" + data);
     }
 
     private static void handleBind(JSONObject data) {
@@ -282,7 +296,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             final WebSocket client = clients.get(data.get("id"));   
             
-            send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false));
+            Thread thread = new Thread(() -> {
+                send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false));
+            });
+
+            thread.start();
+            
         } else {
             logger.debug("Accepting bind" + data);
 
@@ -293,9 +312,13 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             for (int i = 0; i < clients.size(); i++) {
                 Object key = clients.keySet().toArray()[i];
                 
-                send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), true));
+                Thread thread = new Thread(() -> {
+                    send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), true));
+                    logger.debug("Sent alias" + data);
+                });
 
-                logger.debug("Sent alias" + i + data);
+                thread.start();
+               
             }
         }
     }
@@ -324,9 +347,13 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             for (int i = 0; i < clients.size(); i++) {
                 Object key = clients.keySet().toArray()[i];
-                send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), false));
 
-                logger.debug("Sent alias" + i + data);
+                Thread thread = new Thread(() -> {
+                    send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), false));
+                    logger.debug("Sent alias" + i + data);
+                });
+
+                thread.start();
             }
 
         } else { 
@@ -334,7 +361,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             final WebSocket client = clients.get(data.get("id"));
 
-            send(client, new Alias((String)data.get("id"), (String)data.get("alias"), true));
+            Thread thread = new Thread(() -> {
+                send(client, new Alias((String)data.get("id"), (String)data.get("alias"), true));
+            });
+
+            thread.start();
+            
         }
     }
 
@@ -349,18 +381,25 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             removeTCPAddress(clientAlias);
 
-            send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false, (String)data.get("clientConnectionId")));
+            Thread thread = new Thread(() -> {
+                send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false, (String)data.get("clientConnectionId")));
+            });
+            
+            thread.start();
+
         } else {
             logger.debug("Accepting connect" + data);
         
             aliases.put(clientAlias, new MAlias((String)data.get("id"), false));
 
-            System.out.println("Remote alias: " + (String)data.get("alias"));
-            System.out.println("Id:" + (String)data.get("id"));
-            // Hier ist der alias null 
             final Alias clientAliasMessage = new Alias((String)data.get("id"), clientAlias, true, (String)data.get("clientConnectionId"), true);
 
-            send(client, clientAliasMessage);
+            Thread thread = new Thread(() -> {
+                send(client, clientAliasMessage);
+                logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
+            });
+
+            thread.start();
 
             logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
 
@@ -369,23 +408,30 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             final Alias serverAliasMessage = new Alias((String)data.get("id"), clientAlias, true);
 
-            send(server, serverAliasMessage);
-
-            logger.debug("Send alias for connection to server" + data + serverAliasMessage);
+            Thread thread2 = new Thread(() -> {
+                send(server, serverAliasMessage);
+                logger.debug("Sent alias for connection to server" + data + serverAliasMessage);
+            });
+            
+            thread2.start();
 
             final Accept serverAcceptMessage = new Accept((String)data.get("remoteAlias"), clientAlias);
 
-            send(server, serverAcceptMessage);
+            Thread thread3 = new Thread(() -> {
+                send(server, serverAcceptMessage);
+                logger.debug("Sent accept to server" + data + serverAcceptMessage);
+            });
 
-            logger.debug("Send accept to server" + data + serverAcceptMessage);
+            thread3.start();
 
-            System.out.println("Remote alias: " + (String)data.get("remoteAlias"));
-            System.out.println("Id:" + (String)serverId.getId());
             final Alias serverALiasForClientsMessage = new Alias((String)serverId.getId(), (String)data.get("remoteAlias"), true, (String)data.get("clientConnectionId"));
 
-            send(client, serverALiasForClientsMessage);
-
-            logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
+            Thread thread4 = new Thread(() -> {
+                send(client, serverALiasForClientsMessage);
+                logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
+            });
+            
+            thread4.start();
         }
     }   
 
@@ -632,7 +678,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+
+            thread.start();
+            
             
         } else {
             // create new ClientClosedError() custom exception
@@ -659,8 +710,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
-             
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+            
+            thread.start();
 
         } else {
 
@@ -688,7 +742,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+            
+            thread.start();
+
         } else {
 
             logger.fatal("Client closed");
@@ -715,7 +774,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+            
+            thread.start();
+
         } else {
 
             logger.fatal("Client closed");
@@ -752,7 +816,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+            
+            thread.start();
+
         } else {
 
             logger.fatal("Client closed");
@@ -778,7 +847,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+            
+            thread.start();
+
         } else {
 
             logger.fatal("Client closed");
@@ -805,7 +879,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             jsonText = obj.toString();
 
-            conn.send(jsonText);
+            Thread thread = new Thread(() -> {
+                conn.send(jsonText);
+            });
+         
+            thread.start();
 
         } else {
 
