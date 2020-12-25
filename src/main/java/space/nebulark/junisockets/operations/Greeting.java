@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public class Greeting {
+public class Greeting implements IGreeting {
    public ESignalingOperationCode opcode = ESignalingOperationCode.GREETING;
    private String offererId;
    private String answererId;

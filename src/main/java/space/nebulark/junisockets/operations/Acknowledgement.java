@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public class Acknowledgement {
+public class Acknowledgement implements IAcknowledgement {
     public ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
 
     private String id;

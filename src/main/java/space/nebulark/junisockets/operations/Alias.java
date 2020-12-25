@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public class Alias {
+public class Alias implements IAlias {
    public ESignalingOperationCode opcode = ESignalingOperationCode.ALIAS;
    private String id;
    private String alias;

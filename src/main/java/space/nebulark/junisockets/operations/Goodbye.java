@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public class Goodbye {
+public class Goodbye implements IGoodbye {
    public ESignalingOperationCode opcode = ESignalingOperationCode.GOODBYE;
    
    private String id;

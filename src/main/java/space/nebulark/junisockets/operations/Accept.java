@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public class Accept {
+public class Accept implements IAccept {
     public ESignalingOperationCode opcode = ESignalingOperationCode.ACCEPT;
 
     private String boundAlias;
