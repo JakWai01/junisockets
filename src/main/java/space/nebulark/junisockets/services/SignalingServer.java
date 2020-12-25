@@ -31,7 +31,8 @@ public class SignalingServer extends WebSocketServer {
 
     private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
     private static HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
-    
+    private static boolean isOpen = false;
+
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
     public SignalingServer(int port) throws UnknownHostException {
@@ -48,20 +49,29 @@ public class SignalingServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        isOpen = true;
+
         logger.debug("Opening signaling server");
 
+        try {
+            ping();
+        } catch (InterruptedException e) {
+            // handle Client not responding error
+            e.printStackTrace();
+        }
+        
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id = "";
-        
+
         for (int i = 0; i < clients.size(); i++) {
-            String currentKey = (String)clients.keySet().toArray()[i];
-            
+            String currentKey = (String) clients.keySet().toArray()[i];
+
             if (clients.get(currentKey) == conn) {
-                id = currentKey;       
+                id = currentKey;
             }
         }
 
@@ -72,8 +82,8 @@ public class SignalingServer extends WebSocketServer {
             clients.remove(id);
 
             for (int i = 0; i < aliases.size(); i++) {
-                String currentKey = (String)aliases.keySet().toArray()[i];
-                if(currentKey == id) {
+                String currentKey = (String) aliases.keySet().toArray()[i];
+                if (currentKey == id) {
                     String key = currentKey;
                     aliases.remove(key);
                     removeIPAddress(key);
@@ -87,28 +97,29 @@ public class SignalingServer extends WebSocketServer {
                 }
             }
 
-                    send(new Goodbye(id));
-                    logger.debug("Sent alias" + id);
+            send(new Goodbye(id));
+            logger.debug("Sent alias" + id);
         } else {
             // throw new ClientDoesNotExistError;
         }
-        
+
         logger.debug("Client disconnected" + id);
-        
+
+        isOpen = false;
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-            
+
         JSONParser parser = new JSONParser();
-        
+
         Object jsonObj = null;
-        
+
         try {
-			jsonObj = parser.parse(message);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+            jsonObj = parser.parse(message);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         JSONObject operation = (JSONObject) jsonObj;
 
@@ -125,7 +136,7 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Received knock");
 
             Thread thread = new Thread(() -> {
-                handleKnock((JSONObject)operation.get("data"), conn);
+                handleKnock((JSONObject) operation.get("data"), conn);
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
@@ -133,7 +144,7 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Received offer");
 
             Thread thread = new Thread(() -> {
-                handleOffer((JSONObject)operation.get("data"));
+                handleOffer((JSONObject) operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ANSWER.getValue())) {
@@ -141,7 +152,7 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Received answer");
 
             Thread thread = new Thread(() -> {
-                handleAnswer((JSONObject)operation.get("data"));
+                handleAnswer((JSONObject) operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.CANDIDATE.getValue())) {
@@ -149,15 +160,15 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Received candidate");
 
             Thread thread = new Thread(() -> {
-                handleCandidate((JSONObject)operation.get("data"));
+                handleCandidate((JSONObject) operation.get("data"));
             });
             thread.start();
-        } else if (operation.get("opcode").equals(ESignalingOperationCode.BIND.getValue())) {    
-        
+        } else if (operation.get("opcode").equals(ESignalingOperationCode.BIND.getValue())) {
+
             logger.debug("Received bind");
 
             Thread thread = new Thread(() -> {
-                handleBind((JSONObject)operation.get("data"));
+                handleBind((JSONObject) operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPTING.getValue())) {
@@ -165,7 +176,7 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Received accepting");
 
             Thread thread = new Thread(() -> {
-                handleAccepting((JSONObject)operation.get("data"));
+                handleAccepting((JSONObject) operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
@@ -173,14 +184,14 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Received shutdown");
 
             Thread thread = new Thread(() -> {
-                handleShutdown((JSONObject)operation.get("data"));
+                handleShutdown((JSONObject) operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.CONNECT.getValue())) {
             logger.debug("Received connect");
 
             Thread thread = new Thread(() -> {
-                handleConnect((JSONObject)operation.get("data"));
+                handleConnect((JSONObject) operation.get("data"));
             });
             thread.start();
         } else {
@@ -205,10 +216,10 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void handleKnock(JSONObject data, WebSocket conn) {
-        
+
         logger.trace("Handling knock");
 
-        String subnet = (String)data.get("subnet");
+        String subnet = (String) data.get("subnet");
 
         final String id = createIPAddress(subnet);
 
@@ -222,7 +233,7 @@ public class SignalingServer extends WebSocketServer {
         }
 
         for (int i = 0; i < clients.size(); i++) {
-            String existingId = (String)clients.keySet().toArray()[i];
+            String existingId = (String) clients.keySet().toArray()[i];
             WebSocket existingClient = clients.get(existingId);
 
             if (existingId != id) {
@@ -231,23 +242,25 @@ public class SignalingServer extends WebSocketServer {
                     send(existingClient, new Greeting(existingId, id));
                     logger.debug("Sent greeting" + existingId + id);
                 });
-                
+
                 thread.start();
-                
+
             }
         }
 
         clients.put(id, conn);
-        
+
         logger.trace("Client connected" + id);
     }
+
     public static void handleOffer(JSONObject data) {
         logger.trace("Handling offer: " + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
 
         Thread thread = new Thread(() -> {
-            send(client, new Offer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("offer")));
+            send(client, new Offer((String) data.get("offererId"), (String) data.get("answererId"),
+                    (String) data.get("offer")));
             logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
         });
 
@@ -261,10 +274,11 @@ public class SignalingServer extends WebSocketServer {
         final WebSocket client = clients.get(data.get("offererId"));
 
         Thread thread = new Thread(() -> {
-            send(client, new Answer((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("answer")));
+            send(client, new Answer((String) data.get("offererId"), (String) data.get("answererId"),
+                    (String) data.get("answer")));
             logger.debug("Send answer" + data);
         });
-        
+
         thread.start();
 
     }
@@ -275,10 +289,11 @@ public class SignalingServer extends WebSocketServer {
         final WebSocket client = clients.get(data.get("answererId"));
 
         Thread thread = new Thread(() -> {
-            send(client, new Candidate((String)data.get("offererId"), (String)data.get("answererId"), (String)data.get("candidate")));
+            send(client, new Candidate((String) data.get("offererId"), (String) data.get("answererId"),
+                    (String) data.get("candidate")));
             logger.debug("Sent candidate" + data);
         });
-        
+
         thread.start();
 
     }
@@ -289,31 +304,31 @@ public class SignalingServer extends WebSocketServer {
         if (aliases.containsKey(data.get("alias"))) {
             logger.debug("Rejecting bind, alias already taken" + data);
 
-            final WebSocket client = clients.get(data.get("id"));   
-            
+            final WebSocket client = clients.get(data.get("id"));
+
             Thread thread = new Thread(() -> {
-                send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false));
+                send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
             });
 
             thread.start();
-            
+
         } else {
             logger.debug("Accepting bind" + data);
 
-            claimTCPAddress((String)data.get("alias"));
+            claimTCPAddress((String) data.get("alias"));
 
-            aliases.put((String)data.get("alias"), new MAlias((String)data.get("id"), false));
+            aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
             for (int i = 0; i < clients.size(); i++) {
                 Object key = clients.keySet().toArray()[i];
-                
+
                 Thread thread = new Thread(() -> {
-                    send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), true));
+                    send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), true));
                     logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
-               
+
             }
         }
     }
@@ -325,18 +340,18 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Rejecting accepting, alias does not exist" + data);
         } else {
             logger.debug("Accepting accepting" + data);
-            
-            aliases.put((String)data.get("alias"), new MAlias((String)data.get("id"), true));
+
+            aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), true));
         }
     }
 
     private static void handleShutdown(JSONObject data) {
         logger.trace("Handling shutdown");
 
-        if(aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
+        if (aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
-            removeTCPAddress((String)data.get("alias"));
-            removeIPAddress((String)data.get("alias"));
+            removeTCPAddress((String) data.get("alias"));
+            removeIPAddress((String) data.get("alias"));
 
             logger.debug("Accepting shutdown" + data);
 
@@ -344,50 +359,52 @@ public class SignalingServer extends WebSocketServer {
                 Object key = clients.keySet().toArray()[i];
 
                 Thread thread = new Thread(() -> {
-                    send(clients.get(key), new Alias((String)data.get("id"), (String)data.get("alias"), false));
+                    send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), false));
                     logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
             }
 
-        } else { 
+        } else {
             logger.debug("Rejecting shutdown, alias not taken or incorrect client ID" + data);
 
             final WebSocket client = clients.get(data.get("id"));
 
             Thread thread = new Thread(() -> {
-                send(client, new Alias((String)data.get("id"), (String)data.get("alias"), true));
+                send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
             });
 
             thread.start();
-            
+
         }
     }
 
     private static void handleConnect(JSONObject data) {
         logger.trace("Handling connect");
 
-        final String clientAlias = createTCPAddress((String)data.get("id"));
+        final String clientAlias = createTCPAddress((String) data.get("id"));
         final WebSocket client = clients.get(data.get("id"));
-        
+
         if (!aliases.containsKey(data.get("remoteAlias")) || aliases.get(data.get("remoteAlias")).getAccepting()) {
             logger.debug("Rejecting connect, remote alias does not exists" + data);
 
             removeTCPAddress(clientAlias);
 
             Thread thread = new Thread(() -> {
-                send(client, new Alias((String)data.get("id"), (String)data.get("alias"), false, (String)data.get("clientConnectionId")));
+                send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false,
+                        (String) data.get("clientConnectionId")));
             });
-            
+
             thread.start();
 
         } else {
             logger.debug("Accepting connect" + data);
-        
-            aliases.put(clientAlias, new MAlias((String)data.get("id"), false));
 
-            final Alias clientAliasMessage = new Alias((String)data.get("id"), clientAlias, true, (String)data.get("clientConnectionId"), true);
+            aliases.put(clientAlias, new MAlias((String) data.get("id"), false));
+
+            final Alias clientAliasMessage = new Alias((String) data.get("id"), clientAlias, true,
+                    (String) data.get("clientConnectionId"), true);
 
             Thread thread = new Thread(() -> {
                 send(client, clientAliasMessage);
@@ -401,16 +418,16 @@ public class SignalingServer extends WebSocketServer {
             final MAlias serverId = aliases.get(data.get("remoteAlias"));
             final WebSocket server = clients.get(serverId.getId());
 
-            final Alias serverAliasMessage = new Alias((String)data.get("id"), clientAlias, true);
+            final Alias serverAliasMessage = new Alias((String) data.get("id"), clientAlias, true);
 
             Thread thread2 = new Thread(() -> {
                 send(server, serverAliasMessage);
                 logger.debug("Sent alias for connection to server" + data + serverAliasMessage);
             });
-            
+
             thread2.start();
 
-            final Accept serverAcceptMessage = new Accept((String)data.get("remoteAlias"), clientAlias);
+            final Accept serverAcceptMessage = new Accept((String) data.get("remoteAlias"), clientAlias);
 
             Thread thread3 = new Thread(() -> {
                 send(server, serverAcceptMessage);
@@ -419,16 +436,17 @@ public class SignalingServer extends WebSocketServer {
 
             thread3.start();
 
-            final Alias serverALiasForClientsMessage = new Alias((String)serverId.getId(), (String)data.get("remoteAlias"), true, (String)data.get("clientConnectionId"));
+            final Alias serverALiasForClientsMessage = new Alias((String) serverId.getId(),
+                    (String) data.get("remoteAlias"), true, (String) data.get("clientConnectionId"));
 
             Thread thread4 = new Thread(() -> {
                 send(client, serverALiasForClientsMessage);
                 logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
             });
-            
+
             thread4.start();
         }
-    }   
+    }
 
     private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
 
@@ -439,24 +457,24 @@ public class SignalingServer extends WebSocketServer {
             if (!subnets.containsKey(subnet)) {
                 subnets.put(subnet, new HashMap<Integer, Integer[]>());
             }
-        
+
             List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
 
-            Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2)); 
-        
+            Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2));
+
             boolean foundSuffix = false;
             int newSuffix = 0;
-           
-            for (int i = 0; i < existingMembersSorted.size(); i++) { 
+
+            for (int i = 0; i < existingMembersSorted.size(); i++) {
 
                 if (i != existingMembersSorted.get(i)) {
                     newSuffix = i;
-                    foundSuffix = true;       
+                    foundSuffix = true;
                 }
             }
 
             if (!foundSuffix) {
-                newSuffix = existingMembersSorted.size(); 
+                newSuffix = existingMembersSorted.size();
             }
 
             if (newSuffix > 255) {
@@ -487,12 +505,13 @@ public class SignalingServer extends WebSocketServer {
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix))).mapToInt(Integer::intValue).toArray();
-                    
+                    int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
+                            .mapToInt(Integer::intValue).toArray();
+
                     Arrays.sort(intArray);
-                    
+
                     int newPort = 0;
-                    
+
                     for (int i = 0; i < intArray.length; i++) {
                         if (intArray[i] != i) {
                             newPort = i;
@@ -505,9 +524,9 @@ public class SignalingServer extends WebSocketServer {
                         copy[i] = intArray[i];
                     }
 
-                    copy[copy.length-1] = newPort;
+                    copy[copy.length - 1] = newPort;
 
-                    Integer[] arr = Arrays.stream( copy ).boxed().toArray( Integer[]::new );
+                    Integer[] arr = Arrays.stream(copy).boxed().toArray(Integer[]::new);
 
                     subnets.get(subnet).replace(Integer.parseInt(suffix), arr);
 
@@ -528,7 +547,7 @@ public class SignalingServer extends WebSocketServer {
     private static void claimTCPAddress(String tcpAddress) {
         logger.trace("Claiming TCP address" + tcpAddress);
 
-        // lock 
+        // lock
 
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
@@ -543,7 +562,7 @@ public class SignalingServer extends WebSocketServer {
                 if (!(subnets.get(subnet).containsKey(Integer.parseInt(suffix)))) {
                     subnets.get(subnet).put(Integer.parseInt(suffix), arr);
                 }
-                
+
                 int count = 0;
                 for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).length; i++) {
                     if (subnets.get(subnet).get(Integer.parseInt(suffix))[i] == Integer.parseInt(partsTCPAddress[1])) {
@@ -558,7 +577,7 @@ public class SignalingServer extends WebSocketServer {
                         copy[j] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
                     }
 
-                    copy[copy.length-1] = Integer.parseInt(partsTCPAddress[1]);
+                    copy[copy.length - 1] = Integer.parseInt(partsTCPAddress[1]);
 
                     subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
                 } else {
@@ -570,7 +589,7 @@ public class SignalingServer extends WebSocketServer {
                 logger.fatal("Subnet does not exist");
             }
         } finally {
-            // release() 
+            // release()
         }
     }
 
@@ -607,14 +626,14 @@ public class SignalingServer extends WebSocketServer {
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    
+
                     Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length - 1];
 
                     int count = 0;
 
                     for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
                         if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
-                            copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j]; 
+                            copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
                             count++;
                         } else {
                             continue;
@@ -642,11 +661,11 @@ public class SignalingServer extends WebSocketServer {
         String tcpAddress = ipAddress + ":" + port;
 
         return tcpAddress;
-    }   
-    
+    }
+
     private static String[] parseIPAddress(String ipAddress) {
         logger.trace("Parsing IP address" + ipAddress);
-       
+
         return ipAddress.split(Pattern.quote("."));
     }
 
@@ -657,17 +676,17 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void send(WebSocket conn, Acknowledgement operation) {
-        logger.debug("Sending" + operation); 
-        
-        if (conn != null) { 
+        logger.debug("Sending" + operation);
+
+        if (conn != null) {
 
             JSONObject obj = new JSONObject();
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("id", (String)operation.getId());
+            m1.put("id", (String) operation.getId());
             m1.put("rejected", operation.getRejected());
-            
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
@@ -678,8 +697,7 @@ public class SignalingServer extends WebSocketServer {
             });
 
             thread.start();
-            
-            
+
         } else {
             // create new ClientClosedError() custom exception
             logger.fatal("Client closed");
@@ -696,10 +714,10 @@ public class SignalingServer extends WebSocketServer {
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("offer", operation.getOffer());
-            
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
@@ -708,7 +726,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 conn.send(jsonText);
             });
-            
+
             thread.start();
 
         } else {
@@ -727,10 +745,10 @@ public class SignalingServer extends WebSocketServer {
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("answer", operation.getAnswer());
-            
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
@@ -739,7 +757,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 conn.send(jsonText);
             });
-            
+
             thread.start();
 
         } else {
@@ -758,10 +776,10 @@ public class SignalingServer extends WebSocketServer {
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("candidate", operation.getCandidate());
-            
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
@@ -770,7 +788,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 conn.send(jsonText);
             });
-            
+
             thread.start();
 
         } else {
@@ -782,22 +800,22 @@ public class SignalingServer extends WebSocketServer {
     public static void send(WebSocket conn, Alias operation) {
 
         logger.debug("Sending" + operation);
-        
+
         if (conn != null) {
 
             JSONObject obj = new JSONObject();
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("id", (String)operation.getId());
+            m1.put("id", (String) operation.getId());
             m1.put("alias", operation.getAlias());
             m1.put("set", operation.getSet());
-            
+
             if (operation.getClientConnectionId() != null) {
                 m1.put("clientConnectionId", operation.getClientConnectionId());
             }
 
-            if(operation.getIsConnectionAlias()) {
+            if (operation.getIsConnectionAlias()) {
                 m1.put("isConnectionAlias", operation.getIsConnectionAlias());
             }
 
@@ -809,7 +827,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 conn.send(jsonText);
             });
-            
+
             thread.start();
 
         } else {
@@ -828,9 +846,9 @@ public class SignalingServer extends WebSocketServer {
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("boundAlias", (String)operation.getBoundAlias());
+            m1.put("boundAlias", (String) operation.getBoundAlias());
             m1.put("clientAlias", operation.getClientAlias());
-            
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
@@ -839,7 +857,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 conn.send(jsonText);
             });
-            
+
             thread.start();
 
         } else {
@@ -849,7 +867,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     public static void send(WebSocket conn, Greeting operation) {
-        
+
         logger.debug("Sending" + operation);
 
         if (conn != null) {
@@ -858,9 +876,9 @@ public class SignalingServer extends WebSocketServer {
             String jsonText;
 
             Map m1 = new LinkedHashMap();
-            m1.put("offererId", (String)operation.getOffererId());
+            m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
-            
+
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
@@ -869,7 +887,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 conn.send(jsonText);
             });
-         
+
             thread.start();
 
         } else {
@@ -882,27 +900,41 @@ public class SignalingServer extends WebSocketServer {
 
         logger.debug("Sending" + operation);
 
+        System.out.println("Entered connection");
+        JSONObject obj = new JSONObject();
+        String jsonText;
+
+        Map m1 = new JSONObject();
+        m1.put("id", operation.getId());
+
+        obj.put("data", m1);
+        obj.put("opcode", operation.opcode.getValue());
+
+        jsonText = obj.toString();
+
+        Thread thread = new Thread(() -> {
+            broadcast(jsonText);
+        });
+
+        thread.start();
+
+        logger.fatal("Client closed");
+
+    }
+
+    public static void ping() throws InterruptedException {
         
-            System.out.println("Entered connection");
-            JSONObject obj = new JSONObject();
-            String jsonText;
+        while (isOpen == true) {
             
-            Map m1 = new JSONObject();
-            m1.put("id", operation.getId());
+            for (int i = 0; i < clients.size(); i++) {
+                String key = (String)clients.keySet().toArray()[i];
 
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
+                clients.get(key).sendPing();
+            }
 
-            jsonText = obj.toString();
+            Thread.sleep(30000);
 
-            Thread thread = new Thread(() -> {
-                broadcast(jsonText);
-            });
-
-            thread.start();
-
-            logger.fatal("Client closed");
-      
+        }
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
