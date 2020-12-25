@@ -24,6 +24,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import space.nebulark.junisockets.errors.ClientClosed;
+import space.nebulark.junisockets.errors.ClientDoesNotExist;
+import space.nebulark.junisockets.errors.UnimplementedOperation;
 import space.nebulark.junisockets.models.*;
 import space.nebulark.junisockets.operations.*;
 
@@ -59,7 +62,7 @@ public class SignalingServer extends WebSocketServer {
             // handle Client not responding error
             e.printStackTrace();
         }
-        
+
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
     }
 
@@ -100,7 +103,7 @@ public class SignalingServer extends WebSocketServer {
             send(new Goodbye(id));
             logger.debug("Sent alias" + id);
         } else {
-            // throw new ClientDoesNotExistError;
+            throw new ClientDoesNotExist();
         }
 
         logger.debug("Client disconnected" + id);
@@ -195,8 +198,7 @@ public class SignalingServer extends WebSocketServer {
             });
             thread.start();
         } else {
-            // Custom error messsage instead of error
-            logger.fatal("Unimplemented Operation");
+            throw new UnimplementedOperation(operation.get("opcode"));
         }
     }
 
@@ -532,10 +534,10 @@ public class SignalingServer extends WebSocketServer {
 
                     return toTCPAddress(toIPAddress(subnet, Integer.parseInt(suffix)), newPort);
                 } else {
-                    // throw new SuffixDoesNotExistError();
+                    throw new SuffixDoesNotExistError();
                 }
             } else {
-                // throw new SubnetDoesNotExistError();
+                throw new SubnetDoesNotExistError();
             }
         } finally {
             // release()
@@ -581,11 +583,11 @@ public class SignalingServer extends WebSocketServer {
 
                     subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
                 } else {
-                    // throw new PortAlreadyAllocatedError();
+                    throw new PortAlreadyAllocatedError();
                     logger.fatal("Port already allocated");
                 }
             } else {
-                // throw new SubnetDoesNotExistError();
+                throw new SubnetDoesNotExistError();
                 logger.fatal("Subnet does not exist");
             }
         } finally {
@@ -699,8 +701,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-            // create new ClientClosedError() custom exception
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -730,8 +731,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -761,8 +761,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -792,8 +791,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -831,8 +829,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -861,8 +858,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -891,8 +887,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-
-            logger.fatal("Client closed");
+            throw new ClientClosedError();
         }
     }
 
@@ -917,8 +912,6 @@ public class SignalingServer extends WebSocketServer {
         });
 
         thread.start();
-
-        logger.fatal("Client closed");
 
     }
 
