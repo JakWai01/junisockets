@@ -24,6 +24,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import space.nebulark.junisockets.models.*;
+import space.nebulark.junisockets.operations.*;
 
 public class SignalingServer extends WebSocketServer {
 

@@ -1,7 +1,7 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.operations;
 
 public class Acknowledgement {
-    ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
+    public ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
 
     private String id;
     private boolean rejected;

@@ -1,7 +1,7 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.operations;
 
 public class Alias {
-   ESignalingOperationCode opcode = ESignalingOperationCode.ALIAS;
+   public ESignalingOperationCode opcode = ESignalingOperationCode.ALIAS;
    // Consider adding the optional variables
    private String id;
    private String alias;

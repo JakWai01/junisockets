@@ -1,7 +1,7 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.operations;
 
 public class Greeting {
-   ESignalingOperationCode opcode = ESignalingOperationCode.GREETING;
+   public ESignalingOperationCode opcode = ESignalingOperationCode.GREETING;
    private String offererId;
    private String answererId;
    

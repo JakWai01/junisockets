@@ -1,7 +1,7 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.operations;
 
 public class Accept {
-    ESignalingOperationCode opcode = ESignalingOperationCode.ACCEPT;
+    public ESignalingOperationCode opcode = ESignalingOperationCode.ACCEPT;
 
     private String boundAlias;
     private String clientAlias;

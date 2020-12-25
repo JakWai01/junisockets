@@ -1,4 +1,4 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.operations;
 
 public enum ESignalingOperationCode { 
     GOODBYE("goodbye"),

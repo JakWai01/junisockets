@@ -1,4 +1,4 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.models;
 
 public class MAlias {
     
