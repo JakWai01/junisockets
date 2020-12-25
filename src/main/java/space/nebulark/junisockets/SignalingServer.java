@@ -727,7 +727,6 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"answer\":\"" + operation.getAnswer() + "\"}}");
 
             JSONObject obj = new JSONObject();
             String jsonText;
@@ -759,7 +758,6 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId()  + "\", \"answererId\":\"" + operation.getAnswererId() + "\", \"candidate\":\"" + operation.getCandidate() + "\"}}");
 
             JSONObject obj = new JSONObject();
             String jsonText;
@@ -791,7 +789,6 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Sending" + operation);
         
         if (conn != null) {
-            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"id\":\"" + operation.getId()  + "\", \"alias\":\"" + operation.getAlias() + "\", \"set\":\"" + operation.getSet() + "\"}}");
 
             JSONObject obj = new JSONObject();
             String jsonText;
@@ -805,7 +802,6 @@ public class SignalingServer extends WebSocketServer {
                 m1.put("clientConnectionId", operation.getClientConnectionId());
             }
 
-            // I only add it if it is true
             if(operation.getIsConnectionAlias()) {
                 m1.put("isConnectionAlias", operation.getIsConnectionAlias());
             }
@@ -832,7 +828,6 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"boundAlias\":\"" + operation.getBoundAlias()  + "\", \"clientAlias\":\"" + operation.getClientAlias() + "\"}}");
 
             JSONObject obj = new JSONObject();
             String jsonText;
@@ -863,8 +858,6 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Sending" + operation);
 
         if (conn != null) {
-            //conn.send("{\"offererId\":" + operation.getOffererId() + ", \"answererId\":" + operation.getAnswererId() + "}");
-            //conn.send("{\"opcode\":\"" + operation.opcode.getValue() + "\", \"data\":{\"offererId\":\"" + operation.getOffererId() + "\", \"answererId\":\"" + operation.getAnswererId() + "\"}}");
 
             JSONObject obj = new JSONObject();
             String jsonText;
