@@ -1,6 +1,6 @@
 package space.nebulark.junisockets;
 
-public class Offer implements ISignalingOperation<IOfferData>{
+public class Offer {
     ESignalingOperationCode opcode = ESignalingOperationCode.OFFER;
 
     private String offererId; 

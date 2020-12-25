@@ -1,9 +1,7 @@
 package space.nebulark.junisockets;
 
-public class Acknowledgement implements ISignalingOperation<IAcknowledgementData>{
+public class Acknowledgement {
     ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
-
-    IAcknowledgementData data;
 
     private String id;
     private boolean rejected;
