@@ -87,15 +87,8 @@ public class SignalingServer extends WebSocketServer {
                 }
             }
 
-           // for (int i = 0; i < clients.size(); i++) {
-               // System.out.println("Entered for loop");
-                //if (clients.size() > 1) {
-                 //   System.out.println("Entered if");
-                    //String currentKey = (String)aliases.keySet().toArray()[i];
                     send(new Goodbye(id));
                     logger.debug("Sent alias" + id);
-             //   }
-           // }
         } else {
             // throw new ClientDoesNotExistError;
         }
@@ -499,7 +492,7 @@ public class SignalingServer extends WebSocketServer {
                     Arrays.sort(intArray);
                     
                     int newPort = 0;
-                    // Find next free port
+                    
                     for (int i = 0; i < intArray.length; i++) {
                         if (intArray[i] != i) {
                             newPort = i;

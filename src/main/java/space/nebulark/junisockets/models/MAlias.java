@@ -1,7 +1,6 @@
 package space.nebulark.junisockets.models;
 
 public class MAlias {
-    
     private String id;
     private boolean accepting;
 
