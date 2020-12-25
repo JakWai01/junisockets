@@ -1,4 +1,4 @@
-package space.nebulark.junisockets;
+package space.nebulark.junisockets.services;
 
 import java.io.BufferedReader;
 import java.io.IOException;
