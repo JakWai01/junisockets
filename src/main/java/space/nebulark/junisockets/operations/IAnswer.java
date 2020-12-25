@@ -1,5 +1,11 @@
 package space.nebulark.junisockets.operations;
 
-public class IAnswer {
-    
+public interface IAnswer {
+   
+    public String getOffererId();
+
+    public String getAnswererId();
+
+    public String getAnswer();
+
 }

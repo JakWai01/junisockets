@@ -1,5 +1,15 @@
 package space.nebulark.junisockets.operations;
 
-public class IAlias {
-    
+public interface IAlias {
+   
+    public String getId();
+
+    public String getAlias();
+
+    public String getClientConnectionId();
+
+    public boolean getSet();
+
+    public boolean getIsConnectionAlias();
+
 }

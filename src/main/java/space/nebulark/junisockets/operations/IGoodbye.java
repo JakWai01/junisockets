@@ -1,5 +1,5 @@
 package space.nebulark.junisockets.operations;
 
-public class IGoobbye {
+public class IGoodbye {
     
 }

@@ -1,5 +1,9 @@
 package space.nebulark.junisockets.operations;
 
-public class IAcknowledgement {
+public interface IAcknowledgement {
+   
+    public String getId();
+
+    public boolean getRejected();
     
 }

@@ -1,5 +1,7 @@
 package space.nebulark.junisockets.operations;
 
-public class IGreeting {
-    
+public interface IGreeting {
+   
+    public String getId();
+
 }
