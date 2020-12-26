@@ -687,32 +687,42 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
 
 
-                    int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
-                            .mapToInt(Integer::intValue).toArray();
+                    // int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
+                    //         .mapToInt(Integer::intValue).toArray();
 
-                    Arrays.sort(intArray);
+                    // Arrays.sort(intArray);
+
+                    subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a,b) -> a - b);
 
                     int newPort = 0;
 
                     // use streams instead and a collection instead of an array above
-                    for (int i = 0; i < intArray.length; i++) {
-                        if (intArray[i] != i) {
+                    // for (int i = 0; i < intArray.length; i++) {
+                    //     if (intArray[i] != i) {
+                    //         newPort = i;
+                    //     }
+                    // }
+
+                    for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).size(); i++) {
+                        if (subnets.get(subnet).get(Integer.parseInt(suffix)).get(i) != i) {
                             newPort = i;
                         }
                     }
 
-                    int[] copy = new int[intArray.length + 1];
+                    // int[] copy = new int[intArray.length + 1];
 
-                    // use streams instead so we do not need to perform this step
-                    for (int i = 0; i < intArray.length; i++) {
-                        copy[i] = intArray[i];
-                    }
+                    // // use streams instead so we do not need to perform this step
+                    // for (int i = 0; i < intArray.length; i++) {
+                    //     copy[i] = intArray[i];
+                    // }
 
-                    copy[copy.length - 1] = newPort;
+                    // copy[copy.length - 1] = newPort;
 
-                    Integer[] arr = Arrays.stream(copy).boxed().toArray(Integer[]::new);
+                    // Integer[] arr = Arrays.stream(copy).boxed().toArray(Integer[]::new);
 
-                    subnets.get(subnet).replace(Integer.parseInt(suffix), arr);
+                    // subnets.get(subnet).replace(Integer.parseInt(suffix), arr);
+
+                    subnets.get(subnet).get(Integer.parseInt(suffix)).add(newPort);
 
                     return toTCPAddress(toIPAddress(subnet, Integer.parseInt(suffix)), newPort);
                 } else {
