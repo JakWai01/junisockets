@@ -74,6 +74,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id = "";
 
+        // use streams instead
         for (int i = 0; i < clients.size(); i++) {
             String currentKey = (String) clients.keySet().toArray()[i];
 
@@ -88,6 +89,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             clients.remove(id);
 
+            // use streams instead
             for (int i = 0; i < aliases.size(); i++) {
                 String currentKey = (String) aliases.keySet().toArray()[i];
                 if (currentKey == id) {
@@ -96,6 +98,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     removeIPAddress(key);
                     removeTCPAddress(key);
 
+                    // use streams instead
                     for (int j = 0; j < clients.size(); j++) {
                         try {
                             send(clients.get(key), new Alias(id, key, false));
@@ -234,8 +237,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     public void onError(WebSocket conn, Exception ex) {
         ex.printStackTrace();
         if (conn != null) {
-            // some errors like port binding failed may not be assignable to a specific
-            // websocket
+            // careful, this behaves different 
+            ex.printStackTrace(); 
         }
     }
 
@@ -270,6 +273,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             return;
         }
 
+        // use streams instead
         for (int i = 0; i < clients.size(); i++) {
             String existingId = (String) clients.keySet().toArray()[i];
             WebSocket existingClient = clients.get(existingId);
@@ -377,6 +381,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
+            // use streams instead
             for (int i = 0; i < clients.size(); i++) {
                 Object key = clients.keySet().toArray()[i];
 
@@ -417,6 +422,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             logger.debug("Accepting shutdown" + data);
 
+            // use streams instead
             for (int i = 0; i < clients.size(); i++) {
                 Object key = clients.keySet().toArray()[i];
 
@@ -558,6 +564,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             boolean foundSuffix = false;
             int newSuffix = 0;
 
+            // usestreams instead
             for (int i = 0; i < existingMembersSorted.size(); i++) {
 
                 if (i != existingMembersSorted.get(i)) {
@@ -605,6 +612,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                     int newPort = 0;
 
+                    // use streams instead and a collection instead of an array above
                     for (int i = 0; i < intArray.length; i++) {
                         if (intArray[i] != i) {
                             newPort = i;
@@ -613,6 +621,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                     int[] copy = new int[intArray.length + 1];
 
+                    // use streams instead so we do not need to perform this step
                     for (int i = 0; i < intArray.length; i++) {
                         copy[i] = intArray[i];
                     }
@@ -655,6 +664,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 }
 
                 int count = 0;
+
+                // use streams instead
                 for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).length; i++) {
                     if (subnets.get(subnet).get(Integer.parseInt(suffix))[i] == Integer.parseInt(partsTCPAddress[1])) {
                         count++;
@@ -664,6 +675,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 if (count == 0) {
                     Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length + 1];
 
+                    // use streams instead so we can skip that step
                     for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
                         copy[j] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
                     }
@@ -722,6 +734,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
                     int count = 0;
 
+                    // use streams instead
                     for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
                         if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
                             copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
@@ -1008,6 +1021,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         
         while (isOpen == true) {
             
+            // use streams instead
             for (int i = 0; i < clients.size(); i++) {
                 String key = (String)clients.keySet().toArray()[i];
 
