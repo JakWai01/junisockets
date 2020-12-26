@@ -4,8 +4,8 @@ import space.nebulark.junisockets.operations.ESignalingOperationCode;
 
 public class UnimplementedOperation extends Exception {
     
-    public UnimplementedOperation(ESignalingOperationCode opcode) {
-        super("unimplemented operation " + opcode);
+    public UnimplementedOperation(Object object) {
+        super("unimplemented operation " + object);
     }
 
 }
