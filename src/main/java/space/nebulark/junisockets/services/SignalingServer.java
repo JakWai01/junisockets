@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
@@ -651,6 +652,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     foundSuffix = true;
                 }
             }
+
+            //String result = IntStream.range(0, checkBoxes.size())
+            //                 .filter(i -> checkBoxes.get(i).isSelected())
+
+            // int newSuffix = IntStream.range(0, existingMembersSorted.size()).filter(i -> i != existingMembersSorted.get(i)).findFirst().getAsInt();
 
             if (!foundSuffix) {
                 newSuffix = existingMembersSorted.size();
