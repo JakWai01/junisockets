@@ -1,9 +1,8 @@
 package space.nebulark.junisockets.operations;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketServerFactory;
 
-public interface ISignalingService extends WebSocket {
+public interface ISignalingService {
    
     private static void send(WebSocket conn, Acknowledgement operation){};
 

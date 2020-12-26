@@ -33,7 +33,7 @@ import space.nebulark.junisockets.errors.UnimplementedOperation;
 import space.nebulark.junisockets.models.*;
 import space.nebulark.junisockets.operations.*;
 
-public class SignalingServer extends WebSocketServer {
+public class SignalingServer extends WebSocketServer implements ISignalingService {
 
     private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
     private static HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
