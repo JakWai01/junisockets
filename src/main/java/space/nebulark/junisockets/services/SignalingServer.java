@@ -126,7 +126,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     removeTCPAddress(clientId);
 
                     clients.forEach( (key, client) -> {
-
+                        // Das vielleicht noch in einene Thread packen
                         try {
                             send(clients.get(key), new Alias(id, clientId, false));
                         } catch (ClientClosed e1) {
@@ -427,21 +427,35 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
             // use streams instead
-            for (int i = 0; i < clients.size(); i++) {
-                Object key = clients.keySet().toArray()[i];
+            // for (int i = 0; i < clients.size(); i++) {
+            //     Object key = clients.keySet().toArray()[i];
 
+            //     Thread thread = new Thread(() -> {
+            //         try {
+            //             send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), true));
+            //         } catch (ClientClosed e) {
+            //             e.printStackTrace();
+            //         }
+            //         logger.debug("Sent alias" + data);
+            //     });
+
+            //     thread.start();
+
+            // }
+
+            clients.forEach( (client, id) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), true));
+                        send(id, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                    logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
-
-            }
+                
+                logger.debug("Send alias" + data);
+            });
         }
     }
 
