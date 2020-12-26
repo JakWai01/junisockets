@@ -1126,11 +1126,13 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         while (isOpen == true) {
 
             // use streams instead
-            for (int i = 0; i < clients.size(); i++) {
-                String key = (String) clients.keySet().toArray()[i];
+            // for (int i = 0; i < clients.size(); i++) {
+            //     String key = (String) clients.keySet().toArray()[i];
 
-                clients.get(key).sendPing();
-            }
+            //     clients.get(key).sendPing();
+            // }
+
+            clients.forEach( (cliendId, alias) -> alias.sendPing());
 
             Thread.sleep(30000);
 
