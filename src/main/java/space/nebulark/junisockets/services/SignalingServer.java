@@ -305,25 +305,39 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
 
         // use streams instead
-        for (int i = 0; i < clients.size(); i++) {
-            String existingId = (String) clients.keySet().toArray()[i];
-            WebSocket existingClient = clients.get(existingId);
+        // for (int i = 0; i < clients.size(); i++) {
+        //     String existingId = (String) clients.keySet().toArray()[i];
+        //     WebSocket existingClient = clients.get(existingId);
 
+        //     if (existingId != id) {
+
+        //         Thread thread = new Thread(() -> {
+        //             try {
+        //                 send(existingClient, new Greeting(existingId, id));
+        //             } catch (ClientClosed e) {
+        //                 e.printStackTrace();
+        //             }
+        //             logger.debug("Sent greeting" + existingId + id);
+        //         });
+
+        //         thread.start();
+
+        //     }
+        // }
+
+        clients.forEach( (existingId, existingClient) -> {
             if (existingId != id) {
-
-                Thread thread = new Thread(() -> {
-                    try {
-                        send(existingClient, new Greeting(existingId, id));
-                    } catch (ClientClosed e) {
-                        e.printStackTrace();
-                    }
-                    logger.debug("Sent greeting" + existingId + id);
-                });
-
-                thread.start();
-
+                try {
+                    send(existingClient, new Greeting(existingId, id));
+                } catch (ClientClosed e) {
+                    e.printStackTrace();
+                }
             }
-        }
+
+            logger.debug("Sent greeting " + existingId + id);
+        });
+
+
 
         clients.put(id, conn);
 
@@ -463,7 +477,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                    logger.debug("Sent alias" + data);
+                   logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
