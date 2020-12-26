@@ -482,20 +482,34 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             logger.debug("Accepting shutdown" + data);
 
             // use streams instead
-            for (int i = 0; i < clients.size(); i++) {
-                Object key = clients.keySet().toArray()[i];
+            // for (int i = 0; i < clients.size(); i++) {
+            //     Object key = clients.keySet().toArray()[i];
 
+            //     Thread thread = new Thread(() -> {
+            //         try {
+            //             send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), false));
+            //         } catch (ClientClosed e) {
+            //             e.printStackTrace();
+            //         }
+            //        logger.debug("Sent alias" + data);
+            //     });
+
+            //     thread.start();
+            // }
+
+            clients.forEach( (client, id) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), false));
+                        send(id, new Alias((String) data.get("id"), (String) data.get("alias"), false));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                   logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
-            }
+
+                logger.debug("Send alias" + id + data);
+            });
 
         } else {
             logger.debug("Rejecting shutdown, alias not taken or incorrect client ID" + data);
