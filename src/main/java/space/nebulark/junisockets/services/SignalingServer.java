@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -617,7 +618,10 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         }
     }
 
-    private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
+    //private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
+    private static HashMap<String, HashMap<Integer, List<Integer>>> subnets = new HashMap<String, HashMap<Integer, List<Integer>>>();
+    
+
     private static ReentrantLock mutex = new ReentrantLock();
 
     private static String createIPAddress(String subnet) {
@@ -626,8 +630,11 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
         mutex.lock();
 
         try {
+            // if (!subnets.containsKey(subnet)) {
+            //     subnets.put(subnet, new HashMap<Integer, Integer[]>());
+            // }
             if (!subnets.containsKey(subnet)) {
-                subnets.put(subnet, new HashMap<Integer, Integer[]>());
+                    subnets.put(subnet, new HashMap<Integer, List<Integer>>());
             }
 
             List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
@@ -637,7 +644,6 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             boolean foundSuffix = false;
             int newSuffix = 0;
 
-            // usestreams instead
             for (int i = 0; i < existingMembersSorted.size(); i++) {
 
                 if (i != existingMembersSorted.get(i)) {
@@ -654,7 +660,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 return "-1";
             }
 
-            Integer[] newMember = new Integer[0];
+            // Integer[] newMember = new Integer[0];
+            List<Integer> newMember = new ArrayList<Integer>();
 
             subnets.get(subnet).put(newSuffix, newMember); // We ensure above
 
@@ -678,6 +685,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
+
+
                     int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
                             .mapToInt(Integer::intValue).toArray();
 
