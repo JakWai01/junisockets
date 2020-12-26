@@ -75,16 +75,18 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        String id = "";
+        //String id = "";
 
         // use streams instead
-        for (int i = 0; i < clients.size(); i++) {
-            String currentKey = (String) clients.keySet().toArray()[i];
+        // for (int i = 0; i < clients.size(); i++) {
+        //     String currentKey = (String) clients.keySet().toArray()[i];
 
-            if (clients.get(currentKey) == conn) {
-                id = currentKey;
-            }
-        }
+        //     if (clients.get(currentKey) == conn) {
+        //         id = currentKey;
+        //     }
+        // }
+
+        String id = clients.entrySet().stream().filter( e -> e.getValue() == conn).findFirst().map(e -> e.getKey()).toString();
 
         logger.debug("Registering goodbye" + id);
 
@@ -93,34 +95,60 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             clients.remove(id);
 
             // use streams instead
-            for (int i = 0; i < aliases.size(); i++) {
-                String currentKey = (String) aliases.keySet().toArray()[i];
-                if (currentKey == id) {
-                    String key = currentKey;
-                    aliases.remove(key);
-                    removeIPAddress(key);
-                    removeTCPAddress(key);
+            // for (int i = 0; i < aliases.size(); i++) {
+            //     String currentKey = (String) aliases.keySet().toArray()[i];
+            //     if (currentKey == id) {
+            //         String key = currentKey;
+            //         aliases.remove(key);
+            //         removeIPAddress(key);
+            //         removeTCPAddress(key);
 
-                    // use streams instead
-                    for (int j = 0; j < clients.size(); j++) {
+            //         // use streams instead
+            //         for (int j = 0; j < clients.size(); j++) {
+            //             try {
+            //                 send(clients.get(key), new Alias(id, key, false));
+            //             } catch (ClientClosed e) {
+            //                 e.printStackTrace();
+            //             }
+
+            //             logger.debug("Sent alias" + id + key);
+            //         }
+            //     }
+            // }
+            
+            // Example: clients.forEach((k,v) -> System.out.println("key: " + k + " value: " + v));
+
+            aliases.forEach((clientId, alias) -> {
+                if (clientId == id) {
+                    // Unisockets removes with alias below
+                    aliases.remove(clientId);
+                    removeIPAddress(clientId);
+                    removeTCPAddress(clientId);
+
+                    clients.forEach( (key, client) -> {
+
                         try {
-                            send(clients.get(key), new Alias(id, key, false));
-                        } catch (ClientClosed e) {
-                            e.printStackTrace();
+                            send(clients.get(key), new Alias(id, clientId, false));
+                        } catch (ClientClosed e1) {
+                            e1.printStackTrace();
                         }
 
                         logger.debug("Sent alias" + id + key);
-                    }
-                }
-            }
+                    });
 
+                }
+            });
+
+            // We broadcast Goodbye so we don't need to iterate over each client like in unisockets
             send(new Goodbye(id));
-            logger.debug("Sent alias" + id);
+
+            logger.debug("Client disconnected" + id);
+            
         } else {
-            try {
+                try {
                 throw new ClientDoesNotExist();
-            } catch (ClientDoesNotExist e) {
-                e.printStackTrace();
+            } catch (ClientDoesNotExist e1) {
+                e1.printStackTrace();
             }
         }
 
