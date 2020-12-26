@@ -60,12 +60,15 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
         logger.debug("Opening signaling server");
 
-        try {
-            ping();
-        } catch (InterruptedException e) {
-            // handle Client not responding error
-            e.printStackTrace();
-        }
+        Thread thread = new Thread(() -> {
+            try {
+                ping();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        thread.start();
 
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
     }
@@ -237,8 +240,8 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     public void onError(WebSocket conn, Exception ex) {
         ex.printStackTrace();
         if (conn != null) {
-            // careful, this behaves different 
-            ex.printStackTrace(); 
+            // careful, this behaves different
+            ex.printStackTrace();
         }
     }
 
@@ -747,7 +750,7 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
                 }
             }
         } finally {
-            mutex.unlock();;
+            mutex.unlock();
         }
     }
 
@@ -1018,12 +1021,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
     }
 
     public static void ping() throws InterruptedException {
-        
+
         while (isOpen == true) {
-            
+
             // use streams instead
             for (int i = 0; i < clients.size(); i++) {
-                String key = (String)clients.keySet().toArray()[i];
+                String key = (String) clients.keySet().toArray()[i];
 
                 clients.get(key).sendPing();
             }
