@@ -820,28 +820,36 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
-            String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            String suffix = partsIPAddress[3];
+             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+             String suffix = partsIPAddress[3];
+
+            // if (subnets.containsKey(subnet)) {
+            //     if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
+
+            //         Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length - 1];
+
+            //         int count = 0;
+
+            //         // use streams instead
+            //         for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
+            //             if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
+            //                 copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
+            //                 count++;
+            //             } else {
+            //                 continue;
+            //             }
+            //         }
+            //         subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
+            //     }
+            // }
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-
-                    Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length - 1];
-
-                    int count = 0;
-
-                    // use streams instead
-                    for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
-                        if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
-                            copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
-                            count++;
-                        } else {
-                            continue;
-                        }
-                    }
-                    subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
+                    subnets.get(subnet).put(Integer.parseInt(suffix), subnets.get(subnet).get(Integer.parseInt(suffix)).stream().filter(e -> e != Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())); // We ensure above
                 }
             }
+
+
         } finally {
             mutex.unlock();
         }
