@@ -50,10 +50,12 @@ public class SignalingServer extends WebSocketServer implements ISignalingServic
 
     public SignalingServer(InetSocketAddress address) {
         super(address);
+        setReuseAddr(true);
     }
 
     public SignalingServer(int port, Draft_6455 draft) {
         super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
+
     }
 
     @Override
