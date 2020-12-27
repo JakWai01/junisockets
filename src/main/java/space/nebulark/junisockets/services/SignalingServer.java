@@ -19,18 +19,14 @@ import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import space.nebulark.junisockets.errors.ClientClosed;
-import space.nebulark.junisockets.errors.ClientDoesNotExist;
-import space.nebulark.junisockets.errors.PortAlreadyAllocatedError;
-import space.nebulark.junisockets.errors.SubnetDoesNotExist;
-import space.nebulark.junisockets.errors.SuffixDoesNotExist;
-import space.nebulark.junisockets.errors.UnimplementedOperation;
+import space.nebulark.junisockets.errors.*;
 import space.nebulark.junisockets.models.*;
 import space.nebulark.junisockets.operations.*;
 
@@ -74,7 +70,7 @@ public class SignalingServer extends WebSocketServer {
             }
         }
 
-        logger.debug("Registering goodbye" + id);
+        logger.debug("Registering goodbye " + id);
 
         if (clients.containsKey(id)) {
 
@@ -85,7 +81,6 @@ public class SignalingServer extends WebSocketServer {
             // Was soll dieser Alias hier machen?
             aliases.forEach((clientId, alias) -> {
                 if (clientId == targetId) {
-                    // Unisockets removes with alias below
                     aliases.remove(clientId);
                     removeIPAddress(clientId);
                     removeTCPAddress(clientId);
@@ -102,8 +97,8 @@ public class SignalingServer extends WebSocketServer {
                     });
                 }
             });
-
             send(new Goodbye(targetId));
+
             logger.debug("Sent alias" + targetId);
         } else {
             try {
@@ -122,7 +117,6 @@ public class SignalingServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
 
         JSONParser parser = new JSONParser();
-
         Object jsonObj = null;
 
         try {
@@ -133,11 +127,15 @@ public class SignalingServer extends WebSocketServer {
 
         JSONObject operation = (JSONObject) jsonObj;
 
-        handleOperation(operation, conn);
+        try {
+            handleOperation(operation, conn);
+        } catch (UnimplementedOperation e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private static void handleOperation(JSONObject operation, WebSocket conn) {
+    private static void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
 
         logger.trace("Handling operation: " + operation + conn);
 
@@ -219,22 +217,13 @@ public class SignalingServer extends WebSocketServer {
             });
             thread.start();
         } else {
-            // redundant
-            try {
-                throw new UnimplementedOperation(operation.get("opcode"));
-            } catch (UnimplementedOperation e) {
-                e.printStackTrace();
-            }
+            throw new UnimplementedOperation(operation.get("opcode"));
         }
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
         ex.printStackTrace();
-        if (conn != null) {
-            // some errors like port binding failed may not be assignable to a specific
-            // websocket
-        }
     }
 
     @Override
@@ -246,7 +235,6 @@ public class SignalingServer extends WebSocketServer {
             try {
                 ping();
             } catch (InterruptedException e) {
-                // handle Client not responding error
                 e.printStackTrace();
             }
         });
@@ -268,16 +256,14 @@ public class SignalingServer extends WebSocketServer {
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
-            ;
         } else {
             try {
                 send(conn, new Acknowledgement(id, true));
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
-            ;
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
-
+            
             return;
         }
 
@@ -293,7 +279,6 @@ public class SignalingServer extends WebSocketServer {
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                    ;
                     logger.debug("Sent greeting" + existingId + id);
                 });
 
@@ -321,7 +306,6 @@ public class SignalingServer extends WebSocketServer {
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
-            ;
             logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
         });
 
@@ -381,7 +365,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
             });
 
             thread.start();
@@ -454,7 +437,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
             });
 
             thread.start();
@@ -480,7 +462,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
             });
 
             thread.start();
@@ -499,7 +480,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
                 logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
             });
 
@@ -518,7 +498,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
                 logger.debug("Sent alias for connection to server" + data + serverAliasMessage);
             });
 
@@ -532,7 +511,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
                 logger.debug("Sent accept to server" + data + serverAcceptMessage);
             });
 
@@ -547,7 +525,6 @@ public class SignalingServer extends WebSocketServer {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                ;
                 logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
             });
 
@@ -577,7 +554,6 @@ public class SignalingServer extends WebSocketServer {
             int newSuffix = 0;
 
             for (int i = 0; i < existingMembersSorted.size(); i++) {
-
                 if (i != existingMembersSorted.get(i)) {
                     newSuffix = i;
                     foundSuffix = true;
@@ -650,7 +626,6 @@ public class SignalingServer extends WebSocketServer {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
-            // Integer[] arr = new Integer[0];
             List<Integer> member = new ArrayList<Integer>();
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
@@ -658,7 +633,6 @@ public class SignalingServer extends WebSocketServer {
 
             if (subnets.containsKey(subnet)) {
                 if (!(subnets.get(subnet).containsKey(Integer.parseInt(suffix)))) {
-                    // arr -> member
                     subnets.get(subnet).put(Integer.parseInt(suffix), member);
                 }
 
@@ -764,7 +738,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("id", (String) operation.getId());
             m1.put("rejected", operation.getRejected());
 
@@ -793,7 +767,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("offer", operation.getOffer());
@@ -823,7 +797,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("answer", operation.getAnswer());
@@ -853,7 +827,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("candidate", operation.getCandidate());
@@ -883,7 +857,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("id", (String) operation.getId());
             m1.put("alias", operation.getAlias());
             m1.put("set", operation.getSet());
@@ -921,7 +895,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("boundAlias", (String) operation.getBoundAlias());
             m1.put("clientAlias", operation.getClientAlias());
 
@@ -950,7 +924,7 @@ public class SignalingServer extends WebSocketServer {
             JSONObject obj = new JSONObject();
             String jsonText;
 
-            Map m1 = new LinkedHashMap();
+            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
             m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
 
@@ -977,7 +951,8 @@ public class SignalingServer extends WebSocketServer {
         JSONObject obj = new JSONObject();
         String jsonText;
 
-        Map m1 = new JSONObject();
+        // hier war mal ein JSONObject
+        Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
         m1.put("id", operation.getId());
 
         obj.put("data", m1);
@@ -1000,7 +975,11 @@ public class SignalingServer extends WebSocketServer {
             for (int i = 0; i < clients.size(); i++) {
                 String key = (String) clients.keySet().toArray()[i];
 
-                clients.get(key).sendPing();
+                try {
+                    clients.get(key).sendPing();
+                } catch(WebsocketNotConnectedException e) {
+                    e.printStackTrace();
+                }
             }
 
             Thread.sleep(30000);
