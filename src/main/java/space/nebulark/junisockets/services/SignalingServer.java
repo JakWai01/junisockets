@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -82,26 +81,6 @@ public class SignalingServer extends WebSocketServer {
             clients.remove(id);
 
             final String targetId = id;
-            // for (int i = 0; i < aliases.size(); i++) {
-            //     String currentKey = (String) aliases.keySet().toArray()[i];
-            //     if (currentKey == id) {
-            //         String key = currentKey;
-            //         aliases.remove(key);
-            //         removeIPAddress(key);
-            //         removeTCPAddress(key);
-
-            //         for (int j = 0; j < clients.size(); j++) {
-                        
-            //             try {
-            //                 send(clients.get(key), new Alias(id, key, false));
-            //             } catch (ClientClosed e) {
-            //                 e.printStackTrace();
-            //             };
-
-            //             logger.debug("Sent alias" + id + key);
-            //         }
-            //     }
-            // }
 
             // Was soll dieser Alias hier machen?
             aliases.forEach((clientId, alias) -> {
@@ -111,7 +90,7 @@ public class SignalingServer extends WebSocketServer {
                     removeIPAddress(clientId);
                     removeTCPAddress(clientId);
 
-                    clients.forEach( (key, client) -> {
+                    clients.forEach((key, client) -> {
 
                         try {
                             send(clients.get(key), new Alias(targetId, clientId, false));
@@ -205,7 +184,8 @@ public class SignalingServer extends WebSocketServer {
                     e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
                     e.printStackTrace();
-                };
+                }
+                ;
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPTING.getValue())) {
@@ -234,7 +214,8 @@ public class SignalingServer extends WebSocketServer {
                     e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
                     e.printStackTrace();
-                };
+                }
+                ;
             });
             thread.start();
         } else {
@@ -286,13 +267,15 @@ public class SignalingServer extends WebSocketServer {
                 send(conn, new Acknowledgement(id, false));
             } catch (ClientClosed e) {
                 e.printStackTrace();
-            };
+            }
+            ;
         } else {
             try {
                 send(conn, new Acknowledgement(id, true));
             } catch (ClientClosed e) {
                 e.printStackTrace();
-            };
+            }
+            ;
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
 
             return;
@@ -309,7 +292,8 @@ public class SignalingServer extends WebSocketServer {
                         send(existingClient, new Greeting(existingId, id));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
-                    };
+                    }
+                    ;
                     logger.debug("Sent greeting" + existingId + id);
                 });
 
@@ -336,7 +320,8 @@ public class SignalingServer extends WebSocketServer {
                         (String) data.get("offer")));
             } catch (ClientClosed e) {
                 e.printStackTrace();
-            };
+            }
+            ;
             logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
         });
 
@@ -395,7 +380,8 @@ public class SignalingServer extends WebSocketServer {
                     send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
             });
 
             thread.start();
@@ -407,7 +393,7 @@ public class SignalingServer extends WebSocketServer {
 
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
-            clients.forEach( (client, id) -> {
+            clients.forEach((client, id) -> {
                 Thread thread = new Thread(() -> {
                     try {
                         send(id, new Alias((String) data.get("id"), (String) data.get("alias"), true));
@@ -444,7 +430,7 @@ public class SignalingServer extends WebSocketServer {
 
             logger.debug("Accepting shutdown" + data);
 
-            clients.forEach( (client, id) -> {
+            clients.forEach((client, id) -> {
                 Thread thread = new Thread(() -> {
                     try {
                         send(id, new Alias((String) data.get("id"), (String) data.get("alias"), false));
@@ -467,7 +453,8 @@ public class SignalingServer extends WebSocketServer {
                     send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
             });
 
             thread.start();
@@ -492,7 +479,8 @@ public class SignalingServer extends WebSocketServer {
                             (String) data.get("clientConnectionId")));
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
             });
 
             thread.start();
@@ -510,7 +498,8 @@ public class SignalingServer extends WebSocketServer {
                     send(client, clientAliasMessage);
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
                 logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
             });
 
@@ -528,7 +517,8 @@ public class SignalingServer extends WebSocketServer {
                     send(server, serverAliasMessage);
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
                 logger.debug("Sent alias for connection to server" + data + serverAliasMessage);
             });
 
@@ -541,7 +531,8 @@ public class SignalingServer extends WebSocketServer {
                     send(server, serverAcceptMessage);
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
                 logger.debug("Sent accept to server" + data + serverAcceptMessage);
             });
 
@@ -555,7 +546,8 @@ public class SignalingServer extends WebSocketServer {
                     send(client, serverALiasForClientsMessage);
                 } catch (ClientClosed e) {
                     e.printStackTrace();
-                };
+                }
+                ;
                 logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
             });
 
@@ -563,7 +555,6 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    // private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
     private static HashMap<String, HashMap<Integer, List<Integer>>> subnets = new HashMap<String, HashMap<Integer, List<Integer>>>();
     private static ReentrantLock mutex = new ReentrantLock();
 
@@ -573,11 +564,9 @@ public class SignalingServer extends WebSocketServer {
         mutex.lock();
 
         try {
-            // if (!subnets.containsKey(subnet)) {
-            //     subnets.put(subnet, new HashMap<Integer, Integer[]>());
-            // }
+
             if (!subnets.containsKey(subnet)) {
-                    subnets.put(subnet, new HashMap<Integer, List<Integer>>());
+                subnets.put(subnet, new HashMap<Integer, List<Integer>>());
             }
 
             List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
@@ -603,7 +592,6 @@ public class SignalingServer extends WebSocketServer {
                 return "-1";
             }
 
-            //Integer[] newMember = new Integer[0];
             List<Integer> newMember = new ArrayList<Integer>();
 
             subnets.get(subnet).put(newSuffix, newMember); // We ensure above
@@ -628,40 +616,16 @@ public class SignalingServer extends WebSocketServer {
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                   
-                   
-                    // int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
-                    //         .mapToInt(Integer::intValue).toArray();
 
-//                     Arrays.sort(intArray);
-
-                    subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a,b) -> a - b);
+                    subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a, b) -> a - b);
 
                     int newPort = 0;
-
-                    // for (int i = 0; i < intArray.length; i++) {
-                    //     if (intArray[i] != i) {
-                    //         newPort = i;
-                    //     }
-                    // }
 
                     for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).size(); i++) {
                         if (subnets.get(subnet).get(Integer.parseInt(suffix)).get(i) != i) {
                             newPort = i;
                         }
                     }
-
-                    //int[] copy = new int[intArray.length + 1];
-
-                    // for (int i = 0; i < intArray.length; i++) {
-                    //     copy[i] = intArray[i];
-                    // }
-
-                    // copy[copy.length - 1] = newPort;
-
-                    // Integer[] arr = Arrays.stream(copy).boxed().toArray(Integer[]::new);
-
-                    // subnets.get(subnet).replace(Integer.parseInt(suffix), arr);
 
                     subnets.get(subnet).get(Integer.parseInt(suffix)).add(newPort);
 
@@ -698,26 +662,12 @@ public class SignalingServer extends WebSocketServer {
                     subnets.get(subnet).put(Integer.parseInt(suffix), member);
                 }
 
-                if (subnets.get(subnet).get(Integer.parseInt(suffix)).stream().filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList()).size() == 0) {
+                if (subnets.get(subnet).get(Integer.parseInt(suffix)).stream()
+                        .filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())
+                        .size() == 0) {
                     subnets.get(subnet).get(Integer.parseInt(suffix)).add(Integer.parseInt(partsTCPAddress[1]));
                 }
-                // int count = 0;
-                // for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).length; i++) {
-                //     if (subnets.get(subnet).get(Integer.parseInt(suffix))[i] == Integer.parseInt(partsTCPAddress[1])) {
-                //         count++;
-                //     }
-                // }
 
-                // if (count == 0) {
-                //     Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length + 1];
-
-                //     for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
-                //         copy[j] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
-                //     }
-
-                //     copy[copy.length - 1] = Integer.parseInt(partsTCPAddress[1]);
-
-                //     subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
                 else {
                     logger.fatal("Port already allocated");
                     throw new PortAlreadyAllocatedError();
@@ -764,27 +714,12 @@ public class SignalingServer extends WebSocketServer {
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             String suffix = partsIPAddress[3];
 
-            // if (subnets.containsKey(subnet)) {
-            //     if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-
-            //         Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length - 1];
-
-            //         int count = 0;
-
-            //         for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
-            //             if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
-            //                 copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
-            //                 count++;
-            //             } else {
-            //                 continue;
-            //             }
-            //         }
-            //         subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
-            //     }
-            // }
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    subnets.get(subnet).put(Integer.parseInt(suffix), subnets.get(subnet).get(Integer.parseInt(suffix)).stream().filter(e -> e != Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())); // We ensure above
+                    subnets.get(subnet).put(Integer.parseInt(suffix),
+                            subnets.get(subnet).get(Integer.parseInt(suffix)).stream()
+                                    .filter(e -> e != Integer.parseInt(partsTCPAddress[1]))
+                                    .collect(Collectors.toList())); // We ensure above
                 }
             }
 
