@@ -406,21 +406,18 @@ public class SignalingServer extends WebSocketServer {
 
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
-            for (int i = 0; i < clients.size(); i++) {
-                Object key = clients.keySet().toArray()[i];
-
+            clients.forEach( (client, id) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), true));
+                        send(id, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
+                        logger.debug("Sent alias" + data);
                     }
-                    logger.debug("Sent alias" + data);
                 });
 
                 thread.start();
-
-            }
+            });
         }
     }
 
