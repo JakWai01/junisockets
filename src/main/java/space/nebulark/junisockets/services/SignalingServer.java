@@ -393,10 +393,10 @@ public class SignalingServer extends WebSocketServer {
 
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
-            clients.forEach((client, id) -> {
+            clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(id, new Alias((String) data.get("id"), (String) data.get("alias"), true));
+                        send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                         logger.debug("Sent alias" + data);
@@ -430,10 +430,10 @@ public class SignalingServer extends WebSocketServer {
 
             logger.debug("Accepting shutdown" + data);
 
-            clients.forEach((client, id) -> {
+            clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(id, new Alias((String) data.get("id"), (String) data.get("alias"), false));
+                        send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
