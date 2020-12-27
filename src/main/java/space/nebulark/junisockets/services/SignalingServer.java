@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -988,6 +989,8 @@ public class SignalingServer extends WebSocketServer {
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
+        BasicConfigurator.configure();
+        
         int port = 8892;
         try {
             port = Integer.parseInt(args[0]);

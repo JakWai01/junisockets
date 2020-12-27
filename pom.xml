@@ -14,6 +14,14 @@
       <name>${appLicense}</name>
     </license>
   </licenses>
+
+  <properties>
+    <appLicense>AGPL-3.0</appLicense>
+    <maven.compiler.target>14</maven.compiler.target>
+    <mainClass>space.nebulark.junisockets.ChatServer</mainClass>
+    <maven.compiler.source>14</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -58,6 +66,12 @@
     <artifactId>dozer-core</artifactId>
     <version>6.5.0</version>
   </dependency>
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-simple</artifactId>
+  <version>1.7.25</version>
+</dependency>
+ 
   <dependency>
     <groupId>com.googlecode.json-simple</groupId>
     <artifactId>json-simple</artifactId>
@@ -126,12 +140,6 @@
       </exclusions>
     </dependency>
   </dependencies>
-  <properties>
-    <appLicense>AGPL-3.0</appLicense>
-    <maven.compiler.target>14</maven.compiler.target>
-    <mainClass>space.nebulark.junisockets.ChatServer</mainClass>
-    <maven.compiler.source>14</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  
 
 </project>
