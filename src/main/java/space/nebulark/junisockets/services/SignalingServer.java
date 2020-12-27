@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -562,7 +563,8 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
+    // private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
+    private static HashMap<String, HashMap<Integer, List<Integer>>> subnets = new HashMap<String, HashMap<Integer, List<Integer>>>();
     private static ReentrantLock mutex = new ReentrantLock();
 
     private static String createIPAddress(String subnet) {
@@ -571,8 +573,11 @@ public class SignalingServer extends WebSocketServer {
         mutex.lock();
 
         try {
+            // if (!subnets.containsKey(subnet)) {
+            //     subnets.put(subnet, new HashMap<Integer, Integer[]>());
+            // }
             if (!subnets.containsKey(subnet)) {
-                subnets.put(subnet, new HashMap<Integer, Integer[]>());
+                    subnets.put(subnet, new HashMap<Integer, List<Integer>>());
             }
 
             List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
@@ -598,7 +603,8 @@ public class SignalingServer extends WebSocketServer {
                 return "-1";
             }
 
-            Integer[] newMember = new Integer[0];
+            //Integer[] newMember = new Integer[0];
+            List<Integer> newMember = new ArrayList<Integer>();
 
             subnets.get(subnet).put(newSuffix, newMember); // We ensure above
 
@@ -622,30 +628,42 @@ public class SignalingServer extends WebSocketServer {
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
-                            .mapToInt(Integer::intValue).toArray();
+                   
+                   
+                    // int[] intArray = Arrays.stream(subnets.get(subnet).get(Integer.parseInt(suffix)))
+                    //         .mapToInt(Integer::intValue).toArray();
 
-                    Arrays.sort(intArray);
+//                     Arrays.sort(intArray);
+
+                    subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a,b) -> a - b);
 
                     int newPort = 0;
 
-                    for (int i = 0; i < intArray.length; i++) {
-                        if (intArray[i] != i) {
+                    // for (int i = 0; i < intArray.length; i++) {
+                    //     if (intArray[i] != i) {
+                    //         newPort = i;
+                    //     }
+                    // }
+
+                    for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).size(); i++) {
+                        if (subnets.get(subnet).get(Integer.parseInt(suffix)).get(i) != i) {
                             newPort = i;
                         }
                     }
 
-                    int[] copy = new int[intArray.length + 1];
+                    //int[] copy = new int[intArray.length + 1];
 
-                    for (int i = 0; i < intArray.length; i++) {
-                        copy[i] = intArray[i];
-                    }
+                    // for (int i = 0; i < intArray.length; i++) {
+                    //     copy[i] = intArray[i];
+                    // }
 
-                    copy[copy.length - 1] = newPort;
+                    // copy[copy.length - 1] = newPort;
 
-                    Integer[] arr = Arrays.stream(copy).boxed().toArray(Integer[]::new);
+                    // Integer[] arr = Arrays.stream(copy).boxed().toArray(Integer[]::new);
 
-                    subnets.get(subnet).replace(Integer.parseInt(suffix), arr);
+                    // subnets.get(subnet).replace(Integer.parseInt(suffix), arr);
+
+                    subnets.get(subnet).get(Integer.parseInt(suffix)).add(newPort);
 
                     return toTCPAddress(toIPAddress(subnet, Integer.parseInt(suffix)), newPort);
                 } else {
@@ -668,34 +686,39 @@ public class SignalingServer extends WebSocketServer {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
 
-            Integer[] arr = new Integer[0];
+            // Integer[] arr = new Integer[0];
+            List<Integer> member = new ArrayList<Integer>();
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             String suffix = partsIPAddress[3];
 
             if (subnets.containsKey(subnet)) {
                 if (!(subnets.get(subnet).containsKey(Integer.parseInt(suffix)))) {
-                    subnets.get(subnet).put(Integer.parseInt(suffix), arr);
+                    // arr -> member
+                    subnets.get(subnet).put(Integer.parseInt(suffix), member);
                 }
 
-                int count = 0;
-                for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).length; i++) {
-                    if (subnets.get(subnet).get(Integer.parseInt(suffix))[i] == Integer.parseInt(partsTCPAddress[1])) {
-                        count++;
-                    }
+                if (subnets.get(subnet).get(Integer.parseInt(suffix)).stream().filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList()).size() == 0) {
+                    subnets.get(subnet).get(Integer.parseInt(suffix)).add(Integer.parseInt(partsTCPAddress[1]));
                 }
+                // int count = 0;
+                // for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).length; i++) {
+                //     if (subnets.get(subnet).get(Integer.parseInt(suffix))[i] == Integer.parseInt(partsTCPAddress[1])) {
+                //         count++;
+                //     }
+                // }
 
-                if (count == 0) {
-                    Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length + 1];
+                // if (count == 0) {
+                //     Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length + 1];
 
-                    for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
-                        copy[j] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
-                    }
+                //     for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
+                //         copy[j] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
+                //     }
 
-                    copy[copy.length - 1] = Integer.parseInt(partsTCPAddress[1]);
+                //     copy[copy.length - 1] = Integer.parseInt(partsTCPAddress[1]);
 
-                    subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
-                } else {
+                //     subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
+                else {
                     logger.fatal("Port already allocated");
                     throw new PortAlreadyAllocatedError();
                 }
@@ -741,24 +764,30 @@ public class SignalingServer extends WebSocketServer {
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             String suffix = partsIPAddress[3];
 
+            // if (subnets.containsKey(subnet)) {
+            //     if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
+
+            //         Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length - 1];
+
+            //         int count = 0;
+
+            //         for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
+            //             if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
+            //                 copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
+            //                 count++;
+            //             } else {
+            //                 continue;
+            //             }
+            //         }
+            //         subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
+            //     }
+            // }
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-
-                    Integer[] copy = new Integer[subnets.get(subnet).get(Integer.parseInt(suffix)).length - 1];
-
-                    int count = 0;
-
-                    for (int j = 0; j < subnets.get(subnet).get(Integer.parseInt(suffix)).length; j++) {
-                        if (subnets.get(subnet).get(Integer.parseInt(suffix))[j] != Integer.parseInt(suffix)) {
-                            copy[count] = subnets.get(subnet).get(Integer.parseInt(suffix))[j];
-                            count++;
-                        } else {
-                            continue;
-                        }
-                    }
-                    subnets.get(subnet).replace(Integer.parseInt(suffix), copy);
+                    subnets.get(subnet).put(Integer.parseInt(suffix), subnets.get(subnet).get(Integer.parseInt(suffix)).stream().filter(e -> e != Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())); // We ensure above
                 }
             }
+
         } finally {
             mutex.unlock();
         }
