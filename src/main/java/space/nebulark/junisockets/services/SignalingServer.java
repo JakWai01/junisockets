@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -545,9 +546,12 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static HashMap<String, HashMap<Integer, Integer[]>> subnets = new HashMap<String, HashMap<Integer, Integer[]>>();
+    private static ReentrantLock mutex = new ReentrantLock();
 
     private static String createIPAddress(String subnet) {
         logger.trace("Creating IP address" + subnet);
+
+        mutex.lock();
 
         try {
             if (!subnets.containsKey(subnet)) {
@@ -584,14 +588,14 @@ public class SignalingServer extends WebSocketServer {
             return toIPAddress(subnet, newSuffix);
 
         } finally {
-            // release lock (mutex)
+            mutex.unlock();
         }
     }
 
     private static String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.trace("Creating TCP address" + ipAddress);
 
-        // lock
+        mutex.lock();
 
         try {
             final String[] partsIPAddress = parseIPAddress(ipAddress);
@@ -634,14 +638,14 @@ public class SignalingServer extends WebSocketServer {
                 throw new SubnetDoesNotExist();
             }
         } finally {
-            // release()
+            mutex.unlock();
         }
     }
 
     private static void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         logger.trace("Claiming TCP address" + tcpAddress);
 
-        // lock
+        mutex.lock();
 
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
@@ -683,14 +687,15 @@ public class SignalingServer extends WebSocketServer {
                 throw new SubnetDoesNotExist();
             }
         } finally {
-            // release()
+            mutex.unlock();
         }
     }
 
     private static void removeIPAddress(String ipAddress) {
         logger.trace("Removing IP address" + ipAddress);
 
-        // lock
+        mutex.lock();
+
         try {
             final String[] partsIPAddress = parseIPAddress(ipAddress);
 
@@ -703,14 +708,15 @@ public class SignalingServer extends WebSocketServer {
                 }
             }
         } finally {
-            // release
+            mutex.unlock();
         }
     }
 
     private static void removeTCPAddress(String tcpAddress) {
         logger.trace("Removing TCP address" + tcpAddress);
 
-        // lock
+        mutex.lock();
+
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
@@ -737,7 +743,7 @@ public class SignalingServer extends WebSocketServer {
                 }
             }
         } finally {
-            // release();
+            mutex.unlock();
         }
     }
 
