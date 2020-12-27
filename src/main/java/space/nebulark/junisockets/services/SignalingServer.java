@@ -80,29 +80,51 @@ public class SignalingServer extends WebSocketServer {
 
             clients.remove(id);
 
-            for (int i = 0; i < aliases.size(); i++) {
-                String currentKey = (String) aliases.keySet().toArray()[i];
-                if (currentKey == id) {
-                    String key = currentKey;
-                    aliases.remove(key);
-                    removeIPAddress(key);
-                    removeTCPAddress(key);
+            final String targetId = id;
+            // for (int i = 0; i < aliases.size(); i++) {
+            //     String currentKey = (String) aliases.keySet().toArray()[i];
+            //     if (currentKey == id) {
+            //         String key = currentKey;
+            //         aliases.remove(key);
+            //         removeIPAddress(key);
+            //         removeTCPAddress(key);
 
-                    for (int j = 0; j < clients.size(); j++) {
+            //         for (int j = 0; j < clients.size(); j++) {
                         
+            //             try {
+            //                 send(clients.get(key), new Alias(id, key, false));
+            //             } catch (ClientClosed e) {
+            //                 e.printStackTrace();
+            //             };
+
+            //             logger.debug("Sent alias" + id + key);
+            //         }
+            //     }
+            // }
+
+            // Was soll dieser Alias hier machen?
+            aliases.forEach((clientId, alias) -> {
+                if (clientId == targetId) {
+                    // Unisockets removes with alias below
+                    aliases.remove(clientId);
+                    removeIPAddress(clientId);
+                    removeTCPAddress(clientId);
+
+                    clients.forEach( (key, client) -> {
+
                         try {
-                            send(clients.get(key), new Alias(id, key, false));
-                        } catch (ClientClosed e) {
-                            e.printStackTrace();
-                        };
+                            send(clients.get(key), new Alias(targetId, clientId, false));
+                        } catch (ClientClosed e1) {
+                            e1.printStackTrace();
+                        }
 
-                        logger.debug("Sent alias" + id + key);
-                    }
+                        logger.debug("Sent alias" + targetId + key);
+                    });
                 }
-            }
+            });
 
-            send(new Goodbye(id));
-            logger.debug("Sent alias" + id);
+            send(new Goodbye(targetId));
+            logger.debug("Sent alias" + targetId);
         } else {
             try {
                 throw new ClientDoesNotExist();
