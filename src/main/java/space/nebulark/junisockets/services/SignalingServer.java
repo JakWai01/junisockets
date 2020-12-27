@@ -443,20 +443,18 @@ public class SignalingServer extends WebSocketServer {
 
             logger.debug("Accepting shutdown" + data);
 
-            for (int i = 0; i < clients.size(); i++) {
-                Object key = clients.keySet().toArray()[i];
-
+            clients.forEach( (client, id) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(clients.get(key), new Alias((String) data.get("id"), (String) data.get("alias"), false));
+                        send(id, new Alias((String) data.get("id"), (String) data.get("alias"), false));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                    logger.debug("Sent alias" + data);
+                    logger.debug("Send alias" + id + data);
                 });
 
                 thread.start();
-            }
+            });
 
         } else {
             logger.debug("Rejecting shutdown, alias not taken or incorrect client ID" + data);
