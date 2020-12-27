@@ -436,7 +436,7 @@ public class SignalingServer extends WebSocketServer {
     private static void handleShutdown(JSONObject data) {
         logger.trace("Handling shutdown");
 
-        if (aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
+        if (aliases.containsKey(data.get("alias")) && aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
             removeTCPAddress((String) data.get("alias"));
             removeIPAddress((String) data.get("alias"));
