@@ -15,6 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.naming.PartialResultException;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
@@ -62,7 +64,7 @@ public class SignalingServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id = "";
-
+        // vielleicht bekommen wir einfach die falsche id raus?
         for (int i = 0; i < clients.size(); i++) {
             String currentKey = (String) clients.keySet().toArray()[i];
 
@@ -73,15 +75,25 @@ public class SignalingServer extends WebSocketServer {
 
         logger.debug("Registering goodbye " + id);
 
+        // that is not given apparently
+        logger.debug(clients.toString());
+
         if (clients.containsKey(id)) {
 
             clients.remove(id);
 
+            logger.debug(clients.toString());
+
+            // wird removed 
             final String targetId = id;
 
-            // Was soll dieser Alias hier machen?
+            logger.debug(aliases.toString());
+            
             aliases.forEach((clientId, alias) -> {
+                // wir finden keinen client, welcher der targetid entspricht
+                logger.debug(clientId + targetId);
                 if (clientId == targetId) {
+                    logger.debug("client equals targetId");
                     aliases.remove(clientId);
                     removeIPAddress(clientId);
                     removeTCPAddress(clientId);
@@ -94,13 +106,13 @@ public class SignalingServer extends WebSocketServer {
                             e1.printStackTrace();
                         }
 
-                        logger.debug("Sent alias" + targetId + key);
+                        logger.debug("Sent alias " + targetId + key);
                     });
                 }
             });
             send(new Goodbye(targetId));
 
-            logger.debug("Sent alias" + targetId);
+            logger.debug("Sent goodbye " + targetId);
         } else {
             try {
                 throw new ClientDoesNotExist();
@@ -138,7 +150,7 @@ public class SignalingServer extends WebSocketServer {
 
     private static void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
 
-        logger.trace("Handling operation: " + operation + conn);
+        logger.debug("Handling operation: " + operation + conn);
 
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
@@ -245,7 +257,7 @@ public class SignalingServer extends WebSocketServer {
 
     private static void handleKnock(JSONObject data, WebSocket conn) {
 
-        logger.trace("Handling knock");
+        logger.debug("Handling knock");
 
         String subnet = (String) data.get("subnet");
 
@@ -272,8 +284,10 @@ public class SignalingServer extends WebSocketServer {
             String existingId = (String) clients.keySet().toArray()[i];
             WebSocket existingClient = clients.get(existingId);
 
+            logger.debug("Existingid" + existingId + "id" + id);
             if (existingId != id) {
 
+                
                 Thread thread = new Thread(() -> {
                     try {
                         send(existingClient, new Greeting(existingId, id));
@@ -292,11 +306,11 @@ public class SignalingServer extends WebSocketServer {
 
         clients.put(id, conn);
 
-        logger.trace("Client connected" + id);
+        logger.debug("Client connected" + id);
     }
 
     public static void handleOffer(JSONObject data) {
-        logger.trace("Handling offer: " + data);
+        logger.debug("Handling offer: " + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
 
@@ -315,7 +329,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void handleAnswer(JSONObject data) {
-        logger.trace("Handling answer: " + data);
+        logger.debug("Handling answer: " + data);
 
         final WebSocket client = clients.get(data.get("offererId"));
 
@@ -334,7 +348,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void handleCandidate(JSONObject data) {
-        logger.trace("Handling candidate" + data);
+        logger.debug("Handling candidate" + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
 
@@ -353,7 +367,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void handleBind(JSONObject data) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
-        logger.trace("Handling bind" + data);
+        logger.debug("Handling bind " + data);
 
         if (aliases.containsKey(data.get("alias"))) {
             logger.debug("Rejecting bind, alias already taken" + data);
@@ -371,7 +385,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
 
         } else {
-            logger.debug("Accepting bind" + data);
+            logger.debug("Accepting bind " + data);
 
             claimTCPAddress((String) data.get("alias"));
 
@@ -393,20 +407,25 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void handleAccepting(JSONObject data) {
-        logger.trace("Handling accepting");
-
-        if (!aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != data.get("id")) {
+        logger.debug("Handling accepting");
+        logger.debug(aliases.toString());
+        logger.debug(aliases.get(data.get("alias")).getId());
+        logger.debug((String)data.get("id"));
+        if (false) {
+        //if (!aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != (String)data.get("id")) {
             logger.debug("Rejecting accepting, alias does not exist" + data);
         } else {
             logger.debug("Accepting accepting" + data);
 
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), true));
+            logger.debug(aliases.toString());
         }
     }
 
     private static void handleShutdown(JSONObject data) {
-        logger.trace("Handling shutdown");
+        logger.debug("Handling shutdown");
 
+        // or use || here. Go through code tomorrow
         if (aliases.containsKey(data.get("alias")) && aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
             removeTCPAddress((String) data.get("alias"));
@@ -446,8 +465,9 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
-        logger.trace("Handling connect");
+        logger.debug("Handling connect");
 
+        // hier kommt wahrscheinlich das falsche zurueck
         final String clientAlias = createTCPAddress((String) data.get("id"));
         final WebSocket client = clients.get(data.get("id"));
 
@@ -537,7 +557,7 @@ public class SignalingServer extends WebSocketServer {
     private static ReentrantLock mutex = new ReentrantLock();
 
     private static String createIPAddress(String subnet) {
-        logger.trace("Creating IP address" + subnet);
+        logger.debug("Creating IP address" + subnet);
 
         mutex.lock();
 
@@ -581,7 +601,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
-        logger.trace("Creating TCP address" + ipAddress);
+        logger.debug("Creating TCP address" + ipAddress);
 
         mutex.lock();
 
@@ -589,11 +609,13 @@ public class SignalingServer extends WebSocketServer {
             final String[] partsIPAddress = parseIPAddress(ipAddress);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+            // parse suffix directly to int
             String suffix = partsIPAddress[3];
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
 
+                    // can we sort a list?
                     subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a, b) -> a - b);
 
                     int newPort = 0;
@@ -619,14 +641,15 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
-        logger.trace("Claiming TCP address" + tcpAddress);
+        logger.debug("Claiming TCP address" + tcpAddress);
 
         mutex.lock();
 
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
+            logger.debug("partsTCP " + partsTCPAddress.length);
             final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
-
+            logger.debug("partsIP " + partsIPAddress.length);
             List<Integer> member = new ArrayList<Integer>();
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
@@ -637,10 +660,12 @@ public class SignalingServer extends WebSocketServer {
                     subnets.get(subnet).put(Integer.parseInt(suffix), member);
                 }
 
+                // funktioniert das ? ist das if vielleicht immer true?
                 if (subnets.get(subnet).get(Integer.parseInt(suffix)).stream()
                         .filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())
                         .size() == 0) {
                     subnets.get(subnet).get(Integer.parseInt(suffix)).add(Integer.parseInt(partsTCPAddress[1]));
+                    logger.debug("Port added to subnets " + partsTCPAddress[1]);
                 }
 
                 else {
@@ -657,7 +682,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void removeIPAddress(String ipAddress) {
-        logger.trace("Removing IP address" + ipAddress);
+        logger.debug("Removing IP address" + ipAddress);
 
         mutex.lock();
 
@@ -678,7 +703,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static void removeTCPAddress(String tcpAddress) {
-        logger.trace("Removing TCP address" + tcpAddress);
+        logger.debug("Removing TCP address" + tcpAddress);
 
         mutex.lock();
 
@@ -704,7 +729,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static String toIPAddress(String subnet, int suffix) {
-        logger.trace("Converting to IP address" + subnet + suffix);
+        logger.debug("Converting to IP address " + subnet + suffix);
 
         String ipAddress = subnet + "." + suffix;
 
@@ -712,7 +737,7 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static String toTCPAddress(String ipAddress, int port) {
-        logger.trace("Converting to TCP address" + ipAddress + port);
+        logger.debug("Converting to TCP address " + ipAddress + port);
 
         String tcpAddress = ipAddress + ":" + port;
 
@@ -720,13 +745,13 @@ public class SignalingServer extends WebSocketServer {
     }
 
     private static String[] parseIPAddress(String ipAddress) {
-        logger.trace("Parsing IP address" + ipAddress);
+        logger.debug("Parsing IP address " + ipAddress);
 
         return ipAddress.split(Pattern.quote("."));
     }
 
     private static String[] parseTCPAddress(String tcpAddress) {
-        logger.trace("Parsing TCP address" + tcpAddress);
+        logger.debug("Parsing TCP address " + tcpAddress);
 
         return tcpAddress.split(":");
     }
@@ -947,7 +972,7 @@ public class SignalingServer extends WebSocketServer {
 
     public void send(Goodbye operation) {
 
-        logger.debug("Sending" + operation);
+        logger.debug("Sending " + operation);
 
         JSONObject obj = new JSONObject();
         String jsonText;
