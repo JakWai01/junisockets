@@ -88,11 +88,11 @@ public class SignalingServer extends WebSocketServer {
             final String targetId = id;
 
             logger.debug(aliases.toString());
-            
+
             aliases.forEach((clientId, alias) -> {
                 // wir finden keinen client, welcher der targetid entspricht
-                logger.debug(clientId + targetId);
-                if (clientId == targetId) {
+                logger.debug(alias + targetId);
+                if (alias.getId().equals(targetId)) {
                     logger.debug("client equals targetId");
                     aliases.remove(clientId);
                     removeIPAddress(clientId);
@@ -411,8 +411,8 @@ public class SignalingServer extends WebSocketServer {
         logger.debug(aliases.toString());
         logger.debug(aliases.get(data.get("alias")).getId());
         logger.debug((String)data.get("id"));
-        if (false) {
-        //if (!aliases.containsKey(data.get("alias")) || aliases.get(data.get("alias")).getId() != (String)data.get("id")) {
+        //if (false) {
+        if (!aliases.containsKey(data.get("alias")) || !aliases.get(data.get("alias")).getId().equals((String)data.get("id"))) {
             logger.debug("Rejecting accepting, alias does not exist" + data);
         } else {
             logger.debug("Accepting accepting" + data);
