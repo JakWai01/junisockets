@@ -91,8 +91,6 @@ public class SignalingServer extends WebSocketServer {
 
             logger.debug(aliases.toString());
 
-            mutex.lock();
-
             aliases.forEach((clientId, alias) -> {
                 // wir finden keinen client, welcher der targetid entspricht
                 logger.debug(alias + targetId);
@@ -118,8 +116,6 @@ public class SignalingServer extends WebSocketServer {
                 }
             });
 
-            mutex.unlock();
-            
             send(new Goodbye(targetId));
 
             logger.debug("Sent goodbye " + targetId);
