@@ -94,8 +94,11 @@ public class SignalingServer extends WebSocketServer {
                 logger.debug(alias + targetId);
                 if (alias.getId().equals(targetId)) {
                     logger.debug("client equals targetId");
+                    // hier muss der key von alias.getId() rein
+                    logger.debug("clientid " + clientId);
+                    logger.debug(aliases.get(clientId));
                     aliases.remove(clientId);
-                    removeIPAddress(clientId);
+                    removeIPAddress(parseTCPAddress(clientId)[0]);
                     removeTCPAddress(clientId);
 
                     clients.forEach((key, client) -> {
@@ -471,7 +474,7 @@ public class SignalingServer extends WebSocketServer {
         final String clientAlias = createTCPAddress((String) data.get("id"));
         final WebSocket client = clients.get(data.get("id"));
 
-        if (!aliases.containsKey(data.get("remoteAlias")) || aliases.get(data.get("remoteAlias")).getAccepting()) {
+        if (!aliases.containsKey(data.get("remoteAlias")) || !aliases.get(data.get("remoteAlias")).getAccepting()) {
             logger.debug("Rejecting connect, remote alias does not exists" + data);
 
             removeTCPAddress(clientAlias);
@@ -714,6 +717,7 @@ public class SignalingServer extends WebSocketServer {
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             String suffix = partsIPAddress[3];
 
+            logger.debug("before");
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
                     subnets.get(subnet).put(Integer.parseInt(suffix),
@@ -722,6 +726,7 @@ public class SignalingServer extends WebSocketServer {
                                     .collect(Collectors.toList())); // We ensure above
                 }
             }
+            logger.debug("after");
 
         } finally {
             mutex.unlock();
