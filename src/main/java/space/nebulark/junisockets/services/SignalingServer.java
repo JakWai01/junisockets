@@ -35,6 +35,8 @@ import space.nebulark.junisockets.operations.*;
 
 public class SignalingServer extends WebSocketServer {
 
+    private static HashMap<String, HashMap<Integer, List<Integer>>> subnets = new HashMap<String, HashMap<Integer, List<Integer>>>();
+    private static ReentrantLock mutex = new ReentrantLock();
     private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
     private static HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
     private static boolean isOpen = false;
@@ -84,10 +86,12 @@ public class SignalingServer extends WebSocketServer {
 
             logger.debug(clients.toString());
 
-            // wird removed 
+            // wird removed
             final String targetId = id;
 
             logger.debug(aliases.toString());
+
+            mutex.lock();
 
             aliases.forEach((clientId, alias) -> {
                 // wir finden keinen client, welcher der targetid entspricht
@@ -113,6 +117,9 @@ public class SignalingServer extends WebSocketServer {
                     });
                 }
             });
+
+            mutex.unlock();
+            
             send(new Goodbye(targetId));
 
             logger.debug("Sent goodbye " + targetId);
@@ -279,7 +286,7 @@ public class SignalingServer extends WebSocketServer {
                 e.printStackTrace();
             }
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
-            
+
             return;
         }
 
@@ -290,7 +297,6 @@ public class SignalingServer extends WebSocketServer {
             logger.debug("Existingid" + existingId + "id" + id);
             if (existingId != id) {
 
-                
                 Thread thread = new Thread(() -> {
                     try {
                         send(existingClient, new Greeting(existingId, id));
@@ -413,9 +419,10 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Handling accepting");
         logger.debug(aliases.toString());
         logger.debug(aliases.get(data.get("alias")).getId());
-        logger.debug((String)data.get("id"));
-        //if (false) {
-        if (!aliases.containsKey(data.get("alias")) || !aliases.get(data.get("alias")).getId().equals((String)data.get("id"))) {
+        logger.debug((String) data.get("id"));
+        // if (false) {
+        if (!aliases.containsKey(data.get("alias"))
+                || !aliases.get(data.get("alias")).getId().equals((String) data.get("id"))) {
             logger.debug("Rejecting accepting, alias does not exist" + data);
         } else {
             logger.debug("Accepting accepting" + data);
@@ -555,9 +562,6 @@ public class SignalingServer extends WebSocketServer {
             thread4.start();
         }
     }
-
-    private static HashMap<String, HashMap<Integer, List<Integer>>> subnets = new HashMap<String, HashMap<Integer, List<Integer>>>();
-    private static ReentrantLock mutex = new ReentrantLock();
 
     private static String createIPAddress(String subnet) {
         logger.debug("Creating IP address" + subnet);
@@ -1008,7 +1012,7 @@ public class SignalingServer extends WebSocketServer {
 
                 try {
                     clients.get(key).sendPing();
-                } catch(WebsocketNotConnectedException e) {
+                } catch (WebsocketNotConnectedException e) {
                     e.printStackTrace();
                 }
             }
@@ -1020,7 +1024,7 @@ public class SignalingServer extends WebSocketServer {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         BasicConfigurator.configure();
-        
+
         int port = 8892;
         try {
             port = Integer.parseInt(args[0]);
