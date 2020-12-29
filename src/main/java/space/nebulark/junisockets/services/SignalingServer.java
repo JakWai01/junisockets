@@ -611,34 +611,4 @@ public class SignalingServer extends WebSocketServer {
 
         }
     }
-
-    public static void main(String[] args) throws InterruptedException, IOException {
-        BasicConfigurator.configure();
-        int port = 8892;
-        String host = "localhost";
-
-        try {
-            port = Integer.parseInt(args[0]);
-        } catch (Exception ex) {
-        }
-
-        try {
-            host = args[1];
-        } catch (Exception ex) {
-        }
-
-        SignalingServer s = new SignalingServer(new InetSocketAddress(host, port));
-        s.start();
-        System.out.println("SignalingServer started on port: " + s.getPort());
-
-        BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            String in = sysin.readLine();
-            s.broadcast(in);
-            if (in.equals("exit")) {
-                s.stop(1000);
-                break;
-            }
-        }
-    }
 }
