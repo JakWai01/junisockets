@@ -41,7 +41,7 @@ public class SignalingServer extends WebSocketServer {
     private static boolean isOpen = false;
     private IPAddress ip = new IPAddress(logger, mutex, subnets);
     private TCPAddress tcpAddress = new TCPAddress(logger, mutex, subnets, ip);
-    Operation op = new Operation(clients, aliases, ip, tcpAddress, logger);
+    ServerOperation op = new ServerOperation(clients, aliases, ip, tcpAddress, logger);
 
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
@@ -151,8 +151,29 @@ public class SignalingServer extends WebSocketServer {
 
     }
 
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
+    }
+
+    @Override
+    public void onStart() {
+        setConnectionLostTimeout(0);
+        setConnectionLostTimeout(100);
+
+        Thread thread = new Thread(() -> {
+            try {
+                ping();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        thread.start();
+    }
+
     private void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
-        
+
         logger.debug("Handling operation: " + operation + conn);
 
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
@@ -235,27 +256,6 @@ public class SignalingServer extends WebSocketServer {
         } else {
             throw new UnimplementedOperation(operation.get("opcode"));
         }
-    }
-
-    @Override
-    public void onError(WebSocket conn, Exception ex) {
-        ex.printStackTrace();
-    }
-
-    @Override
-    public void onStart() {
-        setConnectionLostTimeout(0);
-        setConnectionLostTimeout(100);
-
-        Thread thread = new Thread(() -> {
-            try {
-                ping();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        thread.start();
     }
 
     public static void ping() throws InterruptedException {

@@ -21,16 +21,17 @@ import space.nebulark.junisockets.operations.Candidate;
 import space.nebulark.junisockets.operations.Goodbye;
 import space.nebulark.junisockets.operations.Greeting;
 import space.nebulark.junisockets.operations.IOperation;
+import space.nebulark.junisockets.operations.IServerOperation;
 import space.nebulark.junisockets.operations.Offer;
 
-public class Operation {
+public class ServerOperation implements IServerOperation {
     ConcurrentHashMap<String, WebSocket> clients;
     ConcurrentHashMap<String, MAlias> aliases;
     IPAddress ip;
     TCPAddress tcpAddress;
     Logger logger;
 
-    public Operation(ConcurrentHashMap<String, WebSocket> clients, ConcurrentHashMap<String, MAlias> aliases, IPAddress ip, TCPAddress tcpAddress, Logger logger) {
+    public ServerOperation(ConcurrentHashMap<String, WebSocket> clients, ConcurrentHashMap<String, MAlias> aliases, IPAddress ip, TCPAddress tcpAddress, Logger logger) {
         this.clients = clients;
         this.aliases = aliases;
         this.ip = ip;
@@ -338,7 +339,6 @@ public class Operation {
         logger.debug("Sending " + operation);
 
         Thread thread = new Thread(() -> {
-            //broadcast(operation.getAsJSON(operation));
             clients.forEach( (id, conn) -> {
                 conn.send(operation.getAsJSON(operation));
             });
