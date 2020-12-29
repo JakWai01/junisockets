@@ -2,14 +2,14 @@ package space.nebulark.junisockets.operations;
 
 public interface IAlias extends IOperation {
    
-    public String getId();
+    String getId();
 
-    public String getAlias();
+    String getAlias();
 
-    public String getClientConnectionId();
+    String getClientConnectionId();
 
-    public boolean getSet();
+    boolean getSet();
 
-    public boolean getIsConnectionAlias();
+    boolean getIsConnectionAlias();
 
 }

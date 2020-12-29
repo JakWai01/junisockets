@@ -2,10 +2,10 @@ package space.nebulark.junisockets.operations;
 
 public interface IAnswer extends IOperation {
    
-    public String getOffererId();
+    String getOffererId();
 
-    public String getAnswererId();
+    String getAnswererId();
 
-    public String getAnswer();
+    String getAnswer();
 
 }

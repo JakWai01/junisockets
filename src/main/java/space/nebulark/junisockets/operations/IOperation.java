@@ -2,5 +2,5 @@ package space.nebulark.junisockets.operations;
 
 public interface IOperation {
    
-    public String getAsJSON(Object operation);
+    String getAsJSON(Object operation);
 }
