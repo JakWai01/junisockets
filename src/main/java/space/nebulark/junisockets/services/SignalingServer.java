@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,10 +36,10 @@ import space.nebulark.junisockets.operations.*;
 
 public class SignalingServer extends WebSocketServer {
 
-    private static HashMap<String, HashMap<Integer, List<Integer>>> subnets = new HashMap<String, HashMap<Integer, List<Integer>>>();
+    private static ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
     private static ReentrantLock mutex = new ReentrantLock();
-    private static HashMap<String, WebSocket> clients = new HashMap<String, WebSocket>();
-    private static HashMap<String, MAlias> aliases = new HashMap<String, MAlias>();
+    private static ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
+    private static ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();
     private static boolean isOpen = false;
 
     final static Logger logger = Logger.getLogger(SignalingServer.class);
@@ -90,7 +91,7 @@ public class SignalingServer extends WebSocketServer {
             final String targetId = id;
 
             logger.debug(aliases.toString());
-
+            
             aliases.forEach((clientId, alias) -> {
                 // wir finden keinen client, welcher der targetid entspricht
                 logger.debug(alias + targetId);
@@ -802,7 +803,7 @@ public class SignalingServer extends WebSocketServer {
             m1.put("offererId", (String) operation.getOffererId());
             m1.put("answererId", operation.getAnswererId());
             m1.put("offer", operation.getOffer());
-
+            
             obj.put("data", m1);
             obj.put("opcode", operation.opcode.getValue());
 
