@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-public class IPAddress {
+public class IPAddress implements IIPAddress{
     
     Logger logger;
     ReentrantLock mutex;
