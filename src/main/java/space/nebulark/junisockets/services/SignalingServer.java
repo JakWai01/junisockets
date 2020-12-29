@@ -30,6 +30,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import space.nebulark.junisockets.addresses.IPAddress;
 import space.nebulark.junisockets.errors.*;
 import space.nebulark.junisockets.models.*;
 import space.nebulark.junisockets.operations.*;
@@ -41,6 +42,7 @@ public class SignalingServer extends WebSocketServer {
     private static ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
     private static ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();
     private static boolean isOpen = false;
+    private IPAddress ip = new IPAddress(logger, mutex, subnets);
 
     final static Logger logger = Logger.getLogger(SignalingServer.class);
 
@@ -101,7 +103,7 @@ public class SignalingServer extends WebSocketServer {
                     logger.debug("clientid " + clientId);
                     logger.debug(aliases.get(clientId));
                     aliases.remove(clientId);
-                    removeIPAddress(parseTCPAddress(clientId)[0]);
+                    ip.removeIPAddress(parseTCPAddress(clientId)[0]);
                     removeTCPAddress(clientId);
 
                     clients.forEach((key, client) -> {
@@ -155,7 +157,7 @@ public class SignalingServer extends WebSocketServer {
 
     }
 
-    private static void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
+    private void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
 
         logger.debug("Handling operation: " + operation + conn);
 
@@ -262,13 +264,13 @@ public class SignalingServer extends WebSocketServer {
         thread.start();
     }
 
-    private static void handleKnock(JSONObject data, WebSocket conn) {
+    private void handleKnock(JSONObject data, WebSocket conn) {
 
         logger.debug("Handling knock");
 
         String subnet = (String) data.get("subnet");
 
-        final String id = createIPAddress(subnet);
+        final String id = ip.createIPAddress(subnet);
 
         if (id != "-1") {
             try {
@@ -372,7 +374,7 @@ public class SignalingServer extends WebSocketServer {
 
     }
 
-    private static void handleBind(JSONObject data) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    private void handleBind(JSONObject data) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         logger.debug("Handling bind " + data);
 
         if (aliases.containsKey(data.get("alias"))) {
@@ -429,14 +431,14 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static void handleShutdown(JSONObject data) {
+    private void handleShutdown(JSONObject data) {
         logger.debug("Handling shutdown");
 
         // or use || here. Go through code tomorrow
         if (aliases.containsKey(data.get("alias")) && aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
             removeTCPAddress((String) data.get("alias"));
-            removeIPAddress((String) data.get("alias"));
+            ip.removeIPAddress((String) data.get("alias"));
 
             logger.debug("Accepting shutdown" + data);
 
@@ -471,7 +473,7 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
+    private void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.debug("Handling connect");
 
         // hier kommt wahrscheinlich das falsche zurueck
@@ -560,57 +562,57 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static String createIPAddress(String subnet) {
-        logger.debug("Creating IP address" + subnet);
+    // private static String createIPAddress(String subnet) {
+    //     logger.debug("Creating IP address" + subnet);
 
-        mutex.lock();
+    //     mutex.lock();
 
-        try {
+    //     try {
 
-            if (!subnets.containsKey(subnet)) {
-                subnets.put(subnet, new HashMap<Integer, List<Integer>>());
-            }
+    //         if (!subnets.containsKey(subnet)) {
+    //             subnets.put(subnet, new HashMap<Integer, List<Integer>>());
+    //         }
 
-            List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
+    //         List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
 
-            Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2));
+    //         Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2));
 
-            boolean foundSuffix = false;
-            int newSuffix = 0;
+    //         boolean foundSuffix = false;
+    //         int newSuffix = 0;
 
-            for (int i = 0; i < existingMembersSorted.size(); i++) {
-                if (i != existingMembersSorted.get(i)) {
-                    newSuffix = i;
-                    foundSuffix = true;
-                }
-            }
+    //         for (int i = 0; i < existingMembersSorted.size(); i++) {
+    //             if (i != existingMembersSorted.get(i)) {
+    //                 newSuffix = i;
+    //                 foundSuffix = true;
+    //             }
+    //         }
 
-            if (!foundSuffix) {
-                newSuffix = existingMembersSorted.size();
-            }
+    //         if (!foundSuffix) {
+    //             newSuffix = existingMembersSorted.size();
+    //         }
 
-            if (newSuffix > 255) {
-                return "-1";
-            }
+    //         if (newSuffix > 255) {
+    //             return "-1";
+    //         }
 
-            List<Integer> newMember = new ArrayList<Integer>();
+    //         List<Integer> newMember = new ArrayList<Integer>();
 
-            subnets.get(subnet).put(newSuffix, newMember); // We ensure above
+    //         subnets.get(subnet).put(newSuffix, newMember); // We ensure above
 
-            return toIPAddress(subnet, newSuffix);
+    //         return toIPAddress(subnet, newSuffix);
 
-        } finally {
-            mutex.unlock();
-        }
-    }
+    //     } finally {
+    //         mutex.unlock();
+    //     }
+    // }
 
-    private static String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
+    private String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.debug("Creating TCP address" + ipAddress);
 
         mutex.lock();
 
         try {
-            final String[] partsIPAddress = parseIPAddress(ipAddress);
+            final String[] partsIPAddress = ip.parseIPAddress(ipAddress);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             // parse suffix directly to int
@@ -632,7 +634,7 @@ public class SignalingServer extends WebSocketServer {
 
                     subnets.get(subnet).get(Integer.parseInt(suffix)).add(newPort);
 
-                    return toTCPAddress(toIPAddress(subnet, Integer.parseInt(suffix)), newPort);
+                    return toTCPAddress(ip.toIPAddress(subnet, Integer.parseInt(suffix)), newPort);
                 } else {
                     throw new SuffixDoesNotExist();
                 }
@@ -644,7 +646,7 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    private void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         logger.debug("Claiming TCP address" + tcpAddress);
 
         mutex.lock();
@@ -652,7 +654,7 @@ public class SignalingServer extends WebSocketServer {
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
             logger.debug("partsTCP " + partsTCPAddress.length);
-            final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
+            final String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
             logger.debug("partsIP " + partsIPAddress.length);
             List<Integer> member = new ArrayList<Integer>();
 
@@ -685,35 +687,35 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static void removeIPAddress(String ipAddress) {
-        logger.debug("Removing IP address" + ipAddress);
+    // private static void removeIPAddress(String ipAddress) {
+    //     logger.debug("Removing IP address" + ipAddress);
 
-        mutex.lock();
+    //     mutex.lock();
 
-        try {
-            final String[] partsIPAddress = parseIPAddress(ipAddress);
+    //     try {
+    //         final String[] partsIPAddress = parseIPAddress(ipAddress);
 
-            String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            String suffix = partsIPAddress[3];
+    //         String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+    //         String suffix = partsIPAddress[3];
 
-            if (subnets.containsKey(subnet)) {
-                if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    subnets.get(subnet).remove(Integer.parseInt(suffix)); // We ensure above
-                }
-            }
-        } finally {
-            mutex.unlock();
-        }
-    }
+    //         if (subnets.containsKey(subnet)) {
+    //             if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
+    //                 subnets.get(subnet).remove(Integer.parseInt(suffix)); // We ensure above
+    //             }
+    //         }
+    //     } finally {
+    //         mutex.unlock();
+    //     }
+    // }
 
-    private static void removeTCPAddress(String tcpAddress) {
+    private void removeTCPAddress(String tcpAddress) {
         logger.debug("Removing TCP address" + tcpAddress);
 
         mutex.lock();
 
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
-            final String[] partsIPAddress = parseIPAddress(partsTCPAddress[0]);
+            final String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             String suffix = partsIPAddress[3];
@@ -734,13 +736,13 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static String toIPAddress(String subnet, int suffix) {
-        logger.debug("Converting to IP address " + subnet + suffix);
+    // private static String toIPAddress(String subnet, int suffix) {
+    //     logger.debug("Converting to IP address " + subnet + suffix);
 
-        String ipAddress = subnet + "." + suffix;
+    //     String ipAddress = subnet + "." + suffix;
 
-        return ipAddress;
-    }
+    //     return ipAddress;
+    // }
 
     private static String toTCPAddress(String ipAddress, int port) {
         logger.debug("Converting to TCP address " + ipAddress + port);
@@ -750,11 +752,11 @@ public class SignalingServer extends WebSocketServer {
         return tcpAddress;
     }
 
-    private static String[] parseIPAddress(String ipAddress) {
-        logger.debug("Parsing IP address " + ipAddress);
+    // private static String[] parseIPAddress(String ipAddress) {
+    //     logger.debug("Parsing IP address " + ipAddress);
 
-        return ipAddress.split(Pattern.quote("."));
-    }
+    //     return ipAddress.split(Pattern.quote("."));
+    // }
 
     private static String[] parseTCPAddress(String tcpAddress) {
         logger.debug("Parsing TCP address " + tcpAddress);
