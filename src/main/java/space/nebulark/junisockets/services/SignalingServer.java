@@ -569,20 +569,20 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
+            // JSONObject obj = new JSONObject();
+            // String jsonText;
 
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("id", (String) operation.getId());
-            m1.put("rejected", operation.getRejected());
+            // Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
+            // m1.put("id", (String) operation.getId());
+            // m1.put("rejected", operation.getRejected());
 
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
+            // obj.put("data", m1);
+            // obj.put("opcode", operation.opcode.getValue());
 
-            jsonText = obj.toString();
+            // jsonText = obj.toString();
 
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -828,6 +828,8 @@ public class SignalingServer extends WebSocketServer {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
         }
+
+        // hier einfach den anderen constructor callen und davor die addresse aus host und port zusammensetzen
         SignalingServer s = new SignalingServer(port);
         s.start();
         System.out.println("SignalingServer started on port: " + s.getPort());
