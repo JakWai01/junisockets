@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public interface IAnswer {
+public interface IAnswer extends IOperation {
    
     public String getOffererId();
 

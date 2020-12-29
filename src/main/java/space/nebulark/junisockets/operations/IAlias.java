@@ -1,6 +1,6 @@
 package space.nebulark.junisockets.operations;
 
-public interface IAlias {
+public interface IAlias extends IOperation {
    
     public String getId();
 

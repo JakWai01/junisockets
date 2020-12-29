@@ -100,7 +100,7 @@ public class SignalingServer extends WebSocketServer {
             final String targetId = id;
 
             logger.debug(aliases.toString());
-            
+
             aliases.forEach((clientId, alias) -> {
                 logger.debug(alias + targetId);
                 if (alias.getId().equals(targetId)) {
@@ -569,18 +569,6 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            // JSONObject obj = new JSONObject();
-            // String jsonText;
-
-            // Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            // m1.put("id", (String) operation.getId());
-            // m1.put("rejected", operation.getRejected());
-
-            // obj.put("data", m1);
-            // obj.put("opcode", operation.opcode.getValue());
-
-            // jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
                 conn.send(operation.getAsJSON(operation));
             });
@@ -598,21 +586,8 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
-
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("offererId", (String) operation.getOffererId());
-            m1.put("answererId", operation.getAnswererId());
-            m1.put("offer", operation.getOffer());
-            
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
-
-            jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -628,21 +603,8 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
-
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("offererId", (String) operation.getOffererId());
-            m1.put("answererId", operation.getAnswererId());
-            m1.put("answer", operation.getAnswer());
-
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
-
-            jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -658,21 +620,8 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
-
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("offererId", (String) operation.getOffererId());
-            m1.put("answererId", operation.getAnswererId());
-            m1.put("candidate", operation.getCandidate());
-
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
-
-            jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -688,29 +637,8 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
-
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("id", (String) operation.getId());
-            m1.put("alias", operation.getAlias());
-            m1.put("set", operation.getSet());
-
-            if (operation.getClientConnectionId() != null) {
-                m1.put("clientConnectionId", operation.getClientConnectionId());
-            }
-
-            if (operation.getIsConnectionAlias()) {
-                m1.put("isConnectionAlias", operation.getIsConnectionAlias());
-            }
-
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
-
-            jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -726,20 +654,8 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
-
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("boundAlias", (String) operation.getBoundAlias());
-            m1.put("clientAlias", operation.getClientAlias());
-
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
-
-            jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -755,20 +671,8 @@ public class SignalingServer extends WebSocketServer {
 
         if (conn != null) {
 
-            JSONObject obj = new JSONObject();
-            String jsonText;
-
-            Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-            m1.put("offererId", (String) operation.getOffererId());
-            m1.put("answererId", operation.getAnswererId());
-
-            obj.put("data", m1);
-            obj.put("opcode", operation.opcode.getValue());
-
-            jsonText = obj.toString();
-
             Thread thread = new Thread(() -> {
-                conn.send(jsonText);
+                conn.send(operation.getAsJSON(operation));
             });
 
             thread.start();
@@ -782,19 +686,8 @@ public class SignalingServer extends WebSocketServer {
 
         logger.debug("Sending " + operation);
 
-        JSONObject obj = new JSONObject();
-        String jsonText;
-
-        Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
-        m1.put("id", operation.getId());
-
-        obj.put("data", m1);
-        obj.put("opcode", operation.opcode.getValue());
-
-        jsonText = obj.toString();
-
         Thread thread = new Thread(() -> {
-            broadcast(jsonText);
+            broadcast(operation.getAsJSON(operation));
         });
 
         thread.start();
@@ -829,7 +722,8 @@ public class SignalingServer extends WebSocketServer {
         } catch (Exception ex) {
         }
 
-        // hier einfach den anderen constructor callen und davor die addresse aus host und port zusammensetzen
+        // hier einfach den anderen constructor callen und davor die addresse aus host
+        // und port zusammensetzen
         SignalingServer s = new SignalingServer(port);
         s.start();
         System.out.println("SignalingServer started on port: " + s.getPort());
