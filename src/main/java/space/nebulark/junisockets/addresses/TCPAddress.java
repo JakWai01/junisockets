@@ -13,7 +13,7 @@ import space.nebulark.junisockets.errors.PortAlreadyAllocatedError;
 import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
 
-public class TCPAddress {
+public class TCPAddress implements ITCPAddress {
     
     Logger logger;
     ReentrantLock mutex;
