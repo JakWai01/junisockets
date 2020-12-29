@@ -34,16 +34,15 @@ import space.nebulark.junisockets.operations.Goodbye;
 
 public class SignalingServer extends WebSocketServer {
 
-    private static ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
-    private static ReentrantLock mutex = new ReentrantLock();
-    private static ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
-    private static ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();
-    private static boolean isOpen = false;
+    private final Logger logger = Logger.getLogger(SignalingServer.class);
+    private ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+    private ReentrantLock mutex = new ReentrantLock();
+    private ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
+    private ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();
+    private boolean isOpen = false;
     private IPAddress ip = new IPAddress(logger, mutex, subnets);
     private TCPAddress tcpAddress = new TCPAddress(logger, mutex, subnets, ip);
-    ServerOperation op = new ServerOperation(clients, aliases, ip, tcpAddress, logger);
-
-    final static Logger logger = Logger.getLogger(SignalingServer.class);
+    private ServerOperation op = new ServerOperation(clients, aliases, ip, tcpAddress, logger);
 
     public SignalingServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -258,7 +257,7 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    public static void ping() throws InterruptedException {
+    public void ping() throws InterruptedException {
 
         while (isOpen == true) {
 
