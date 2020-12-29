@@ -7,9 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -42,6 +40,7 @@ import space.nebulark.junisockets.operations.Candidate;
 import space.nebulark.junisockets.operations.ESignalingOperationCode;
 import space.nebulark.junisockets.operations.Goodbye;
 import space.nebulark.junisockets.operations.Greeting;
+import space.nebulark.junisockets.operations.IOperation;
 import space.nebulark.junisockets.operations.Offer;
 
 public class SignalingServer extends WebSocketServer {
@@ -564,134 +563,34 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
-    private static void send(WebSocket conn, Acknowledgement operation) throws ClientClosed {
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
-    private static void send(WebSocket conn, Offer operation) throws ClientClosed {
-
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
-    public static void send(WebSocket conn, Answer operation) throws ClientClosed {
-
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
-    public static void send(WebSocket conn, Candidate operation) throws ClientClosed {
-
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
-    public static void send(WebSocket conn, Alias operation) throws ClientClosed {
-
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
-    public static void send(WebSocket conn, Accept operation) throws ClientClosed {
-
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
-    public static void send(WebSocket conn, Greeting operation) throws ClientClosed {
-
-        logger.debug("Sending" + operation);
-
-        if (conn != null) {
-
-            Thread thread = new Thread(() -> {
-                conn.send(operation.getAsJSON(operation));
-            });
-
-            thread.start();
-
-        } else {
-            throw new ClientClosed();
-        }
-    }
-
     public void send(Goodbye operation) {
 
         logger.debug("Sending " + operation);
 
         Thread thread = new Thread(() -> {
             broadcast(operation.getAsJSON(operation));
+            logger.debug("Goodbye was send!");
         });
 
         thread.start();
 
+    }
+
+    public static < E extends IOperation> void send(WebSocket conn, E operation) throws ClientClosed {
+
+        logger.debug("Sending" + operation);
+
+        if (conn != null) {
+
+            Thread thread = new Thread(() -> {
+                conn.send(operation.getAsJSON(operation));
+            });
+
+            thread.start();
+
+        } else {
+            throw new ClientClosed();
+        }
     }
 
     public static void ping() throws InterruptedException {
