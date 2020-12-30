@@ -13,6 +13,7 @@ import space.nebulark.junisockets.operations.AliasTest;
 import space.nebulark.junisockets.operations.AnswerTest;
 import space.nebulark.junisockets.operations.CandidateTest;
 import space.nebulark.junisockets.operations.GoodbyeTest;
+import space.nebulark.junisockets.operations.GreetingTest;
 
 public class TestRunner {
    
@@ -26,6 +27,7 @@ public class TestRunner {
         Result result6 = JUnitCore.runClasses(AnswerTest.class);
         Result result7 = JUnitCore.runClasses(CandidateTest.class);
         Result result8 = JUnitCore.runClasses(GoodbyeTest.class);
+        Result result9 = JUnitCore.runClasses(GreetingTest.class);
 
         for(Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
@@ -59,6 +61,10 @@ public class TestRunner {
             System.out.println(failure.toString());
         }
 
+        for (Failure failure : result9.getFailures()) {
+            System.out.println(failure.toString());
+        }
+
         System.out.println(result.wasSuccessful());
         System.out.println(result2.wasSuccessful());
         System.out.println(result3.wasSuccessful());
@@ -67,5 +73,6 @@ public class TestRunner {
         System.out.println(result6.wasSuccessful());
         System.out.println(result7.wasSuccessful());
         System.out.println(result8.wasSuccessful());
+        System.out.println(result9.wasSuccessful());
     }
 }
