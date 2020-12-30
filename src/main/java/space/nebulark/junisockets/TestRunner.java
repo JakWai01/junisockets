@@ -9,6 +9,7 @@ import space.nebulark.junisockets.addresses.IPAddressTest;
 import space.nebulark.junisockets.addresses.TCPAddressTest;
 import space.nebulark.junisockets.operations.AcceptTest;
 import space.nebulark.junisockets.operations.AcknowledgementTest;
+import space.nebulark.junisockets.operations.AliasTest;
 
 public class TestRunner {
    
@@ -18,6 +19,7 @@ public class TestRunner {
         Result result2 = JUnitCore.runClasses(TCPAddressTest.class);
         Result result3 = JUnitCore.runClasses(AcceptTest.class);
         Result result4 = JUnitCore.runClasses(AcknowledgementTest.class);
+        Result result5 = JUnitCore.runClasses(AliasTest.class);
 
         for(Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
@@ -35,9 +37,14 @@ public class TestRunner {
             System.out.println(failure.toString());
         }
 
+        for (Failure failure : result5.getFailures()) {
+            System.out.println(failure.toString());
+        }
+
         System.out.println(result.wasSuccessful());
         System.out.println(result2.wasSuccessful());
         System.out.println(result3.wasSuccessful());
         System.out.println(result4.wasSuccessful());
+        System.out.println(result5.wasSuccessful());
     }
 }
