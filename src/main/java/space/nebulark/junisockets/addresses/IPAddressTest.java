@@ -13,7 +13,32 @@ import space.nebulark.junisockets.services.SignalingServer;
 
 public class IPAddressTest {
    
-    // test toIPAddress and parser first
+    @Test public void testParseIPAddress() {
+
+        Logger logger = Logger.getLogger(SignalingServer.class);
+        ReentrantLock mutex = new ReentrantLock();
+        ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+        IPAddress ip = new IPAddress(logger, mutex, subnets);
+
+        String ipAddress = "127.0.0.1";
+
+        Assert.assertEquals(4, ip.parseIPAddress(ipAddress).length);
+    }
+
+    @Test 
+    public void testToIPAddress() {
+
+        Logger logger = Logger.getLogger(SignalingServer.class);
+        ReentrantLock mutex = new ReentrantLock();
+        ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+        IPAddress ip = new IPAddress(logger, mutex, subnets);
+    
+        String subnet = "127.0.0";
+        int suffix = 0;
+
+        Assert.assertEquals("127.0.0.0", ip.toIPAddress(subnet, suffix));
+    }
+
     @Test
     public void testCreateIPAddress() {
 
