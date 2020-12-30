@@ -8,6 +8,7 @@ import org.junit.runner.notification.Failure;
 import space.nebulark.junisockets.addresses.IPAddressTest;
 import space.nebulark.junisockets.addresses.TCPAddressTest;
 import space.nebulark.junisockets.operations.AcceptTest;
+import space.nebulark.junisockets.operations.AcknowledgementTest;
 
 public class TestRunner {
    
@@ -16,6 +17,7 @@ public class TestRunner {
         Result result = JUnitCore.runClasses(IPAddressTest.class);
         Result result2 = JUnitCore.runClasses(TCPAddressTest.class);
         Result result3 = JUnitCore.runClasses(AcceptTest.class);
+        Result result4 = JUnitCore.runClasses(AcknowledgementTest.class);
 
         for(Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
@@ -29,8 +31,13 @@ public class TestRunner {
             System.out.println(failure.toString());
         }
 
+        for (Failure failure : result4.getFailures()) {
+            System.out.println(failure.toString());
+        }
+
         System.out.println(result.wasSuccessful());
         System.out.println(result2.wasSuccessful());
         System.out.println(result3.wasSuccessful());
+        System.out.println(result4.wasSuccessful());
     }
 }
