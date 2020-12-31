@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.PropertyConfigurator;
 
 import space.nebulark.junisockets.services.SignalingServer;
 
 public class App {
   public static void main(String[] args) throws InterruptedException, IOException {
-        BasicConfigurator.configure();
+        PropertyConfigurator.configure("log4j.properties");
+
         int port = 8892;
         String host = "localhost";
 

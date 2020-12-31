@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.sound.sampled.Port;
-
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;

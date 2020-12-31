@@ -49,8 +49,7 @@ public class TestRunner {
 
         for (Failure failure : result5.getFailures()) {
             System.out.println(failure.toString());
-        }
-
+        } 
         for (Failure failure : result6.getFailures()) {
             System.out.println(failure.toString());
         }
