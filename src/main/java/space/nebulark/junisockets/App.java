@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import space.nebulark.junisockets.services.SignalingServer;
+import space.nebulark.junisockets.services.SignalingServerBuilder;
 
 public class App {
   public static void main(String[] args) throws InterruptedException, IOException {
@@ -15,6 +17,7 @@ public class App {
 
         int port = 8892;
         String host = "localhost";
+        Logger logger = Logger.getLogger(SignalingServer.class);
 
         try {
             port = Integer.parseInt(args[0]);
@@ -26,7 +29,12 @@ public class App {
         } catch (Exception ex) {
         }
 
-        SignalingServer s = new SignalingServer(new InetSocketAddress(host, port));
+        //SignalingServer s = new SignalingServer(Logger.getLogger(SignalingServer.class), new InetSocketAddress(host, port));
+
+        SignalingServerBuilder builder = new SignalingServerBuilder();
+        
+        SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
+        
         s.start();
         System.out.println("SignalingServer started on port: " + s.getPort());
 

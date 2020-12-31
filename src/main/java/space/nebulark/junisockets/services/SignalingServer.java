@@ -34,7 +34,7 @@ import space.nebulark.junisockets.operations.Goodbye;
 
 public class SignalingServer extends WebSocketServer {
 
-    private final Logger logger = Logger.getLogger(SignalingServer.class);
+    private Logger logger = Logger.getLogger(SignalingServer.class);
     private ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
     private ReentrantLock mutex = new ReentrantLock();
     private ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
@@ -46,11 +46,19 @@ public class SignalingServer extends WebSocketServer {
 
     public SignalingServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
+        setReuseAddr(true);
     }
 
     public SignalingServer(InetSocketAddress address) {
         super(address);
         setReuseAddr(true);
+    }
+
+    public SignalingServer(Logger logger, InetSocketAddress address) {
+        super(address);
+        setReuseAddr(true);
+
+        this.logger = logger;
     }
 
     public SignalingServer(int port, Draft_6455 draft) {
