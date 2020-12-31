@@ -50,4 +50,8 @@ public class Candidate implements ICandidate {
 
         return jsonText;
     }
+
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

@@ -50,4 +50,7 @@ public class Answer implements IAnswer {
         return jsonText;
     }
 
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

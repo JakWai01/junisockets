@@ -28,7 +28,7 @@ public class TCPAddress implements ITCPAddress {
     }
 
     public String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
-        logger.debug("Creating TCP address" + ipAddress);
+        logger.trace("Creating TCP address " + ipAddress);
 
         mutex.lock();
 
@@ -36,13 +36,12 @@ public class TCPAddress implements ITCPAddress {
             final String[] partsIPAddress = ip.parseIPAddress(ipAddress);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            // parse suffix directly to int
+            // parse suffix directly to int 
             String suffix = partsIPAddress[3];
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
 
-                    // can we sort a list?
                     subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a, b) -> a - b);
 
                     int newPort = 0;
@@ -68,15 +67,13 @@ public class TCPAddress implements ITCPAddress {
     }
 
     public void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
-        logger.debug("Claiming TCP address" + tcpAddress);
+        logger.trace("Claiming TCP address " + tcpAddress);
 
         mutex.lock();
 
         try {
             final String[] partsTCPAddress = parseTCPAddress(tcpAddress);
-            logger.debug("partsTCP " + partsTCPAddress.length);
             final String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
-            logger.debug("partsIP " + partsIPAddress.length);
             List<Integer> member = new ArrayList<Integer>();
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
@@ -87,12 +84,10 @@ public class TCPAddress implements ITCPAddress {
                     subnets.get(subnet).put(Integer.parseInt(suffix), member);
                 }
 
-                // funktioniert das ? ist das if vielleicht immer true?
                 if (subnets.get(subnet).get(Integer.parseInt(suffix)).stream()
                         .filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())
                         .size() == 0) {
                     subnets.get(subnet).get(Integer.parseInt(suffix)).add(Integer.parseInt(partsTCPAddress[1]));
-                    logger.debug("Port added to subnets " + partsTCPAddress[1]);
                 }
 
                 else {
@@ -109,7 +104,7 @@ public class TCPAddress implements ITCPAddress {
     }
 
     public void removeTCPAddress(String tcpAddress) {
-        logger.debug("Removing TCP address" + tcpAddress);
+        logger.trace("Removing TCP address " + tcpAddress);
 
         mutex.lock();
 
@@ -120,7 +115,6 @@ public class TCPAddress implements ITCPAddress {
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             String suffix = partsIPAddress[3];
 
-            logger.debug("before");
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
                     subnets.get(subnet).put(Integer.parseInt(suffix),
@@ -129,7 +123,6 @@ public class TCPAddress implements ITCPAddress {
                                     .collect(Collectors.toList())); // We ensure above
                 }
             }
-            logger.debug("after");
 
         } finally {
             mutex.unlock();
@@ -137,7 +130,7 @@ public class TCPAddress implements ITCPAddress {
     }
 
     public String toTCPAddress(String ipAddress, int port) {
-        logger.debug("Converting to TCP address " + ipAddress + port);
+        logger.trace("Converting to TCP address " + ipAddress + port);
 
         String tcpAddress = ipAddress + ":" + port;
 
@@ -145,7 +138,7 @@ public class TCPAddress implements ITCPAddress {
     }
 
     public String[] parseTCPAddress(String tcpAddress) {
-        logger.debug("Parsing TCP address " + tcpAddress);
+        logger.trace("Parsing TCP address " + tcpAddress);
 
         return tcpAddress.split(":");
     }

@@ -24,7 +24,7 @@ public class IPAddress implements IIPAddress{
     }
 
     public String createIPAddress(String subnet) {
-        logger.debug("Creating IP address" + subnet);
+        logger.trace("Creating IP address " + subnet);
 
         mutex.lock();
 
@@ -68,7 +68,7 @@ public class IPAddress implements IIPAddress{
     }
 
     public void removeIPAddress(String ipAddress) {
-        logger.debug("Removing IP address" + ipAddress);
+        logger.trace("Removing IP address " + ipAddress);
 
         mutex.lock();
 
@@ -89,7 +89,7 @@ public class IPAddress implements IIPAddress{
     }
 
     public String toIPAddress(String subnet, int suffix) {
-        logger.debug("Converting to IP address " + subnet + suffix);
+        logger.trace("Converting to IP address " + subnet + "." + suffix);
 
         String ipAddress = subnet + "." + suffix;
 
@@ -97,7 +97,7 @@ public class IPAddress implements IIPAddress{
     }
 
     public String[] parseIPAddress(String ipAddress) {
-        logger.debug("Parsing IP address " + ipAddress);
+        logger.trace("Parsing IP address " + ipAddress);
 
         return ipAddress.split(Pattern.quote("."));
     }

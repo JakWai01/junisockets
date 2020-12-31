@@ -82,4 +82,7 @@ public class Alias implements IAlias {
         return jsonText;
     }
 
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

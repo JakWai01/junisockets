@@ -42,4 +42,8 @@ public class Accept implements IAccept {
 
         return jsonText;
     }
+
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

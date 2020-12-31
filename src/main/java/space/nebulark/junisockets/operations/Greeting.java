@@ -41,4 +41,8 @@ public class Greeting implements IGreeting {
 
         return jsonText;
     }
+
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

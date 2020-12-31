@@ -68,7 +68,7 @@ public class ServerOperation implements IServerOperation {
             String existingId = (String) clients.keySet().toArray()[i];
             WebSocket existingClient = clients.get(existingId);
 
-            logger.debug("Existingid" + existingId + "id" + id);
+            logger.debug("Existingid " + existingId + " id " + id);
             if (existingId != id) {
 
                 Thread thread = new Thread(() -> {
@@ -77,7 +77,7 @@ public class ServerOperation implements IServerOperation {
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                    logger.debug("Sent greeting" + existingId + id);
+                    logger.debug("Sent greeting " + existingId + " " + id);
                 });
 
                 thread.start();
@@ -85,11 +85,9 @@ public class ServerOperation implements IServerOperation {
             }
         }
 
-        System.out.println(id);
-
         clients.put(id, conn);
 
-        logger.debug("Client connected" + id);
+        logger.debug("Client connected " + id);
     }
 
     public void handleOffer(JSONObject data) {
@@ -104,7 +102,7 @@ public class ServerOperation implements IServerOperation {
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
-            logger.debug("Sent offer" + data.get("offererId") + data.get("answererId") + data.get("offer"));
+            logger.debug("Sent offer " + data.get("offererId") + " " + data.get("answererId") + " " + data.get("offer"));
         });
 
         thread.start();
@@ -123,7 +121,7 @@ public class ServerOperation implements IServerOperation {
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
-            logger.debug("Send answer" + data);
+            logger.debug("Send answer " + data);
         });
 
         thread.start();
@@ -131,7 +129,7 @@ public class ServerOperation implements IServerOperation {
     }
 
     public void handleCandidate(JSONObject data) {
-        logger.debug("Handling candidate" + data);
+        logger.debug("Handling candidate " + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
 
@@ -142,7 +140,7 @@ public class ServerOperation implements IServerOperation {
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
-            logger.debug("Sent candidate" + data);
+            logger.debug("Sent candidate " + data);
         });
 
         thread.start();
@@ -153,7 +151,7 @@ public class ServerOperation implements IServerOperation {
         logger.debug("Handling bind " + data);
 
         if (aliases.containsKey(data.get("alias"))) {
-            logger.debug("Rejecting bind, alias already taken" + data);
+            logger.debug("Rejecting bind, alias already taken " + data);
 
             final WebSocket client = clients.get(data.get("id"));
 
@@ -180,7 +178,7 @@ public class ServerOperation implements IServerOperation {
                         send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                     } catch (ClientClosed e) {
                         e.printStackTrace();
-                        logger.debug("Sent alias" + data);
+                        logger.debug("Sent alias " + data);
                     }
                 });
 
@@ -191,17 +189,14 @@ public class ServerOperation implements IServerOperation {
 
     public void handleAccepting(JSONObject data) {
         logger.debug("Handling accepting");
-        logger.debug(aliases.toString());
-        logger.debug(aliases.get(data.get("alias")).getId());
-        logger.debug((String) data.get("id"));
+        
         if (!aliases.containsKey(data.get("alias"))
                 || !aliases.get(data.get("alias")).getId().equals((String) data.get("id"))) {
-            logger.debug("Rejecting accepting, alias does not exist" + data);
+            logger.debug("Rejecting accepting, alias does not exist " + data);
         } else {
-            logger.debug("Accepting accepting" + data);
+            logger.debug("Accepting accepting " + data);
 
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), true));
-            logger.debug(aliases.toString());
         }
     }
 
@@ -213,7 +208,7 @@ public class ServerOperation implements IServerOperation {
             tcpAddress.removeTCPAddress((String) data.get("alias"));
             ip.removeIPAddress((String) data.get("alias"));
 
-            logger.debug("Accepting shutdown" + data);
+            logger.debug("Accepting shutdown " + data);
 
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
@@ -222,14 +217,14 @@ public class ServerOperation implements IServerOperation {
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
-                    logger.debug("Send alias" + id + data);
+                    logger.debug("Send alias " + id + data);
                 });
 
                 thread.start();
             });
 
         } else {
-            logger.debug("Rejecting shutdown, alias not taken or incorrect client ID" + data);
+            logger.debug("Rejecting shutdown, alias not taken or incorrect client ID " + data);
 
             final WebSocket client = clients.get(data.get("id"));
 
@@ -253,7 +248,7 @@ public class ServerOperation implements IServerOperation {
         final WebSocket client = clients.get(data.get("id"));
 
         if (!aliases.containsKey(data.get("remoteAlias")) || !aliases.get(data.get("remoteAlias")).getAccepting()) {
-            logger.debug("Rejecting connect, remote alias does not exists" + data);
+            logger.debug("Rejecting connect, remote alias does not exists " + data);
 
             tcpAddress.removeTCPAddress(clientAlias);
 
@@ -269,7 +264,7 @@ public class ServerOperation implements IServerOperation {
             thread.start();
 
         } else {
-            logger.debug("Accepting connect" + data);
+            logger.debug("Accepting connect " + data);
 
             aliases.put(clientAlias, new MAlias((String) data.get("id"), false));
 
@@ -282,12 +277,12 @@ public class ServerOperation implements IServerOperation {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
+                logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage);
             });
 
             thread.start();
 
-            logger.debug("Sent alias for connection to client" + data + clientAliasMessage);
+            logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage);
 
             final MAlias serverId = aliases.get(data.get("remoteAlias"));
             final WebSocket server = clients.get(serverId.getId());
@@ -300,7 +295,7 @@ public class ServerOperation implements IServerOperation {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                logger.debug("Sent alias for connection to server" + data + serverAliasMessage);
+                logger.debug("Sent alias for connection to server " + data + " " + serverAliasMessage);
             });
 
             thread2.start();
@@ -313,7 +308,7 @@ public class ServerOperation implements IServerOperation {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                logger.debug("Sent accept to server" + data + serverAcceptMessage);
+                logger.debug("Sent accept to server " + data + " " + serverAcceptMessage);
             });
 
             thread3.start();
@@ -327,7 +322,7 @@ public class ServerOperation implements IServerOperation {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                logger.debug("Sent alias for server to client" + data + serverALiasForClientsMessage);
+                logger.debug("Sent alias for server to client " + data + " " + serverALiasForClientsMessage);
             });
 
             thread4.start();
@@ -352,7 +347,7 @@ public class ServerOperation implements IServerOperation {
 
     public <E extends IOperation> void send(WebSocket conn, E operation) throws ClientClosed {
 
-        logger.debug("Sending" + operation);
+        logger.debug("Sending " + operation.getOpCode());
 
         if (conn != null) {
 

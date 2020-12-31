@@ -42,4 +42,8 @@ public class Acknowledgement implements IAcknowledgement {
 
             return jsonText;
     }
+
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

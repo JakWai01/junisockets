@@ -77,24 +77,14 @@ public class SignalingServer extends WebSocketServer {
 
         logger.debug("Registering goodbye " + id);
 
-        logger.debug(clients.toString());
-
         if (clients.containsKey(id)) {
 
             clients.remove(id);
 
-            logger.debug(clients.toString());
-
             final String targetId = id;
 
-            logger.debug(aliases.toString());
-
             aliases.forEach((clientId, alias) -> {
-                logger.debug(alias + targetId);
                 if (alias.getId().equals(targetId)) {
-                    logger.debug("client equals targetId");
-                    logger.debug("clientid " + clientId);
-                    logger.debug(aliases.get(clientId));
                     aliases.remove(clientId);
                     ip.removeIPAddress(tcpAddress.parseTCPAddress(clientId)[0]);
                     tcpAddress.removeTCPAddress(clientId);
@@ -123,7 +113,7 @@ public class SignalingServer extends WebSocketServer {
             }
         }
 
-        logger.debug("Client disconnected" + id);
+        logger.debug("Client disconnected " + id);
 
         isOpen = false;
     }
@@ -177,7 +167,7 @@ public class SignalingServer extends WebSocketServer {
 
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
-            logger.debug("Received knock");
+            logger.trace("Received knock");
 
             Thread thread = new Thread(() -> {
                 op.handleKnock((JSONObject) operation.get("data"), conn);
@@ -185,7 +175,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
 
-            logger.debug("Received offer");
+            logger.trace("Received offer");
 
             Thread thread = new Thread(() -> {
                 op.handleOffer((JSONObject) operation.get("data"));
@@ -193,7 +183,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ANSWER.getValue())) {
 
-            logger.debug("Received answer");
+            logger.trace("Received answer");
 
             Thread thread = new Thread(() -> {
                 op.handleAnswer((JSONObject) operation.get("data"));
@@ -201,7 +191,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.CANDIDATE.getValue())) {
 
-            logger.debug("Received candidate");
+            logger.trace("Received candidate");
 
             Thread thread = new Thread(() -> {
                 op.handleCandidate((JSONObject) operation.get("data"));
@@ -209,7 +199,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.BIND.getValue())) {
 
-            logger.debug("Received bind");
+            logger.trace("Received bind");
 
             Thread thread = new Thread(() -> {
                 try {
@@ -224,7 +214,7 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPTING.getValue())) {
 
-            logger.debug("Received accepting");
+            logger.trace("Received accepting");
 
             Thread thread = new Thread(() -> {
                 op.handleAccepting((JSONObject) operation.get("data"));
@@ -232,14 +222,14 @@ public class SignalingServer extends WebSocketServer {
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.SHUTDOWN.getValue())) {
 
-            logger.debug("Received shutdown");
+            logger.trace("Received shutdown");
 
             Thread thread = new Thread(() -> {
                 op.handleShutdown((JSONObject) operation.get("data"));
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.CONNECT.getValue())) {
-            logger.debug("Received connect");
+            logger.trace("Received connect");
 
             Thread thread = new Thread(() -> {
                 try {
@@ -270,7 +260,7 @@ public class SignalingServer extends WebSocketServer {
                     e.printStackTrace();
                 }
             }
-
+            logger.debug("Sent ping!");
             Thread.sleep(30000);
 
         }

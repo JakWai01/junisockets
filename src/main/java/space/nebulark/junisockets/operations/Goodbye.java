@@ -35,4 +35,8 @@ public class Goodbye implements IGoodbye {
         
         return jsonText;
     }
+
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }

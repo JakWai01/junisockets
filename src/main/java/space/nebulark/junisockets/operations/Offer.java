@@ -49,4 +49,8 @@ public class Offer implements IOffer {
 
         return jsonText;
     }
+
+    public String getOpCode() {
+        return opcode.toString();
+    }
 }
