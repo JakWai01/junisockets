@@ -61,6 +61,39 @@ public class TCPAddressTest {
         ip.createIPAddress(subnet);
 
         Assert.assertEquals("127.0.0.0:0", tcp.createTCPAddress(ipAddress));
+
+        
+
+        
+    }
+
+    @Test(expected = SubnetDoesNotExist.class)
+    public void testCreateTCPAddressSubnetDoesNotExist() throws SuffixDoesNotExist, SubnetDoesNotExist {
+        // test SuffixDoesNotExist Error
+        Logger logger2 = Logger.getLogger(SignalingServer.class);
+        ReentrantLock mutex2 = new ReentrantLock();
+        ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets2 = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+        IPAddress ip2 = new IPAddress(logger2, mutex2, subnets2);
+        TCPAddress tcp2 = new TCPAddress(logger2, mutex2, subnets2, ip2);
+        String ipAddress2 = "127.0.0.0";
+
+        tcp2.createTCPAddress(ipAddress2);
+    }
+
+    @Test(expected = SuffixDoesNotExist.class) 
+    public void testCreateTCPAddressSuffixDoesNotExist() throws SuffixDoesNotExist, SubnetDoesNotExist {
+         // test SuffixDoesNotExist Error
+        Logger logger2 = Logger.getLogger(SignalingServer.class);
+        ReentrantLock mutex2 = new ReentrantLock();
+        ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets2 = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+        IPAddress ip2 = new IPAddress(logger2, mutex2, subnets2);
+        TCPAddress tcp2 = new TCPAddress(logger2, mutex2, subnets2, ip2);
+        String ipAddress2 = "127.0.0.1";
+
+        String subnet = "127.0.0";
+        ip2.createIPAddress(subnet);
+        tcp2.createTCPAddress(ipAddress2);
+
     }
 
     @Test
