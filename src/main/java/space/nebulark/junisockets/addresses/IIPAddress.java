@@ -6,8 +6,8 @@ public interface IIPAddress {
 
     void removeIPAddress(String ipAddress);
 
-    public String toIPAddress(String subnet, int suffix);
+    String toIPAddress(String subnet, int suffix);
 
-    public String[] parseIPAddress(String ipAddress);
+    String[] parseIPAddress(String ipAddress);
     
 }
