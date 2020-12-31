@@ -44,15 +44,15 @@ public class SignalingServer extends WebSocketServer {
     private TCPAddress tcpAddress = new TCPAddress(logger, mutex, subnets, ip);
     private ServerOperation op = new ServerOperation(clients, aliases, ip, tcpAddress, logger);
 
-    public SignalingServer(int port) throws UnknownHostException {
-        super(new InetSocketAddress(port));
-        setReuseAddr(true);
-    }
+    // public SignalingServer(int port) throws UnknownHostException {
+    //     super(new InetSocketAddress(port));
+    //     setReuseAddr(true);
+    // }
 
-    public SignalingServer(InetSocketAddress address) {
-        super(address);
-        setReuseAddr(true);
-    }
+    // public SignalingServer(InetSocketAddress address) {
+    //     super(address);
+    //     setReuseAddr(true);
+    // }
 
     public SignalingServer(Logger logger, InetSocketAddress address) {
         super(address);
@@ -61,9 +61,9 @@ public class SignalingServer extends WebSocketServer {
         this.logger = logger;
     }
 
-    public SignalingServer(int port, Draft_6455 draft) {
-        super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
-    }
+    // public SignalingServer(int port, Draft_6455 draft) {
+    //     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
+    // }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
