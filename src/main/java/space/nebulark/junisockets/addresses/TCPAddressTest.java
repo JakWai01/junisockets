@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.sound.sampled.Port;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -61,9 +63,6 @@ public class TCPAddressTest {
         ip.createIPAddress(subnet);
 
         Assert.assertEquals("127.0.0.0:0", tcp.createTCPAddress(ipAddress));
-
-        
-
         
     }
 
@@ -116,6 +115,34 @@ public class TCPAddressTest {
         tcp.claimTCPAddress(tcpAddress);
 
         Assert.assertEquals(true, subnets.get(subnet).get(Integer.parseInt(suffix)).contains(Integer.parseInt(partsTCPAddress[1])));
+    }
+
+    @Test(expected = PortAlreadyAllocatedError.class) 
+    public void testClaimTCPAddressPortAlreadtAllocated() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+        Logger logger = Logger.getLogger(SignalingServer.class);
+        ReentrantLock mutex = new ReentrantLock();
+        ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+        IPAddress ip = new IPAddress(logger, mutex, subnets);
+        TCPAddress tcp = new TCPAddress(logger, mutex, subnets, ip);
+        String tcpAddress = "127.0.0.0:0";
+        String subnet = "127.0.0";
+
+        ip.createIPAddress(subnet);
+        tcp.claimTCPAddress(tcpAddress);
+        tcp.claimTCPAddress(tcpAddress);
+
+    }
+
+    @Test(expected = SubnetDoesNotExist.class)
+    public void testClaimTCPAddressSubnetDoesNotExist() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+        Logger logger = Logger.getLogger(SignalingServer.class);
+        ReentrantLock mutex = new ReentrantLock();
+        ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+        IPAddress ip = new IPAddress(logger, mutex, subnets);
+        TCPAddress tcp = new TCPAddress(logger, mutex, subnets, ip);
+
+        String tcpAddress = "127.0.0.0:0";
+        tcp.claimTCPAddress(tcpAddress);
     }
 
     @Test
