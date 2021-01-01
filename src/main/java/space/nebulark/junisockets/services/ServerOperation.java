@@ -122,9 +122,9 @@ public class ServerOperation implements IServerOperation {
 
         Thread thread = new Thread(() -> {
             try {
-                send(client, new Answer((String) data.get("offererId"), (String) data.get("answererId"),
-                  (String) data.get("answer")));
-                //send(client, (Answer) new OperationFactory(ESignalingOperationCode.ANSWER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("aswererId")).setAnswer((String) data.get("answer")).getOperation());       
+                //send(client, new Answer((String) data.get("offererId"), (String) data.get("answererId"),
+                //  (String) data.get("answer")));
+                send(client, (Answer) new OperationFactory(ESignalingOperationCode.ANSWER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setAnswer((String) data.get("answer")).getOperation());       
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
