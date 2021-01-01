@@ -45,6 +45,8 @@ public class IPAddress implements IIPAddress{
                 if (i != existingMembersSorted.get(i)) {
                     newSuffix = i;
                     foundSuffix = true;
+
+                    break;
                 }
             }
 

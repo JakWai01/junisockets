@@ -91,10 +91,12 @@ public class SignalingServer extends WebSocketServer {
 
             final String targetId = id;
 
+            // This does not get called when just connecting
             aliases.forEach((clientId, alias) -> {
                 if (alias.getId().equals(targetId)) {
                     aliases.remove(clientId);
                     ip.removeIPAddress(tcpAddress.parseTCPAddress(clientId)[0]);
+                    logger.debug("after ip");
                     tcpAddress.removeTCPAddress(clientId);
 
                     clients.forEach((key, client) -> {
@@ -109,6 +111,9 @@ public class SignalingServer extends WebSocketServer {
                     });
                 }
             });
+
+            // Added that line below
+            ip.removeIPAddress(tcpAddress.parseTCPAddress(id)[0]);
 
             op.send(new Goodbye(targetId));
 
