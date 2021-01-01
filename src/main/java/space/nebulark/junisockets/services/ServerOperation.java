@@ -281,9 +281,9 @@ public class ServerOperation implements IServerOperation {
 
             aliases.put(clientAlias, new MAlias((String) data.get("id"), false));
 
-            final Alias clientAliasMessage = new Alias((String) data.get("id"), clientAlias, true,
-                    (String) data.get("clientConnectionId"), true);
-
+            //final Alias clientAliasMessage = new Alias((String) data.get("id"), clientAlias, true,
+            //        (String) data.get("clientConnectionId"), true);
+            final Alias clientAliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias(clientAlias).setSet(true).setClientConnectionId((String) data.get("clientConnectionId")).setIsConnectionAlias(true).getOperation();
             Thread thread = new Thread(() -> {
                 try {
                     send(client, clientAliasMessage);
@@ -300,7 +300,8 @@ public class ServerOperation implements IServerOperation {
             final MAlias serverId = aliases.get(data.get("remoteAlias"));
             final WebSocket server = clients.get(serverId.getId());
 
-            final Alias serverAliasMessage = new Alias((String) data.get("id"), clientAlias, true);
+            //final Alias serverAliasMessage = new Alias((String) data.get("id"), clientAlias, true);
+            final Alias serverAliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias(clientAlias).setSet(true).getOperation();
 
             Thread thread2 = new Thread(() -> {
                 try {
@@ -313,8 +314,8 @@ public class ServerOperation implements IServerOperation {
 
             thread2.start();
 
-            final Accept serverAcceptMessage = new Accept((String) data.get("remoteAlias"), clientAlias);
-
+            //final Accept serverAcceptMessage = new Accept((String) data.get("remoteAlias"), clientAlias);
+            final Accept serverAcceptMessage = (Accept) new OperationFactory(ESignalingOperationCode.ACCEPT).setBoundAlias((String) data.get("remoteAlias")).setClientAlias(clientAlias).getOperation();
             Thread thread3 = new Thread(() -> {
                 try {
                     send(server, serverAcceptMessage);
@@ -326,16 +327,16 @@ public class ServerOperation implements IServerOperation {
 
             thread3.start();
 
-            final Alias serverALiasForClientsMessage = new Alias((String) serverId.getId(),
-                    (String) data.get("remoteAlias"), true, (String) data.get("clientConnectionId"));
-
+            //final Alias serverALiasForClientsMessage = new Alias((String) serverId.getId(),
+            //        (String) data.get("remoteAlias"), true, (String) data.get("clientConnectionId"));
+            final Alias serverAliasForClientsMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) serverId.getId()).setAlias((String) data.get("remoteAlias")).setSet(true).setClientConnectionId((String) data.get("clientConnectionId")).getOperation();
             Thread thread4 = new Thread(() -> {
                 try {
-                    send(client, serverALiasForClientsMessage);
+                    send(client, serverAliasForClientsMessage);
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                logger.debug("Sent alias for server to client " + data + " " + serverALiasForClientsMessage);
+                logger.debug("Sent alias for server to client " + data + " " + serverAliasForClientsMessage);
             });
 
             thread4.start();

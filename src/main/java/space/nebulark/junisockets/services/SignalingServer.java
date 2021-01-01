@@ -104,8 +104,8 @@ public class SignalingServer extends WebSocketServer {
                     clients.forEach((key, client) -> {
 
                         try {
-                            op.send(clients.get(key), new Alias(targetId, clientId, false));
-                            //op.send(clients.get(key), (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId(targetId).setAlias(clientId).setSet(false).getOperation());
+                            //op.send(clients.get(key), new Alias(targetId, clientId, false));
+                            op.send(clients.get(key), (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId(targetId).setAlias(clientId).setSet(false).getOperation());
                         } catch (ClientClosed e1) {
                             e1.printStackTrace();
                         }
@@ -118,8 +118,8 @@ public class SignalingServer extends WebSocketServer {
             // Added that line below
             ip.removeIPAddress(tcpAddress.parseTCPAddress(id)[0]);
 
-            op.send(new Goodbye(targetId));
-            //op.send((Goodbye) new OperationFactory(ESignalingOperationCode.GOODBYE).setId(targetId).getOperation());
+            //op.send(new Goodbye(targetId));
+            op.send((Goodbye) new OperationFactory(ESignalingOperationCode.GOODBYE).setId(targetId).getOperation());
 
             logger.debug("Sent goodbye " + targetId);
         } else {
