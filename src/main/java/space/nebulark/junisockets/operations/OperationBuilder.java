@@ -5,11 +5,11 @@ public class OperationBuilder {
     private String boundAlias;
     private String clientAlias;
     private String id;
-    private boolean rejected;
+    private Boolean rejected;
     private String alias;
     private String clientConnectionId;
-    private boolean set;
-    private boolean isConnectionAlias;
+    private Boolean set;
+    private Boolean isConnectionAlias;
     private String offererId;
     private String answererId;
     private String answer;
@@ -31,7 +31,7 @@ public class OperationBuilder {
         return this;
     }
 
-    public OperationBuilder setRejected(boolean rejected) {
+    public OperationBuilder setRejected(Boolean rejected) {
         this.rejected = rejected;
         return this;
     }
@@ -46,12 +46,12 @@ public class OperationBuilder {
         return this;
     }
 
-    public OperationBuilder setSet(boolean set) {
+    public OperationBuilder setSet(Boolean set) {
         this.set = set;
         return this;
     }
 
-    public OperationBuilder setIsConnectionAlias(boolean isConnectionAlias) {
+    public OperationBuilder setIsConnectionAlias(Boolean isConnectionAlias) {
         this.isConnectionAlias = isConnectionAlias;
         return this;
     }
@@ -79,6 +79,33 @@ public class OperationBuilder {
     public OperationBuilder setOffer(String offer) {
         this.offer = offer;
         return this;
+    }
+
+    public Object build() {
+        
+        if (boundAlias != null && clientAlias != null) {
+            return new Accept(boundAlias, clientAlias);
+        } else if (id != null && rejected != null) { 
+            return new Acknowledgement(id, rejected);
+        } else if (id != null && alias != null && clientConnectionId != null && set != null && isConnectionAlias != null) {
+            return new Alias(id, alias, set, clientConnectionId, isConnectionAlias);
+        } else if (offererId != null && answererId != null && answer != null) {
+            return new Answer(offererId, answererId, answer);
+        } else if (offererId != null && answererId != null && candidate != null) {
+            return new Candidate(offererId, answererId, candidate);
+        }  else if (offererId != null && answererId != null && offer != null) {
+            return new Offer(offererId, answererId, offer);
+        } else if (offererId != null && answererId != null) {
+            return new Greeting(offererId, answererId);
+        }  else if (id != null && alias != null && set != null && clientConnectionId != null) {
+            return new Alias(id, alias, set, clientConnectionId);
+        } else if (id != null && alias != null && set != null) {
+            return new Alias(id, alias, set);
+        } else if (id != null) {
+            return new Goodbye(id);
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
 }
