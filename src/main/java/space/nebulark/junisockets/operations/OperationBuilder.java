@@ -84,7 +84,7 @@ public class OperationBuilder {
     public Object build() {
         
         if (boundAlias != null && clientAlias != null) {
-            return new Accept(boundAlias, clientAlias);
+             return new Accept(boundAlias, clientAlias);
         } else if (id != null && rejected != null) { 
             return new Acknowledgement(id, rejected);
         } else if (id != null && alias != null && clientConnectionId != null && set != null && isConnectionAlias != null) {
