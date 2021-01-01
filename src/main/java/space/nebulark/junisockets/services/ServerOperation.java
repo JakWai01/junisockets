@@ -51,14 +51,12 @@ public class ServerOperation implements IServerOperation {
 
         if (id != "-1") {
             try {
-                //send(conn, new Acknowledgement(id, false));
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                //send(conn, new Acknowledgement(id, true));
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
                 e.printStackTrace();
@@ -77,7 +75,6 @@ public class ServerOperation implements IServerOperation {
 
                 Thread thread = new Thread(() -> {
                     try {
-                        //send(existingClient, new Greeting(existingId, id));
                         send(existingClient, (Greeting) new OperationFactory(ESignalingOperationCode.GREETING).setOffererId(existingId).setAnswererId(id).getOperation());
                     } catch (ClientClosed e) {
                         e.printStackTrace();
@@ -102,9 +99,7 @@ public class ServerOperation implements IServerOperation {
 
         Thread thread = new Thread(() -> {
             try {
-                send(client, new Offer((String) data.get("offererId"), (String) data.get("answererId"),
-                        (String) data.get("offer")));
-                //send(client, (Offer) new OperationFactory(ESignalingOperationCode.OFFER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setOffer((String) data.get("offer")).getOperation());
+                send(client, (Offer) new OperationFactory(ESignalingOperationCode.OFFER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setOffer((String) data.get("offer")).getOperation());
             } catch (ClientClosed e) {
                 e.printStackTrace();
             }
@@ -122,8 +117,6 @@ public class ServerOperation implements IServerOperation {
 
         Thread thread = new Thread(() -> {
             try {
-                //send(client, new Answer((String) data.get("offererId"), (String) data.get("answererId"),
-                //  (String) data.get("answer")));
                 send(client, (Answer) new OperationFactory(ESignalingOperationCode.ANSWER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setAnswer((String) data.get("answer")).getOperation());       
             } catch (ClientClosed e) {
                 e.printStackTrace();
@@ -142,8 +135,6 @@ public class ServerOperation implements IServerOperation {
 
         Thread thread = new Thread(() -> {
             try {
-                //send(client, new Candidate((String) data.get("offererId"), (String) data.get("answererId"),
-                //      (String) data.get("candidate")));
                 send(client, (Candidate) new OperationFactory(ESignalingOperationCode.CANDIDATE).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setCandidate((String) data.get("candidate")).getOperation());
             } catch (ClientClosed e) {
                 e.printStackTrace();
@@ -165,7 +156,6 @@ public class ServerOperation implements IServerOperation {
 
             Thread thread = new Thread(() -> {
                 try {
-                   //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
                    send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
@@ -184,7 +174,6 @@ public class ServerOperation implements IServerOperation {
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                         send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                     } catch (ClientClosed e) {
                         e.printStackTrace();
@@ -223,7 +212,6 @@ public class ServerOperation implements IServerOperation {
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
                         send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                     } catch (ClientClosed e) {
                         e.printStackTrace();
@@ -241,7 +229,6 @@ public class ServerOperation implements IServerOperation {
 
             Thread thread = new Thread(() -> {
                 try {
-                    //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
                     send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
@@ -266,8 +253,6 @@ public class ServerOperation implements IServerOperation {
 
             Thread thread = new Thread(() -> {
                 try {
-                    //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false,
-                    //        (String) data.get("clientConnectionId")));
                     send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
@@ -281,8 +266,6 @@ public class ServerOperation implements IServerOperation {
 
             aliases.put(clientAlias, new MAlias((String) data.get("id"), false));
 
-            //final Alias clientAliasMessage = new Alias((String) data.get("id"), clientAlias, true,
-            //        (String) data.get("clientConnectionId"), true);
             final Alias clientAliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias(clientAlias).setSet(true).setClientConnectionId((String) data.get("clientConnectionId")).setIsConnectionAlias(true).getOperation();
             Thread thread = new Thread(() -> {
                 try {
@@ -300,7 +283,6 @@ public class ServerOperation implements IServerOperation {
             final MAlias serverId = aliases.get(data.get("remoteAlias"));
             final WebSocket server = clients.get(serverId.getId());
 
-            //final Alias serverAliasMessage = new Alias((String) data.get("id"), clientAlias, true);
             final Alias serverAliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias(clientAlias).setSet(true).getOperation();
 
             Thread thread2 = new Thread(() -> {
@@ -314,7 +296,6 @@ public class ServerOperation implements IServerOperation {
 
             thread2.start();
 
-            //final Accept serverAcceptMessage = new Accept((String) data.get("remoteAlias"), clientAlias);
             final Accept serverAcceptMessage = (Accept) new OperationFactory(ESignalingOperationCode.ACCEPT).setBoundAlias((String) data.get("remoteAlias")).setClientAlias(clientAlias).getOperation();
             Thread thread3 = new Thread(() -> {
                 try {
@@ -327,8 +308,6 @@ public class ServerOperation implements IServerOperation {
 
             thread3.start();
 
-            //final Alias serverALiasForClientsMessage = new Alias((String) serverId.getId(),
-            //        (String) data.get("remoteAlias"), true, (String) data.get("clientConnectionId"));
             final Alias serverAliasForClientsMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) serverId.getId()).setAlias((String) data.get("remoteAlias")).setSet(true).setClientConnectionId((String) data.get("clientConnectionId")).getOperation();
             Thread thread4 = new Thread(() -> {
                 try {

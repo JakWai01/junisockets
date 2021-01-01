@@ -1,8 +1,6 @@
 package space.nebulark.junisockets.services;
 
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,8 +8,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -31,7 +27,6 @@ import space.nebulark.junisockets.models.MAlias;
 import space.nebulark.junisockets.operations.Alias;
 import space.nebulark.junisockets.operations.ESignalingOperationCode;
 import space.nebulark.junisockets.operations.Goodbye;
-import space.nebulark.junisockets.operations.OperationBuilder;
 import space.nebulark.junisockets.operations.OperationFactory;
 
 public class SignalingServer extends WebSocketServer {
@@ -46,26 +41,12 @@ public class SignalingServer extends WebSocketServer {
     private TCPAddress tcpAddress = new TCPAddress(logger, mutex, subnets, ip);
     private ServerOperation op = new ServerOperation(clients, aliases, ip, tcpAddress, logger);
 
-    // public SignalingServer(int port) throws UnknownHostException {
-    //     super(new InetSocketAddress(port));
-    //     setReuseAddr(true);
-    // }
-
-    // public SignalingServer(InetSocketAddress address) {
-    //     super(address);
-    //     setReuseAddr(true);
-    // }
-
     public SignalingServer(Logger logger, InetSocketAddress address) {
         super(address);
         setReuseAddr(true);
 
         this.logger = logger;
     }
-
-    // public SignalingServer(int port, Draft_6455 draft) {
-    //     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
-    // }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -93,18 +74,15 @@ public class SignalingServer extends WebSocketServer {
 
             final String targetId = id;
 
-            // This does not get called when just connecting
             aliases.forEach((clientId, alias) -> {
                 if (alias.getId().equals(targetId)) {
                     aliases.remove(clientId);
-                    //ip.removeIPAddress(tcpAddress.parseTCPAddress(clientId)[0]);
                     logger.debug("after ip");
                     tcpAddress.removeTCPAddress(clientId);
 
                     clients.forEach((key, client) -> {
 
                         try {
-                            //op.send(clients.get(key), new Alias(targetId, clientId, false));
                             op.send(clients.get(key), (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId(targetId).setAlias(clientId).setSet(false).getOperation());
                         } catch (ClientClosed e1) {
                             e1.printStackTrace();
@@ -115,10 +93,8 @@ public class SignalingServer extends WebSocketServer {
                 }
             });
 
-            // Added that line below
             ip.removeIPAddress(tcpAddress.parseTCPAddress(id)[0]);
 
-            //op.send(new Goodbye(targetId));
             op.send((Goodbye) new OperationFactory(ESignalingOperationCode.GOODBYE).setId(targetId).getOperation());
 
             logger.debug("Sent goodbye " + targetId);
