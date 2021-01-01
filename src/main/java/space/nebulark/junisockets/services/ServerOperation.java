@@ -165,8 +165,8 @@ public class ServerOperation implements IServerOperation {
 
             Thread thread = new Thread(() -> {
                 try {
-                   send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
-                   //send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
+                   //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
+                   send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
@@ -184,8 +184,8 @@ public class ServerOperation implements IServerOperation {
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
-                        //send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
+                        //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
+                        send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                         logger.debug("Sent alias " + data);
@@ -223,8 +223,8 @@ public class ServerOperation implements IServerOperation {
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
-                        send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
-                        //send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
+                        //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false));
+                        send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                     }
@@ -241,8 +241,8 @@ public class ServerOperation implements IServerOperation {
 
             Thread thread = new Thread(() -> {
                 try {
-                    send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
-                    //send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
+                    //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), true));
+                    send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
@@ -266,9 +266,9 @@ public class ServerOperation implements IServerOperation {
 
             Thread thread = new Thread(() -> {
                 try {
-                    send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false,
-                            (String) data.get("clientConnectionId")));
-                    //send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation());
+                    //send(client, new Alias((String) data.get("id"), (String) data.get("alias"), false,
+                    //        (String) data.get("clientConnectionId")));
+                    send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
