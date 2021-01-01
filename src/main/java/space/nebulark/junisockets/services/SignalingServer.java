@@ -31,6 +31,8 @@ import space.nebulark.junisockets.models.MAlias;
 import space.nebulark.junisockets.operations.Alias;
 import space.nebulark.junisockets.operations.ESignalingOperationCode;
 import space.nebulark.junisockets.operations.Goodbye;
+import space.nebulark.junisockets.operations.OperationBuilder;
+import space.nebulark.junisockets.operations.OperationFactory;
 
 public class SignalingServer extends WebSocketServer {
 
@@ -95,7 +97,7 @@ public class SignalingServer extends WebSocketServer {
             aliases.forEach((clientId, alias) -> {
                 if (alias.getId().equals(targetId)) {
                     aliases.remove(clientId);
-                    ip.removeIPAddress(tcpAddress.parseTCPAddress(clientId)[0]);
+                    //ip.removeIPAddress(tcpAddress.parseTCPAddress(clientId)[0]);
                     logger.debug("after ip");
                     tcpAddress.removeTCPAddress(clientId);
 
@@ -103,6 +105,7 @@ public class SignalingServer extends WebSocketServer {
 
                         try {
                             op.send(clients.get(key), new Alias(targetId, clientId, false));
+                            //op.send(clients.get(key), (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId(targetId).setAlias(clientId).setSet(false).getOperation());
                         } catch (ClientClosed e1) {
                             e1.printStackTrace();
                         }
@@ -116,6 +119,7 @@ public class SignalingServer extends WebSocketServer {
             ip.removeIPAddress(tcpAddress.parseTCPAddress(id)[0]);
 
             op.send(new Goodbye(targetId));
+            //op.send((Goodbye) new OperationFactory(ESignalingOperationCode.GOODBYE).setId(targetId).getOperation());
 
             logger.debug("Sent goodbye " + targetId);
         } else {
