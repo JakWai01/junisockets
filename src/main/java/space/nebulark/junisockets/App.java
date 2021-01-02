@@ -3,7 +3,6 @@ package space.nebulark.junisockets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;

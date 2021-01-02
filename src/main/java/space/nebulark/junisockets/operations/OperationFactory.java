@@ -1,7 +1,5 @@
 package space.nebulark.junisockets.operations;
 
-import space.nebulark.junisockets.errors.UnimplementedOperation;
-
 public class OperationFactory {
 
     // der else kann nicht eintreten

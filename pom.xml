@@ -82,6 +82,7 @@
     <artifactId>log4j-core</artifactId>
     <version>2.14.0</version>
   </dependency>
+
  <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
@@ -92,22 +93,21 @@
       <artifactId>junit-jupiter</artifactId>
       <version>5.7.0-M1</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>junit-jupiter-api</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-jupiter-params</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-jupiter-engine</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
+    <!-- <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>3.3.3</version>
@@ -126,8 +126,8 @@
           <groupId>org.objenesis</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <version>3.3.3</version>
@@ -138,7 +138,7 @@
           <groupId>org.junit.jupiter</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
+    </dependency> -->
   </dependencies>
   
 
