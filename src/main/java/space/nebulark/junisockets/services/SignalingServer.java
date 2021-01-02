@@ -34,8 +34,8 @@ public class SignalingServer extends WebSocketServer {
     private Logger logger = Logger.getLogger(SignalingServer.class);
     private ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
     private ReentrantLock mutex = new ReentrantLock();
-    private ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
-    private ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();
+    public ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
+    public ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();
     private boolean isOpen = false;
     private IPAddress ip = new IPAddress(logger, mutex, subnets);
     private TCPAddress tcpAddress = new TCPAddress(logger, mutex, subnets, ip);
