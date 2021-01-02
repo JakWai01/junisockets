@@ -32,7 +32,7 @@ import space.nebulark.junisockets.operations.OperationFactory;
 public class SignalingServer extends WebSocketServer {
 
     private Logger logger = Logger.getLogger(SignalingServer.class);
-    private ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
+    public ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
     private ReentrantLock mutex = new ReentrantLock();
     public ConcurrentHashMap<String, WebSocket> clients = new ConcurrentHashMap<String, WebSocket>();
     public ConcurrentHashMap<String, MAlias> aliases = new ConcurrentHashMap<String, MAlias>();

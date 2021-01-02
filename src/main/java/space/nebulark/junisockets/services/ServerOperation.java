@@ -172,16 +172,16 @@ public class ServerOperation implements IServerOperation {
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
             clients.forEach((id, client) -> {
-                Thread thread = new Thread(() -> {
+                //Thread thread = new Thread(() -> {
                     try {
                         send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                     } catch (ClientClosed e) {
                         e.printStackTrace();
                         logger.debug("Sent alias " + data);
                     }
-                });
+                //});
 
-                thread.start();
+//                thread.start();
             });
         }
     }
@@ -252,7 +252,7 @@ public class ServerOperation implements IServerOperation {
             tcpAddress.removeTCPAddress(clientAlias);
 
             Thread thread = new Thread(() -> {
-                try {
+                try {                
                     send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation());
                 } catch (ClientClosed e) {
                     e.printStackTrace();
@@ -344,11 +344,11 @@ public class ServerOperation implements IServerOperation {
 
         if (conn != null) {
 
-            Thread thread = new Thread(() -> {
+            //Thread thread = new Thread(() -> {
                 conn.send(operation.getAsJSON(operation));
-            });
+            //});
 
-            thread.start();
+            //thread.start();
 
         } else {
             throw new ClientClosed();
