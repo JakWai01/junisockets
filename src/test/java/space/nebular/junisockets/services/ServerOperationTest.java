@@ -919,7 +919,7 @@ public class ServerOperationTest {
         IPAddress ip = new IPAddress(logger, mutex, s.subnets);
         TCPAddress tcp = new TCPAddress(logger, mutex, s.subnets, ip);
 
-        String tcpAddress = "127.0.0.0:1234";
+        String tcpAddress = "127.0.0.1:1234";
 
         String[] partsTCPAddress = tcp.parseTCPAddress(tcpAddress);
         String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
@@ -942,8 +942,7 @@ public class ServerOperationTest {
 
             @Override
             public void onMessage(String message) {
-                // Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"rejected\":false},\"opcode\":\"acknowledged\"}",
-                // message);
+
                 JSONParser parser = new JSONParser();
                 Object jsonObj = null;
 
@@ -957,43 +956,67 @@ public class ServerOperationTest {
 
                 System.out.println("cc " + message);
                 if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
-                    send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\"},\"opcode\":\"bind\"}");
+                    send("{\"data\":{\"id\":\"127.0.0.2\",\"clientConnectionId\":\"co1\",\"remoteAlias\":\"127.0.0.1:1234\"},\"opcode\":\"connect\"}");
                 }
 
-                if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
-                    // we need to handle the alias of the bind first and send the accepting then
-                    if (s.aliases.get((String) ((JSONObject) operation.get("data")).get("alias"))
-                            .getAccepting() == false) {
-                        send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\"},\"opcode\":\"accepting\"}");
-
-                        // here needs to be the new action because we dont get a return from accepting
-                        try {
-                            Thread.sleep(300);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-                        send("{\"data\":{\"id\":\"127.0.0.0\",\"clientConnectionId\":\"co1\",\"remoteAlias\":\"127.0.0.0:1234\"},\"opcode\":\"connect\"}");
-
-                    } 
-                    
-                }
-
-                
             }
 
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-                // Connect(id: 127.0.0.2, clientConnectionId: co1, remoteAlias: 127.0.0.1:1234)
-                // suffix needs to be 1 at id if we get 0 and 1 as suffix
-                // we need to bind before that
-               // that one needs to go to onmessage
-               //  send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\"},\"opcode\":\"accepting\"}");
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
             }
         };
 
+        WebSocketClient cc2 = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+              
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+
+                System.out.println("cc2 " + message);
+                if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+                    send("{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\"},\"opcode\":\"bind\"}");
+                }
+
+                if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
+                   send("{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\"},\"opcode\":\"accepting\"}");
+
+                    // here it stops because it has no task anymore
+                }
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+               send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        cc2.connect();
         cc.run();
         s.stop();
     }

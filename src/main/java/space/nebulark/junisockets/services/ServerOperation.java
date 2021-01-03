@@ -248,7 +248,7 @@ public class ServerOperation implements IServerOperation {
 
         if (!aliases.containsKey(data.get("remoteAlias")) || !aliases.get(data.get("remoteAlias")).getAccepting()) {
             logger.debug("Rejecting connect, remote alias does not exists " + data);
-
+            logger.debug(aliases.toString());
             tcpAddress.removeTCPAddress(clientAlias);
 
             Thread thread = new Thread(() -> {
