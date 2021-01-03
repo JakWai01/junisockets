@@ -205,7 +205,7 @@ public class ServerOperation implements IServerOperation {
         if (aliases.containsKey(data.get("alias")) && aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
             tcpAddress.removeTCPAddress((String) data.get("alias"));
-            ip.removeIPAddress((String) data.get("alias"));
+            ip.removeIPAddress(tcpAddress.parseTCPAddress((String) data.get("alias"))[0]);
 
             logger.debug("Accepting shutdown " + data);
 

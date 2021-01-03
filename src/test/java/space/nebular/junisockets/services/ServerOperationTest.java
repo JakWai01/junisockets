@@ -25,6 +25,7 @@ import space.nebulark.junisockets.services.SignalingServerBuilder;
 @RunWith(MockitoJUnitRunner.class)
 public class ServerOperationTest {
 
+    // check if clients contains id 
     @Test
     public void testHandleKnock() throws URISyntaxException, InterruptedException, IOException {
 
@@ -462,7 +463,148 @@ public class ServerOperationTest {
     public void handleAccepting() {
     }
 
-    public void handleShutdown() {
+    @Test
+    public void testHandleShutdown() throws IOException, InterruptedException, URISyntaxException {
+        PropertyConfigurator.configure("log4j.properties");
+        int port = 8892;
+        String host = "localhost";
+        Logger logger = Logger.getLogger(SignalingServer.class);
+
+        SignalingServerBuilder builder = new SignalingServerBuilder();
+
+        SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
+
+        ReentrantLock mutex = new ReentrantLock();
+        IPAddress ip = new IPAddress(logger, mutex, s.subnets);
+        TCPAddress tcp = new TCPAddress(logger, mutex, s.subnets, ip);
+
+        String tcpAddress = "127.0.0.0:0";
+
+        String[] partsTCPAddress = tcp.parseTCPAddress(tcpAddress);
+        String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
+
+        String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
+
+        ip.createIPAddress(subnet);
+
+        s.start();
+        WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+                
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+                System.out.println("cc2" + message);
+
+                if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+                    
+                    send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\"},\"opcode\":\"bind\"}");
+                    //send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\"},\"opcode\":\"shutdown\"}");
+                }
+
+
+                // ich bekomm nach dem shutdown ja wieder einen alias zurueck und dann sende ich wieder einen shutdown
+                if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())){
+                    //Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\",\"set\":true},\"opcode\":\"alias\"}", message);
+                    //close();
+                     if (((JSONObject)operation.get("data")).get("set").toString().equals("true")) {
+                        send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\"},\"opcode\":\"shutdown\"}");
+                     } else {
+                        Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\",\"set\":false},\"opcode\":\"alias\"}", message);
+                        close();
+                     }
+                 
+                      
+                    
+
+                    
+                }
+                
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        cc.run();
+        s.stop();
+    }
+
+    @Test
+    public void testHandleShutdownRejected() throws URISyntaxException, IOException, InterruptedException {
+         PropertyConfigurator.configure("log4j.properties");
+        int port = 8892;
+        String host = "localhost";
+        Logger logger = Logger.getLogger(SignalingServer.class);
+
+        SignalingServerBuilder builder = new SignalingServerBuilder();
+
+        SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
+
+        s.start();
+        WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+                System.out.println("cc2" + message);
+
+                if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+                    send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\"},\"opcode\":\"shutdown\"}");
+                }
+
+                if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())){
+                    Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:0\",\"set\":true},\"opcode\":\"alias\"}", message);
+                    close();
+                }
+                
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        cc.run();
+        s.stop();
     }
 
     public void handleConnect() {
