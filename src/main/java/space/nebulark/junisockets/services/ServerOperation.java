@@ -278,7 +278,7 @@ public class ServerOperation implements IServerOperation {
 
             thread.start();
 
-            logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage);
+            //logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage);
 
             final MAlias serverId = aliases.get(data.get("remoteAlias"));
             final WebSocket server = clients.get(serverId.getId());
