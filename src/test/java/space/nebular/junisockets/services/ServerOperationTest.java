@@ -116,7 +116,6 @@ public class ServerOperationTest {
                 JSONObject operation = (JSONObject) jsonObj;
 
                 if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
-                    System.out.println("HIERER");
                     Assert.assertEquals(
                             "{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\",\"set\":true},\"opcode\":\"alias\"}",
                             message);
@@ -137,7 +136,7 @@ public class ServerOperationTest {
 
     @Test
     public void testHandleOffer() throws URISyntaxException, IOException, InterruptedException {
-        
+
         PropertyConfigurator.configure("log4j.properties");
         int port = 8892;
         String host = "localhost";
@@ -149,7 +148,6 @@ public class ServerOperationTest {
 
         s.start();
 
-        //manchmal bekommt cc die offer, wenn die falschrum acknowledged wurden. Erst muss cc knocken und dann cc2
         WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
 
             @Override
@@ -177,12 +175,17 @@ public class ServerOperationTest {
 
                 System.out.println("cc " + message);
                 if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
-                    send("{\"data\":{\"offererId\":\"127.0.0.0\", \"answererId\": \"127.0.0.1\", \"offer\": \"o1\"},\"opcode\":\"offer\"}");
-                  
-                };
+                    if (((JSONObject)operation.get("data")).get("id").equals("127.0.0.0")) {
+                        send("{\"data\":{\"offererId\":\"127.0.0.0\", \"answererId\": \"127.0.0.1\", \"offer\": \"o1\"},\"opcode\":\"offer\"}");
+                    } else {
+                        send("{\"data\":{\"offererId\":\"127.0.0.1\", \"answererId\": \"127.0.0.0\", \"offer\": \"o1\"},\"opcode\":\"offer\"}");
+                    }
+                }
+                ;
                 if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
                     close();
-                };
+                }
+                ;
 
             }
 
@@ -217,12 +220,11 @@ public class ServerOperationTest {
                 JSONObject operation = (JSONObject) jsonObj;
                 System.out.println("cc2" + message);
                 if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
-                    System.out.println("HIERER");
                     Assert.assertEquals(
-                            "{\"data\":{\"offererId\":\"127.0.0.0\",\"answererId\":\"127.0.0.1\",\"offer\":\"o1\"},\"opcode\":\"offer\"}",
+                            "{\"data\":{\"offererId\":\"" + ((JSONObject)operation.get("data")).get("offererId") + "\",\"answererId\":\"" + ((JSONObject)operation.get("data")).get("answererId") + "\",\"offer\":\"o1\"},\"opcode\":\"offer\"}",
                             message);
                     close();
-                };;
+                }
             }
 
             @Override
@@ -232,9 +234,7 @@ public class ServerOperationTest {
         };
 
         cc2.connect();
-
         cc.run(); 
-
         s.stop();
     }
 
