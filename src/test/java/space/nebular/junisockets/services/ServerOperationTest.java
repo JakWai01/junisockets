@@ -238,15 +238,7 @@ public class ServerOperationTest {
         s.stop();
     }
 
-    public void handleAccepting() {
-    }
-
-    public void handleShutdown() {
-    }
-
-    public void handleConnect() {
-    }
-
+  
     @Test
     public void testHandleAnswer() throws URISyntaxException, IOException, InterruptedException {
         PropertyConfigurator.configure("log4j.properties");
@@ -350,6 +342,130 @@ public class ServerOperationTest {
         s.stop();
     }
 
-    public void testHandleCandidate() {
+    @Test
+    public void testHandleCandidate() throws IOException, InterruptedException, URISyntaxException {
+        PropertyConfigurator.configure("log4j.properties");
+        int port = 8892;
+        String host = "localhost";
+        Logger logger = Logger.getLogger(SignalingServer.class);
+
+        SignalingServerBuilder builder = new SignalingServerBuilder();
+
+        SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
+
+        s.start();
+
+        WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+
+                System.out.println("cc " + message);
+                if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+                    if (((JSONObject)operation.get("data")).get("id").equals("127.0.0.0")) {
+                        send("{\"data\":{\"offererId\":\"127.0.0.0\",\"answererId\":\"127.0.0.1\",\"candidate\":\"o1\"},\"opcode\":\"candidate\"}");
+                    } else {
+                        send("{\"data\":{\"offererId\":\"127.0.0.1\",\"answererId\":\"127.0.0.0\",\"candidate\":\"o1\"},\"opcode\":\"candidate\"}");
+                    }
+                }
+                if (operation.get("opcode").equals(ESignalingOperationCode.CANDIDATE.getValue())) {
+                    if (((JSONObject)operation.get("data")).get("offererId").equals("127.0.0.0")) {
+                        Assert.assertEquals("{\"data\":{\"offererId\":\"127.0.0.0\",\"answererId\":\"127.0.0.1\",\"candidate\":\"o1b\"},\"opcode\":\"candidate\"}", message);
+                    } else {
+                        Assert.assertEquals("{\"data\":{\"offererId\":\"127.0.0.1\",\"answererId\":\"127.0.0.0\",\"candidate\":\"o1b\"},\"opcode\":\"candidate\"}", message);
+                    }
+                }
+                if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    close();
+                }
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        WebSocketClient cc2 = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+                System.out.println("cc2" + message);
+                // if (operation.get("opcode").equals(ESignalingOperationCode.ANSWER.getValue())) {
+                //     Assert.assertEquals(
+                //             "{\"data\":{\"offererId\":\"" + ((JSONObject)operation.get("data")).get("offererId") + "\",\"answererId\":\"" + ((JSONObject)operation.get("data")).get("answererId") + "\",\"answer\":\"o1\"},\"opcode\":\"answer\"}",
+                //             message);
+                //     close();
+                // }
+                if (operation.get("opcode").equals(ESignalingOperationCode.CANDIDATE.getValue())) {
+                    if (((JSONObject)operation.get("data")).get("offererId").equals("127.0.0.0")) { 
+                        send("{\"data\":{\"offererId\":\"127.0.0.1\",\"answererId\":\"127.0.0.0\",\"candidate\":\"o1b\"},\"opcode\":\"candidate\"}");
+                    } else {
+                        send("{\"data\":{\"offererId\":\"127.0.0.0\",\"answererId\":\"127.0.0.1\",\"candidate\":\"o1b\"},\"opcode\":\"candidate\"}");
+                    }
+                   
+                    close();
+                }
+
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        cc2.connect();
+        cc.run(); 
+        s.stop();
+    } 
+    
+    public void handleAccepting() {
     }
+
+    public void handleShutdown() {
+    }
+
+    public void handleConnect() {
+    }
+
 }
