@@ -27,16 +27,16 @@ public class ServerOperationTest {
 
     @Test
     public void testHandleKnock() throws URISyntaxException, InterruptedException, IOException {
-        
+
         PropertyConfigurator.configure("log4j.properties");
         int port = 8892;
         String host = "localhost";
         Logger logger = Logger.getLogger(SignalingServer.class);
 
         SignalingServerBuilder builder = new SignalingServerBuilder();
-        
+
         SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
-        
+
         s.start();
         WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
 
@@ -51,7 +51,8 @@ public class ServerOperationTest {
 
             @Override
             public void onMessage(String message) {
-                Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"rejected\":false},\"opcode\":\"acknowledged\"}", message);
+                Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"rejected\":false},\"opcode\":\"acknowledged\"}",
+                        message);
                 close();
             }
 
@@ -65,105 +66,6 @@ public class ServerOperationTest {
         s.stop();
     }
 
-    
-    // public void testHandleOffer() throws URISyntaxException, IOException, InterruptedException {
-    //     PropertyConfigurator.configure("log4j.properties");
-    //     int port = 8892;
-    //     String host = "localhost";
-    //     Logger logger = Logger.getLogger(SignalingServer.class);
-
-    //     SignalingServerBuilder builder = new SignalingServerBuilder();
-        
-    //     SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
-        
-    //     s.start();
-    //     // server started
-    //     WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
-
-    //         @Override
-    //         public void onError(Exception ex) {
-    //             ex.printStackTrace();
-    //         }
-
-    //         @Override
-    //         public void onClose(int code, String reason, boolean remote) {
-    //         }
-
-    //         @Override
-    //         public void onMessage(String message) {
-    //             // handle answer
-    //             JSONParser parser = new JSONParser();
-    //             Object jsonObj = null;
-
-    //             try {
-    //                 jsonObj = parser.parse(message);
-    //             } catch (org.json.simple.parser.ParseException e) {
-    //                 // TODO Auto-generated catch block
-    //                 e.printStackTrace();
-    //             }
-
-    //             JSONObject operation = (JSONObject) jsonObj;
-                
-    //             Assert.assertEquals("answer", operation.get("opcode"));
-    //             close();
-    //         }
-
-    //         @Override
-    //         public void onOpen(ServerHandshake handshakedata) {
-                
-    //             send("{\"data\":{\"offererId\":\"127.0.0.0\", \"answererId\": \"127.0.0.1\", \"offer\": \"o1\"},\"opcode\":\"offer\"}");
-    //         }
-            
-    //     };
-
-    //     WebSocketClient cc2 = new WebSocketClient(new URI("ws://localhost:8892")) {
-
-    //         @Override
-    //         public void onError(Exception ex) {
-    //             ex.printStackTrace();
-    //         }
-
-    //         @Override
-    //         public void onClose(int code, String reason, boolean remote) {
-    //         }
-
-    //         @Override
-    //         public void onMessage(String message) {
-    //             //Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"rejected\":false},\"opcode\":\"acknowledged\"}", message);
-                
-    //             send("{\"data\": {\"offererId\": \"127.0.0.0\", \"answererId\": \"127.0.0.1\", \"answer\": \"a1\"}, \"opcode\": \"answer\"}");
-    //             close();
-    //         }
-
-    //         @Override
-    //         public void onOpen(ServerHandshake handshakedata) {
-    //         }
-            
-    //     };
-        
-    //     s.clients.put("127.0.0.0", cc.getConnection());
-    //     s.clients.put("127.0.0.1", cc2.getConnection());
-
-    //     Thread thread = new Thread(() -> {
-    //         cc2.run();
-    //     });
-
-    //     thread.start();
-        
-    //     cc.run();
-
-    //     s.stop();
-        
-    // }
-
-    public void testHandleAnswer() {
-
-    }
-
-    public void testHandleCandidate() {
-
-    }
-
     @Test
     public void testHandleBind() throws URISyntaxException, IOException, InterruptedException {
         PropertyConfigurator.configure("log4j.properties");
@@ -172,9 +74,9 @@ public class ServerOperationTest {
         Logger logger = Logger.getLogger(SignalingServer.class);
 
         SignalingServerBuilder builder = new SignalingServerBuilder();
-        
+
         SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
-        
+
         ReentrantLock mutex = new ReentrantLock();
         IPAddress ip = new IPAddress(logger, mutex, s.subnets);
         TCPAddress tcp = new TCPAddress(logger, mutex, s.subnets, ip);
@@ -185,9 +87,9 @@ public class ServerOperationTest {
         String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
 
         String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-        
+
         ip.createIPAddress(subnet);
-        
+
         s.start();
         WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
 
@@ -204,18 +106,20 @@ public class ServerOperationTest {
             public void onMessage(String message) {
                 JSONParser parser = new JSONParser();
                 Object jsonObj = null;
-                    
+
                 try {
                     jsonObj = parser.parse(message);
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }
-                
+
                 JSONObject operation = (JSONObject) jsonObj;
 
                 if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
                     System.out.println("HIERER");
-                    Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\",\"set\":true},\"opcode\":\"alias\"}", message);
+                    Assert.assertEquals(
+                            "{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\",\"set\":true},\"opcode\":\"alias\"}",
+                            message);
                     close();
                 }
             }
@@ -226,8 +130,111 @@ public class ServerOperationTest {
                 send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\"},\"opcode\":\"bind\"}");
             }
         };
-        
+
         cc.run();
+        s.stop();
+    }
+
+    @Test
+    public void testHandleOffer() throws URISyntaxException, IOException, InterruptedException {
+        
+        PropertyConfigurator.configure("log4j.properties");
+        int port = 8892;
+        String host = "localhost";
+        Logger logger = Logger.getLogger(SignalingServer.class);
+
+        SignalingServerBuilder builder = new SignalingServerBuilder();
+
+        SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
+
+        s.start();
+
+        //manchmal bekommt cc die offer, wenn die falschrum acknowledged wurden. Erst muss cc knocken und dann cc2
+        WebSocketClient cc = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+
+                System.out.println("cc " + message);
+                if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+                    send("{\"data\":{\"offererId\":\"127.0.0.0\", \"answererId\": \"127.0.0.1\", \"offer\": \"o1\"},\"opcode\":\"offer\"}");
+                  
+                };
+                if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    close();
+                };
+
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        WebSocketClient cc2 = new WebSocketClient(new URI("ws://localhost:8892")) {
+
+            @Override
+            public void onError(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+            }
+
+            @Override
+            public void onMessage(String message) {
+                JSONParser parser = new JSONParser();
+                Object jsonObj = null;
+
+                try {
+                    jsonObj = parser.parse(message);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject operation = (JSONObject) jsonObj;
+                System.out.println("cc2" + message);
+                if (operation.get("opcode").equals(ESignalingOperationCode.OFFER.getValue())) {
+                    System.out.println("HIERER");
+                    Assert.assertEquals(
+                            "{\"data\":{\"offererId\":\"127.0.0.0\",\"answererId\":\"127.0.0.1\",\"offer\":\"o1\"},\"opcode\":\"offer\"}",
+                            message);
+                    close();
+                };;
+            }
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+            }
+        };
+
+        cc2.connect();
+
+        cc.run(); 
+
         s.stop();
     }
 
@@ -240,4 +247,9 @@ public class ServerOperationTest {
     public void handleConnect() {
     }
 
+    public void testHandleAnswer() {
+    }
+
+    public void testHandleCandidate() {
+    }
 }
