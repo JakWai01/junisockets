@@ -75,6 +75,8 @@ public class TCPAddressTest {
         String ipAddress2 = "127.0.0.0";
 
         tcp2.createTCPAddress(ipAddress2);
+
+        // Assert hier
     }
 
     @Test(expected = SuffixDoesNotExist.class) 
