@@ -25,8 +25,6 @@ import space.nebulark.junisockets.services.SignalingServerBuilder;
 @RunWith(MockitoJUnitRunner.class)
 public class ServerOperationTest {
 
-    // check for error after 255 knocks
-    // check if clients contains id
     @Test
     public void testHandleKnock() throws URISyntaxException, InterruptedException, IOException {
         System.out.println("testHandleKnock");
@@ -55,6 +53,7 @@ public class ServerOperationTest {
             public void onMessage(String message) {
                 Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"rejected\":false},\"opcode\":\"acknowledged\"}",
                         message);
+                Assert.assertEquals(true, s.clients.containsKey("127.0.0.0"));
                 close();
             }
 
