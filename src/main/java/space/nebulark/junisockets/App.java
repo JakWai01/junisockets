@@ -19,6 +19,7 @@ import space.nebulark.junisockets.services.SignalingServerBuilder;
 public class App {
   
   /** 
+   * Executes SignalingServer. Possible environment variables are args[0] for port and args[1] for host
    * @param args
    * @throws InterruptedException
    * @throws IOException

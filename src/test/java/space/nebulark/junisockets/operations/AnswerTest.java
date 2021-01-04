@@ -3,8 +3,14 @@ package space.nebulark.junisockets.operations;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @see space.nebulark.junisockets.operations.Answer
+ */
 public class AnswerTest {
     
+    /**
+     * @see space.nebulark.junisockets.operations.Answer#getAsJSON()
+     */
     @Test
     public void testGetAsJSON() {
         Answer answer = new Answer("127.0.0.1", "127.0.0.2", "a1");

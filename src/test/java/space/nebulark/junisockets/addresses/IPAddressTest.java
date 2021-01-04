@@ -11,8 +11,14 @@ import org.junit.Test;
 
 import space.nebulark.junisockets.services.SignalingServer;
 
+/**
+ * @see space.nebulark.junisockets.addresses.IPAddress
+ */
 public class IPAddressTest {
    
+    /**
+     * @see space.nebulark.junisockets.addresses.IPAddress#parseIPAddress()
+     */
     @Test public void testParseIPAddress() {
 
         Logger logger = Logger.getLogger(SignalingServer.class);
@@ -25,6 +31,9 @@ public class IPAddressTest {
         Assert.assertEquals(4, ip.parseIPAddress(ipAddress).length);
     }
 
+    /**
+     * @see space.nebulark.junisockets.addresses.IPAddress#toIPAddress()
+     */
     @Test 
     public void testToIPAddress() {
 
@@ -39,6 +48,9 @@ public class IPAddressTest {
         Assert.assertEquals("127.0.0.0", ip.toIPAddress(subnet, suffix));
     }
 
+    /**
+     * @see space.nebulark.junisockets.addresses.IPAddress#createIPAddress()
+     */
     @Test
     public void testCreateIPAddress() {
 
@@ -57,6 +69,9 @@ public class IPAddressTest {
         Assert.assertEquals(true, subnets.get(subnet).containsKey(Integer.parseInt(suffix)));
     }
     
+    /**
+     * @see space.nebulark.junisockets.addresses.IPAddress#removeIPAddress()
+     */
     @Test 
     public void testRemoveIPAddress() {
 

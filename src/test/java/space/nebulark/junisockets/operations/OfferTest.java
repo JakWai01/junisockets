@@ -3,9 +3,14 @@ package space.nebulark.junisockets.operations;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @see space.nebulark.junisockets.operations.Offer
+ */
 public class OfferTest {
    
-    
+    /**
+     * @see space.nebulark.junisockets.operations.Offer#getAsJSON()
+     */
     @Test
     public void testGetAsJSON() {
 

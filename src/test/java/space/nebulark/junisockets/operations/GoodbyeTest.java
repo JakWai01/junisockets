@@ -3,8 +3,14 @@ package space.nebulark.junisockets.operations;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @see space.nebulark.junisockets.operations.Goodbye
+ */
 public class GoodbyeTest {
    
+    /**
+     * @see space.nebulark.junisockets.operations.Goodbye#getAsJSON()
+     */
     @Test
     public void testGetAsJSON() {
         
