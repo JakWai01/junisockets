@@ -56,7 +56,6 @@ public class ServerOperationTest {
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 close();
@@ -196,7 +195,6 @@ public class ServerOperationTest {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     close();
@@ -211,7 +209,6 @@ public class ServerOperationTest {
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -250,7 +247,6 @@ public class ServerOperationTest {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
 
@@ -320,7 +316,6 @@ public class ServerOperationTest {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     ;
@@ -441,7 +436,6 @@ public class ServerOperationTest {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     close();
@@ -571,7 +565,6 @@ public class ServerOperationTest {
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
@@ -702,7 +695,6 @@ public class ServerOperationTest {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     Assert.assertEquals(true,
@@ -927,7 +919,6 @@ public class ServerOperationTest {
                                 "{\"data\":{\"id\":\"127.0.0.2\",\"alias\":\"127.0.0.2:0\",\"set\":true},\"opcode\":\"alias\"}",
                                 message);
                     }
-                    // here it stops because it has no task anymore
                 }
 
                 if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPT.getValue())) {

@@ -29,7 +29,6 @@ public class TCPAddressTest {
         Assert.assertEquals(2, tcp.parseTCPAddress(tcpAddress).length);
         Assert.assertEquals("127.0.0.0", tcp.parseTCPAddress(tcpAddress)[0]);
         Assert.assertEquals("1234", tcp.parseTCPAddress(tcpAddress)[1]);
-
     }
 
     @Test
@@ -57,16 +56,13 @@ public class TCPAddressTest {
         String ipAddress = "127.0.0.0";
         String subnet = "127.0.0";
 
-        // create IPAddress to add to subnets
         ip.createIPAddress(subnet);
 
         Assert.assertEquals("127.0.0.0:0", tcp.createTCPAddress(ipAddress));
-        
     }
 
     @Test(expected = SubnetDoesNotExist.class)
     public void testCreateTCPAddressSubnetDoesNotExist() throws SuffixDoesNotExist, SubnetDoesNotExist {
-        // test SuffixDoesNotExist Error
         Logger logger2 = Logger.getLogger(SignalingServer.class);
         ReentrantLock mutex2 = new ReentrantLock();
         ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets2 = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
@@ -75,13 +71,10 @@ public class TCPAddressTest {
         String ipAddress2 = "127.0.0.0";
 
         tcp2.createTCPAddress(ipAddress2);
-
-        // Assert hier
     }
 
     @Test(expected = SuffixDoesNotExist.class) 
     public void testCreateTCPAddressSuffixDoesNotExist() throws SuffixDoesNotExist, SubnetDoesNotExist {
-         // test SuffixDoesNotExist Error
         Logger logger2 = Logger.getLogger(SignalingServer.class);
         ReentrantLock mutex2 = new ReentrantLock();
         ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets2 = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
@@ -130,7 +123,6 @@ public class TCPAddressTest {
         ip.createIPAddress(subnet);
         tcp.claimTCPAddress(tcpAddress);
         tcp.claimTCPAddress(tcpAddress);
-
     }
 
     @Test(expected = SubnetDoesNotExist.class)
@@ -164,7 +156,6 @@ public class TCPAddressTest {
         ip.createIPAddress(subnet);
         tcp.claimTCPAddress(tcpAddress);
 
-        // remove it again
         tcp.removeTCPAddress(tcpAddress);
         
         Assert.assertEquals(false, subnets.get(subnet).get(Integer.parseInt(suffix)).contains(Integer.parseInt(partsTCPAddress[1])));
