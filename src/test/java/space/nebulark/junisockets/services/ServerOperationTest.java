@@ -431,19 +431,18 @@ public class ServerOperationTest {
                                 "{\"data\":{\"offererId\":\"127.0.0.1\",\"answererId\":\"127.0.0.0\",\"candidate\":\"o1b\"},\"opcode\":\"candidate\"}",
                                 message);
                     }
-                }
-                if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
-                    try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
                     close();
                 }
             }
 
             @Override
             public void onOpen(ServerHandshake handshakedata) {
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
             }
         };
@@ -477,9 +476,16 @@ public class ServerOperationTest {
                     } else {
                         send("{\"data\":{\"offererId\":\"127.0.0.0\",\"answererId\":\"127.0.0.1\",\"candidate\":\"o1b\"},\"opcode\":\"candidate\"}");
                     }
-
-                    close();
                 }
+
+                if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    close();
+                 }
             }
 
             @Override
@@ -491,6 +497,7 @@ public class ServerOperationTest {
         Thread.sleep(300);
         cc2.connect();
         cc.run();
+        Thread.sleep(300);
         s.stop();
     }
 
