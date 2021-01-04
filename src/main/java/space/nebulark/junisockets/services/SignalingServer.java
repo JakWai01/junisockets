@@ -93,6 +93,7 @@ public class SignalingServer extends WebSocketServer {
                 }
             });
 
+    
             ip.removeIPAddress(tcpAddress.parseTCPAddress(id)[0]);
 
             op.send((Goodbye) new OperationFactory(ESignalingOperationCode.GOODBYE).setId(targetId).getOperation());

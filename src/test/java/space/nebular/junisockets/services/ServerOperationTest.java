@@ -54,6 +54,13 @@ public class ServerOperationTest {
                 Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.0\",\"rejected\":false},\"opcode\":\"acknowledged\"}",
                         message);
                 Assert.assertEquals(true, s.clients.containsKey("127.0.0.0"));
+
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 close();
             }
 
@@ -174,7 +181,7 @@ public class ServerOperationTest {
                 }
 
                 JSONObject operation = (JSONObject) jsonObj;
-                
+
                 if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
                     if (((JSONObject) operation.get("data")).get("id").equals("127.0.0.0")) {
                         send("{\"data\":{\"offererId\":\"127.0.0.0\", \"answererId\": \"127.0.0.1\", \"offer\": \"o1\"},\"opcode\":\"offer\"}");
@@ -523,6 +530,12 @@ public class ServerOperationTest {
 
             @Override
             public void onOpen(ServerHandshake handshakedata) {
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
             }
         };
@@ -799,19 +812,25 @@ public class ServerOperationTest {
                 if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
                     if (((JSONObject) operation.get("data")).get("id").equals("127.0.0.1")) {
                         if (((JSONObject) operation.get("data")).get("set").toString().equals("true")) {
-                            Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\",\"set\":true,\"clientConnectionId\":\"co1\"},\"opcode\":\"alias\"}", message);
+                            Assert.assertEquals(
+                                    "{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\",\"set\":true,\"clientConnectionId\":\"co1\"},\"opcode\":\"alias\"}",
+                                    message);
 
                         } else {
-                            Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\",\"set\":false},\"opcode\":\"alias\"}", message);
+                            Assert.assertEquals(
+                                    "{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\",\"set\":false},\"opcode\":\"alias\"}",
+                                    message);
                         }
                     } else {
-                        Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.2\",\"alias\":\"127.0.0.2:0\",\"set\":true,\"clientConnectionId\":\"co1\",\"isConnectionAlias\":true},\"opcode\":\"alias\"}", message);
+                        Assert.assertEquals(
+                                "{\"data\":{\"id\":\"127.0.0.2\",\"alias\":\"127.0.0.2:0\",\"set\":true,\"clientConnectionId\":\"co1\",\"isConnectionAlias\":true},\"opcode\":\"alias\"}",
+                                message);
                     }
                 }
 
-                 if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
-                     close();
-                 }
+                if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    close();
+                }
 
             }
 
@@ -822,7 +841,7 @@ public class ServerOperationTest {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-               send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
             }
         };
 
@@ -839,7 +858,7 @@ public class ServerOperationTest {
 
             @Override
             public void onMessage(String message) {
-              
+
                 JSONParser parser = new JSONParser();
                 Object jsonObj = null;
 
@@ -857,23 +876,27 @@ public class ServerOperationTest {
 
                 if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
 
-                   if (((JSONObject) operation.get("data")).get("id").equals("127.0.0.1")) {
+                    if (((JSONObject) operation.get("data")).get("id").equals("127.0.0.1")) {
                         send("{\"data\":{\"id\":\"127.0.0.1\",\"alias\":\"127.0.0.1:1234\"},\"opcode\":\"accepting\"}");
                     } else {
-                       Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.2\",\"alias\":\"127.0.0.2:0\",\"set\":true},\"opcode\":\"alias\"}", message);
+                        Assert.assertEquals(
+                                "{\"data\":{\"id\":\"127.0.0.2\",\"alias\":\"127.0.0.2:0\",\"set\":true},\"opcode\":\"alias\"}",
+                                message);
                     }
                     // here it stops because it has no task anymore
                 }
 
                 if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPT.getValue())) {
-                    Assert.assertEquals("{\"data\":{\"boundAlias\":\"127.0.0.1:1234\",\"clientAlias\":\"127.0.0.2:0\"},\"opcode\":\"accept\"}", message);
+                    Assert.assertEquals(
+                            "{\"data\":{\"boundAlias\":\"127.0.0.1:1234\",\"clientAlias\":\"127.0.0.2:0\"},\"opcode\":\"accept\"}",
+                            message);
                     close();
                 }
             }
 
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-               send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+                send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
             }
         };
 
@@ -938,7 +961,9 @@ public class ServerOperationTest {
                 }
 
                 if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
-                    Assert.assertEquals("{\"data\":{\"id\":\"127.0.0.2\",\"alias\":null,\"set\":false},\"opcode\":\"alias\"}", message);
+                    Assert.assertEquals(
+                            "{\"data\":{\"id\":\"127.0.0.2\",\"alias\":null,\"set\":false},\"opcode\":\"alias\"}",
+                            message);
                     close();
                 }
             }
@@ -992,6 +1017,7 @@ public class ServerOperationTest {
 
         cc2.connect();
         cc.run();
+        Thread.sleep(300);
         s.stop();
     }
 }
