@@ -1,4 +1,4 @@
-package space.nebular.junisockets.services;
+package space.nebulark.junisockets.services;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,8 +19,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import space.nebulark.junisockets.addresses.IPAddress;
 import space.nebulark.junisockets.addresses.TCPAddress;
 import space.nebulark.junisockets.operations.ESignalingOperationCode;
-import space.nebulark.junisockets.services.SignalingServer;
-import space.nebulark.junisockets.services.SignalingServerBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerOperationTest {

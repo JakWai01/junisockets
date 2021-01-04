@@ -1,4 +1,4 @@
-package space.nebulark.junisockets.addresses;
+package space.nebulark.junisockets.addresses; 
 
 import java.util.HashMap;
 import java.util.List;

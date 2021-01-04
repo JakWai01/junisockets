@@ -28,8 +28,6 @@ public class App {
         } catch (Exception ex) {
         }
 
-        //SignalingServer s = new SignalingServer(Logger.getLogger(SignalingServer.class), new InetSocketAddress(host, port));
-
         SignalingServerBuilder builder = new SignalingServerBuilder();
         
         SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
