@@ -45,6 +45,11 @@ public class TCPAddressTest {
         Assert.assertEquals("127.0.0.0:1234", tcp.toTCPAddress(ipAddress, port));
     }
 
+    
+    /** 
+     * @throws SuffixDoesNotExist
+     * @throws SubnetDoesNotExist
+     */
     @Test
     public void testCreateTCPAddress() throws SuffixDoesNotExist, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
@@ -61,6 +66,11 @@ public class TCPAddressTest {
         Assert.assertEquals("127.0.0.0:0", tcp.createTCPAddress(ipAddress));
     }
 
+    
+    /** 
+     * @throws SuffixDoesNotExist
+     * @throws SubnetDoesNotExist
+     */
     @Test(expected = SubnetDoesNotExist.class)
     public void testCreateTCPAddressSubnetDoesNotExist() throws SuffixDoesNotExist, SubnetDoesNotExist {
         Logger logger2 = Logger.getLogger(SignalingServer.class);
@@ -73,6 +83,11 @@ public class TCPAddressTest {
         tcp2.createTCPAddress(ipAddress2);
     }
 
+    
+    /** 
+     * @throws SuffixDoesNotExist
+     * @throws SubnetDoesNotExist
+     */
     @Test(expected = SuffixDoesNotExist.class) 
     public void testCreateTCPAddressSuffixDoesNotExist() throws SuffixDoesNotExist, SubnetDoesNotExist {
         Logger logger2 = Logger.getLogger(SignalingServer.class);
@@ -88,6 +103,11 @@ public class TCPAddressTest {
 
     }
 
+    
+    /** 
+     * @throws PortAlreadyAllocatedError
+     * @throws SubnetDoesNotExist
+     */
     @Test
     public void testClaimTCPAddress() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
@@ -110,6 +130,11 @@ public class TCPAddressTest {
         Assert.assertEquals(true, subnets.get(subnet).get(Integer.parseInt(suffix)).contains(Integer.parseInt(partsTCPAddress[1])));
     }
 
+    
+    /** 
+     * @throws PortAlreadyAllocatedError
+     * @throws SubnetDoesNotExist
+     */
     @Test(expected = PortAlreadyAllocatedError.class) 
     public void testClaimTCPAddressPortAlreadtAllocated() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
@@ -125,6 +150,11 @@ public class TCPAddressTest {
         tcp.claimTCPAddress(tcpAddress);
     }
 
+    
+    /** 
+     * @throws PortAlreadyAllocatedError
+     * @throws SubnetDoesNotExist
+     */
     @Test(expected = SubnetDoesNotExist.class)
     public void testClaimTCPAddressSubnetDoesNotExist() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
@@ -137,6 +167,11 @@ public class TCPAddressTest {
         tcp.claimTCPAddress(tcpAddress);
     }
 
+    
+    /** 
+     * @throws PortAlreadyAllocatedError
+     * @throws SubnetDoesNotExist
+     */
     @Test
     public void testRemoveTCPAddress() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);

@@ -34,26 +34,51 @@ public class Alias implements IAlias {
         this.isConnectionAlias = isConnectionAlias;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getId() {
         return id;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getAlias() {
         return alias;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getClientConnectionId() {
         return clientConnectionId;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean getSet() {
         return set;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean getIsConnectionAlias() {
         return isConnectionAlias;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
         Alias operation = (Alias) operationObject;
@@ -82,6 +107,10 @@ public class Alias implements IAlias {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

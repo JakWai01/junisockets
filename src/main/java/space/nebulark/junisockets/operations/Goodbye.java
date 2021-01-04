@@ -14,10 +14,19 @@ public class Goodbye implements IGoodbye {
         this.id = id;
    }
 
+   
+   /** 
+    * @return String
+    */
    public String getId() {
        return id;
    }
 
+   
+   /** 
+    * @param operationObject
+    * @return String
+    */
    public String getAsJSON(Object operationObject) {
 
         Goodbye operation = (Goodbye) operationObject;
@@ -36,6 +45,10 @@ public class Goodbye implements IGoodbye {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

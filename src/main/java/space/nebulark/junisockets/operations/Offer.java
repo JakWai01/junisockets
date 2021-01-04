@@ -18,18 +18,35 @@ public class Offer implements IOffer {
         this.offer = offer;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOffererId() {
         return offererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getAnswererId() {
         return answererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOffer() {
         return offer;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
         Offer operation = (Offer) operationObject;
@@ -50,6 +67,10 @@ public class Offer implements IOffer {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

@@ -15,14 +15,27 @@ public class Greeting implements IGreeting {
         this.answererId = answererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOffererId() {
         return offererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getAnswererId() {
         return answererId;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
         Greeting operation = (Greeting) operationObject;
@@ -42,6 +55,10 @@ public class Greeting implements IGreeting {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

@@ -18,18 +18,35 @@ public class Candidate implements ICandidate {
         this.candidate = candidate;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOffererId() {
         return offererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getAnswererId() {
         return answererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getCandidate() {
         return candidate;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
         Candidate operation = (Candidate) operationObject;
@@ -51,6 +68,10 @@ public class Candidate implements ICandidate {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

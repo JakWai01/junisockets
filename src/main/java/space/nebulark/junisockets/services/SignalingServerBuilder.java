@@ -10,21 +10,40 @@ public class SignalingServerBuilder {
     private int port = -1;
     private String host;
 
+    
+    /** 
+     * @param logger
+     * @return SignalingServerBuilder
+     */
     public SignalingServerBuilder setLogger(Logger logger) {
         this.logger = logger;
         return this;
     }
 
+    
+    /** 
+     * @param port
+     * @return SignalingServerBuilder
+     */
     public SignalingServerBuilder setPort(int port) {
         this.port = port;
         return this;
     }
 
+    
+    /** 
+     * @param host
+     * @return SignalingServerBuilder
+     */
     public SignalingServerBuilder setHost(String host) {
         this.host = host;
         return this;
     }
 
+    
+    /** 
+     * @return SignalingServer
+     */
     public SignalingServer build() {
 
         if (logger == null || port == -1) {

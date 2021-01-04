@@ -16,14 +16,27 @@ public class Acknowledgement implements IAcknowledgement {
         this.rejected = rejected;
     } 
 
+    
+    /** 
+     * @return String
+     */
     public String getId() {
         return id;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean getRejected() {
         return rejected;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
             Acknowledgement operation = (Acknowledgement)operationObject;
@@ -43,6 +56,10 @@ public class Acknowledgement implements IAcknowledgement {
             return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

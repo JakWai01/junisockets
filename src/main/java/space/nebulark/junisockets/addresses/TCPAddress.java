@@ -28,6 +28,13 @@ public class TCPAddress implements ITCPAddress {
         this.ip = ip;
     }
 
+    
+    /** 
+     * @param ipAddress
+     * @return String
+     * @throws SuffixDoesNotExist
+     * @throws SubnetDoesNotExist
+     */
     public String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.trace("Creating TCP address " + ipAddress);
 
@@ -66,6 +73,12 @@ public class TCPAddress implements ITCPAddress {
         }
     }
 
+    
+    /** 
+     * @param tcpAddress
+     * @throws PortAlreadyAllocatedError
+     * @throws SubnetDoesNotExist
+     */
     public void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         logger.trace("Claiming TCP address " + tcpAddress);
 
@@ -103,6 +116,10 @@ public class TCPAddress implements ITCPAddress {
         }
     }
 
+    
+    /** 
+     * @param tcpAddress
+     */
     public void removeTCPAddress(String tcpAddress) {
         logger.trace("Removing TCP address " + tcpAddress);
 
@@ -129,6 +146,12 @@ public class TCPAddress implements ITCPAddress {
         }
     }
 
+    
+    /** 
+     * @param ipAddress
+     * @param port
+     * @return String
+     */
     public String toTCPAddress(String ipAddress, int port) {
         logger.trace("Converting to TCP address " + ipAddress + port);
 
@@ -137,6 +160,11 @@ public class TCPAddress implements ITCPAddress {
         return tcpAddress;
     }
 
+    
+    /** 
+     * @param tcpAddress
+     * @return String[]
+     */
     public String[] parseTCPAddress(String tcpAddress) {
         logger.trace("Parsing TCP address " + tcpAddress);
 

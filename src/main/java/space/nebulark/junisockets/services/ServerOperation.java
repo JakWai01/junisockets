@@ -41,6 +41,11 @@ public class ServerOperation implements IServerOperation {
         this.logger = logger;
     }
 
+    
+    /** 
+     * @param data
+     * @param conn
+     */
     public void handleKnock(JSONObject data, WebSocket conn) {
 
         logger.debug("Handling knock");
@@ -92,6 +97,10 @@ public class ServerOperation implements IServerOperation {
         logger.debug("Client connected " + id);
     }
 
+    
+    /** 
+     * @param data
+     */
     public void handleOffer(JSONObject data) {
         logger.debug("Handling offer: " + data);
 
@@ -110,6 +119,10 @@ public class ServerOperation implements IServerOperation {
 
     }
 
+    
+    /** 
+     * @param data
+     */
     public void handleAnswer(JSONObject data) {
         logger.debug("Handling answer: " + data);
 
@@ -128,6 +141,10 @@ public class ServerOperation implements IServerOperation {
 
     }
 
+    
+    /** 
+     * @param data
+     */
     public void handleCandidate(JSONObject data) {
         logger.debug("Handling candidate " + data);
 
@@ -146,6 +163,12 @@ public class ServerOperation implements IServerOperation {
 
     }
 
+    
+    /** 
+     * @param data
+     * @throws PortAlreadyAllocatedError
+     * @throws SubnetDoesNotExist
+     */
     public void handleBind(JSONObject data) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
         logger.debug("Handling bind " + data);
 
@@ -186,6 +209,10 @@ public class ServerOperation implements IServerOperation {
         }
     }
 
+    
+    /** 
+     * @param data
+     */
     public void handleAccepting(JSONObject data) {
         logger.debug("Handling accepting");
         
@@ -199,6 +226,10 @@ public class ServerOperation implements IServerOperation {
         }
     }
 
+    
+    /** 
+     * @param data
+     */
     public void handleShutdown(JSONObject data) {
         logger.debug("Handling shutdown");
 
@@ -240,6 +271,12 @@ public class ServerOperation implements IServerOperation {
         }
     }
 
+    
+    /** 
+     * @param data
+     * @throws SuffixDoesNotExist
+     * @throws SubnetDoesNotExist
+     */
     public void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.debug("Handling connect");
 
@@ -320,6 +357,10 @@ public class ServerOperation implements IServerOperation {
         }
     }
 
+    
+    /** 
+     * @param operation
+     */
     public void send(Goodbye operation) {
 
         logger.debug("Sending " + operation);
@@ -336,6 +377,12 @@ public class ServerOperation implements IServerOperation {
 
     }
 
+    
+    /** 
+     * @param conn
+     * @param operation
+     * @throws ClientClosed
+     */
     public <E extends IOperation> void send(WebSocket conn, E operation) throws ClientClosed {
 
         logger.debug("Sending " + operation.getOpCode());

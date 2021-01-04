@@ -7,6 +7,10 @@ public class MMember {
         this.ports = ports;
     }
 
+    
+    /** 
+     * @return int[]
+     */
     public int[] getPorts() {
         return ports;
     }

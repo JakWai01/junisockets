@@ -22,71 +22,140 @@ public class OperationFactory {
     private String candidate;
     private String offer;
 
+    
+    /** 
+     * @param boundAlias
+     * @return OperationFactory
+     */
     public OperationFactory setBoundAlias(String boundAlias) {
         this.boundAlias = boundAlias;
         return this;
     }
 
+    
+    /** 
+     * @param clientAlias
+     * @return OperationFactory
+     */
     public OperationFactory setClientAlias(String clientAlias) {
         this.clientAlias = clientAlias;
         return this;
     }
 
+    
+    /** 
+     * @param id
+     * @return OperationFactory
+     */
     public OperationFactory setId(String id) {
         this.id = id;
         return this;
     }
 
+    
+    /** 
+     * @param rejected
+     * @return OperationFactory
+     */
     public OperationFactory setRejected(Boolean rejected) {
         this.rejected = rejected;
         return this;
     }
 
+    
+    /** 
+     * @param alias
+     * @return OperationFactory
+     */
     public OperationFactory setAlias(String alias) {
         this.alias = alias;
         return this;
     }
 
+    
+    /** 
+     * @param clientConnectionId
+     * @return OperationFactory
+     */
     public OperationFactory setClientConnectionId(String clientConnectionId) {
         this.clientConnectionId = clientConnectionId;
         return this;
     }
 
+    
+    /** 
+     * @param set
+     * @return OperationFactory
+     */
     public OperationFactory setSet(Boolean set) {
         this.set = set;
         return this;
     }
 
+    
+    /** 
+     * @param isConnectionAlias
+     * @return OperationFactory
+     */
     public OperationFactory setIsConnectionAlias(Boolean isConnectionAlias) {
         this.isConnectionAlias = isConnectionAlias;
         return this;
     }
 
+    
+    /** 
+     * @param offererId
+     * @return OperationFactory
+     */
     public OperationFactory setOffererId(String offererId) {
         this.offererId = offererId;
         return this;
     }
 
+    
+    /** 
+     * @param answererId
+     * @return OperationFactory
+     */
     public OperationFactory setAnswererId(String answererId) {
         this.answererId = answererId;
         return this;
     }
 
+    
+    /** 
+     * @param answer
+     * @return OperationFactory
+     */
     public OperationFactory setAnswer(String answer) {
         this.answer = answer;
         return this;
     }
 
+    
+    /** 
+     * @param candidate
+     * @return OperationFactory
+     */
     public OperationFactory setCandidate(String candidate) {
         this.candidate = candidate;
         return this;
     }
 
+    
+    /** 
+     * @param offer
+     * @return OperationFactory
+     */
     public OperationFactory setOffer(String offer) {
         this.offer = offer;
         return this;
     }
 
+    
+    /** 
+     * @return Object
+     */
     public Object getOperation() {
 
         if (opcode.getValue().equals(ESignalingOperationCode.ACKNOWLEDGED.getValue()) && id != null && rejected != null) {

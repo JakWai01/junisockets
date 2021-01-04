@@ -24,6 +24,11 @@ public class IPAddress implements IIPAddress {
         this.subnets = subnets;
     }
 
+    
+    /** 
+     * @param subnet
+     * @return String
+     */
     public String createIPAddress(String subnet) {
         logger.trace("Creating IP address " + subnet);
 
@@ -70,6 +75,10 @@ public class IPAddress implements IIPAddress {
         }
     }
 
+    
+    /** 
+     * @param ipAddress
+     */
     public void removeIPAddress(String ipAddress) {
         logger.trace("Removing IP address " + ipAddress);
 
@@ -91,6 +100,12 @@ public class IPAddress implements IIPAddress {
         }
     }
 
+    
+    /** 
+     * @param subnet
+     * @param suffix
+     * @return String
+     */
     public String toIPAddress(String subnet, int suffix) {
         logger.trace("Converting to IP address " + subnet + "." + suffix);
 
@@ -99,6 +114,11 @@ public class IPAddress implements IIPAddress {
         return ipAddress;
     }
 
+    
+    /** 
+     * @param ipAddress
+     * @return String[]
+     */
     public String[] parseIPAddress(String ipAddress) {
         logger.trace("Parsing IP address " + ipAddress);
 

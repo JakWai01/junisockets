@@ -48,6 +48,11 @@ public class SignalingServer extends WebSocketServer {
         this.logger = logger;
     }
 
+    
+    /** 
+     * @param conn
+     * @param handshake
+     */
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         isOpen = true;
@@ -55,6 +60,13 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Opening signaling server");
     }
 
+    
+    /** 
+     * @param conn
+     * @param code
+     * @param reason
+     * @param remote
+     */
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id = "";
@@ -112,6 +124,11 @@ public class SignalingServer extends WebSocketServer {
         isOpen = false;
     }
 
+    
+    /** 
+     * @param conn
+     * @param message
+     */
     @Override
     public void onMessage(WebSocket conn, String message) {
 
@@ -134,6 +151,11 @@ public class SignalingServer extends WebSocketServer {
 
     }
 
+    
+    /** 
+     * @param conn
+     * @param ex
+     */
     @Override
     public void onError(WebSocket conn, Exception ex) {
         ex.printStackTrace();
@@ -155,6 +177,12 @@ public class SignalingServer extends WebSocketServer {
         thread.start();
     }
 
+    
+    /** 
+     * @param operation
+     * @param conn
+     * @throws UnimplementedOperation
+     */
     private void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
 
         logger.debug("Handling operation: " + operation + conn);
@@ -241,6 +269,10 @@ public class SignalingServer extends WebSocketServer {
         }
     }
 
+    
+    /** 
+     * @throws InterruptedException
+     */
     public void ping() throws InterruptedException {
 
         while (isOpen == true) {

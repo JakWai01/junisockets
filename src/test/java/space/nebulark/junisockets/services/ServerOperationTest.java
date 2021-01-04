@@ -23,6 +23,12 @@ import space.nebulark.junisockets.operations.ESignalingOperationCode;
 @RunWith(MockitoJUnitRunner.class)
 public class ServerOperationTest {
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws InterruptedException
+     * @throws IOException
+     */
     @Test
     public void testHandleKnock() throws URISyntaxException, InterruptedException, IOException {
         System.out.println("testHandleKnock");
@@ -72,6 +78,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleBind() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleBind");
@@ -144,6 +156,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleOffer() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleOffer");
@@ -266,6 +284,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleAnswer() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleAnswer");
@@ -375,6 +399,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
     @Test
     public void testHandleCandidate() throws IOException, InterruptedException, URISyntaxException {
         System.out.println("testHandleCandidate");
@@ -501,6 +531,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
     @Test
     public void testHandleShutdown() throws IOException, InterruptedException, URISyntaxException {
         System.out.println("testHandleShutdown");
@@ -583,6 +619,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleShutdownRejected() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleShutdownRejected");
@@ -643,6 +685,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
     @Test
     public void testHandleAccepting() throws IOException, InterruptedException, URISyntaxException {
         System.out.println("testHandleAccepting");
@@ -721,6 +769,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleAcceptingRejected() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleAcceptingRejected");
@@ -797,6 +851,12 @@ public class ServerOperationTest {
 
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleConnect() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleConnect");
@@ -948,6 +1008,12 @@ public class ServerOperationTest {
         s.stop();
     }
 
+    
+    /** 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void testHandleConnectRejected() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("testHandleConnectRejected");

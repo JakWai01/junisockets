@@ -9,10 +9,18 @@ public class MAlias {
         this.accepting = accepting;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getId() {
         return id;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean getAccepting() {
         return accepting;
     }

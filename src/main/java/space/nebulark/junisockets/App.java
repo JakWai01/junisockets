@@ -11,6 +11,12 @@ import space.nebulark.junisockets.services.SignalingServer;
 import space.nebulark.junisockets.services.SignalingServerBuilder;
 
 public class App {
+  
+  /** 
+   * @param args
+   * @throws InterruptedException
+   * @throws IOException
+   */
   public static void main(String[] args) throws InterruptedException, IOException {
         PropertyConfigurator.configure("log4j.properties");
 

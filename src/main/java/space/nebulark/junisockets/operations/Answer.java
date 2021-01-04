@@ -18,18 +18,35 @@ public class Answer implements IAnswer {
         this.answer = answer;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOffererId() {
         return offererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getAnswererId() {
         return answererId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getAnswer() {
         return answer;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
         Answer operation = (Answer) operationObject;
@@ -50,6 +67,10 @@ public class Answer implements IAnswer {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }

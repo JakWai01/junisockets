@@ -16,14 +16,27 @@ public class Accept implements IAccept {
         this.clientAlias = clientAlias;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getBoundAlias() {
         return boundAlias;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getClientAlias() {
         return clientAlias;
     }
 
+    
+    /** 
+     * @param operationObject
+     * @return String
+     */
     public String getAsJSON(Object operationObject) {
 
         Accept operation = (Accept)operationObject;
@@ -43,6 +56,10 @@ public class Accept implements IAccept {
         return jsonText;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getOpCode() {
         return opcode.toString();
     }
