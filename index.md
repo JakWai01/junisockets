@@ -1,37 +1,29 @@
-## Welcome to GitHub Pages
+# junisockets
 
-You can use the [editor on GitHub](https://github.com/JakWai01/junisockets/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Overview 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+A WebRTC **signaling server** for [unisockets](https://github.com/pojntfx/unisockets) to allow nodes to discover each other and exchange candidates. The signaling server is not involved in any actual connections between clients.
 
-### Markdown
+### Components 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+TODO: Add Components
 
-```markdown
-Syntax highlighted code block
+### Signaling Protocol
 
-# Header 1
-## Header 2
-### Header 3
+The signaling components use the following protocol:
 
-- Bulleted
-- List
+![Sequence Diagram](https://pojntfx.github.io/unisockets/media/sequence.svg)
 
-1. Numbered
-2. List
+A public signaling server instance is running on `wss://unisockets.herokuapp.com` and used in the demo.
 
-**Bold** and _Italic_ and `Code` text
+### Related Resources 
 
-[Link](url) and ![Image](src)
-```
+Interested in an implementation of the [Go `net` package](https://golang.org/pkg/net/) based on the unisockets package, with TinyGo and WASM support? You might be interested in [tinynet](https://github.com/pojntfx/tinynet)!
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+You want a Kubernetes-style system for WASM, running in the browser and in node? You might be interested in [webnetes](https://github.com/pojntfx/webnetes), which uses unisockets for it's networking layer.
 
-### Jekyll Themes
+## License
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/JakWai01/junisockets/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+junisockets (c) 2020 Jakob Waibel
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+SPDX-License-Identifier: AGPL-3.0
