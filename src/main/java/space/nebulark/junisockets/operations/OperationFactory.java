@@ -2,9 +2,7 @@ package space.nebulark.junisockets.operations;
 
 public class OperationFactory {
 
-    // der else kann nicht eintreten
     ESignalingOperationCode opcode;
-   
 
     public OperationFactory(ESignalingOperationCode opcode) {
         this.opcode = opcode;
@@ -91,15 +89,15 @@ public class OperationFactory {
 
     public Object getOperation() {
 
-        if (opcode.getValue().equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+        if (opcode.getValue().equals(ESignalingOperationCode.ACKNOWLEDGED.getValue()) && id != null && rejected != null) {
             return new Acknowledgement(id, rejected);
-        } else if (opcode.getValue().equals(ESignalingOperationCode.GREETING.getValue())) {
+        } else if (opcode.getValue().equals(ESignalingOperationCode.GREETING.getValue()) && offererId != null && answererId != null) {
             return new Greeting(offererId, answererId);
-        } else if (opcode.getValue().equals(ESignalingOperationCode.OFFER.getValue())) {
+        } else if (opcode.getValue().equals(ESignalingOperationCode.OFFER.getValue()) && offererId != null && answererId != null && offer != null) {
             return new Offer(offererId, answererId, offer);
-        } else if (opcode.getValue().equals(ESignalingOperationCode.ANSWER.getValue())) {
+        } else if (opcode.getValue().equals(ESignalingOperationCode.ANSWER.getValue()) && offererId != null && answererId != null && answer != null) {
             return new Answer(offererId, answererId, answer);
-        } else if (opcode.getValue().equals(ESignalingOperationCode.CANDIDATE.getValue())) {
+        } else if (opcode.getValue().equals(ESignalingOperationCode.CANDIDATE.getValue()) && offererId != null && answererId != null && candidate != null) {
             return new Candidate(offererId, answererId, candidate);
         } else if (opcode.getValue().equals(ESignalingOperationCode.ALIAS.getValue())) {
             if (id != null && alias != null && clientConnectionId != null && set != null && isConnectionAlias != null) {
@@ -109,10 +107,12 @@ public class OperationFactory {
             } else {
                 return new Alias(id, alias, set);
             }
-        } else if (opcode.getValue().equals(ESignalingOperationCode.ACCEPT.getValue())) {
+        } else if (opcode.getValue().equals(ESignalingOperationCode.ACCEPT.getValue()) && boundAlias != null && clientAlias != null) {
             return new Accept(boundAlias, clientAlias);
-        } else {
+        } else if (opcode.getValue().equals(ESignalingOperationCode.GOODBYE.getValue()) && id != null){
             return new Goodbye(id);
-        } 
+        } else {
+            return new IllegalArgumentException();
+        }
     }
 }
