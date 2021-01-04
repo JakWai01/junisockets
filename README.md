@@ -12,7 +12,7 @@ TODO: Add Components
 
 The signaling components use the following protocol:
 
-![Sequence Diagram](https://pojntfx.github.io/unisockets/media/sequence.svg)](https://pojntfx.github.io/unisockets/media/sequence.svg
+![Sequence Diagram](https://pojntfx.github.io/unisockets/media/sequence.svg)
 
 A public signaling server instance is running on `wss://unisockets.herokuapp.com` and used in the demo.
 
