@@ -8,7 +8,7 @@ public class MMember {
 
     /**
      * Constructor MMember
-     * @param ports
+     * @param ports ports
      */
     public MMember(int[] ports) {
         this.ports = ports;

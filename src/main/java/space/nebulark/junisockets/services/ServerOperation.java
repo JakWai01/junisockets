@@ -38,11 +38,11 @@ public class ServerOperation implements IServerOperation {
 
     /**
      * Constructor ServerOperation
-     * @param clients
-     * @param aliases
-     * @param ip
-     * @param tcpAddress
-     * @param logger
+     * @param clients clients
+     * @param aliases aliases
+     * @param ip ip
+     * @param tcpAddress tcpAddress
+     * @param logger logger
      */
     public ServerOperation(ConcurrentHashMap<String, WebSocket> clients, ConcurrentHashMap<String, MAlias> aliases, IPAddress ip, TCPAddress tcpAddress, Logger logger) {
         this.clients = clients;
@@ -55,8 +55,8 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client knock
-     * @param data
-     * @param conn
+     * @param data data
+     * @param conn conn
      */
     public void handleKnock(JSONObject data, WebSocket conn) {
 
@@ -112,7 +112,7 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client offer
-     * @param data
+     * @param data data
      */
     public void handleOffer(JSONObject data) {
         logger.debug("Handling offer: " + data);
@@ -135,7 +135,7 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client answer
-     * @param data
+     * @param data data
      */
     public void handleAnswer(JSONObject data) {
         logger.debug("Handling answer: " + data);
@@ -158,7 +158,7 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client candidate
-     * @param data
+     * @param data data
      */
     public void handleCandidate(JSONObject data) {
         logger.debug("Handling candidate " + data);
@@ -181,9 +181,9 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client bind
-     * @param data
-     * @throws PortAlreadyAllocatedError
-     * @throws SubnetDoesNotExist
+     * @param data data
+     * @throws PortAlreadyAllocated Thrown if port is already allocated
+     * @throws SubnetDoesNotExist Thrown if 
      */
     public void handleBind(JSONObject data) throws PortAlreadyAllocated, SubnetDoesNotExist {
         logger.debug("Handling bind " + data);
@@ -228,7 +228,7 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client accepting
-     * @param data
+     * @param data data
      */
     public void handleAccepting(JSONObject data) {
         logger.debug("Handling accepting");
@@ -246,7 +246,7 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client shutdown
-     * @param data
+     * @param data data
      */
     public void handleShutdown(JSONObject data) {
         logger.debug("Handling shutdown");
@@ -292,9 +292,9 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Handle client connect
-     * @param data
-     * @throws SuffixDoesNotExist
-     * @throws SubnetDoesNotExist
+     * @param data data
+     * @throws SuffixDoesNotExist Thrown if suffix does not exist
+     * @throws SubnetDoesNotExist Thrown if subent does not exist
      */
     public void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.debug("Handling connect");
@@ -379,7 +379,7 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Send goodbye from leaving client to all
-     * @param operation
+     * @param operation operation
      */
     public void send(Goodbye operation) {
 
@@ -400,9 +400,10 @@ public class ServerOperation implements IServerOperation {
     
     /** 
      * Send response to client. E depends on which handler is sending. E might be one of the operations implementing the IOperation interface
-     * @param conn
-     * @param operation
-     * @throws ClientClosed
+     * @param <E> generic parameter
+     * @param conn conn
+     * @param operation operation
+     * @throws ClientClosed Thrown if client is closed
      */
     public <E extends IOperation> void send(WebSocket conn, E operation) throws ClientClosed {
 

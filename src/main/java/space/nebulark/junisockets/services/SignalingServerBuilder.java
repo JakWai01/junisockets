@@ -16,7 +16,7 @@ public class SignalingServerBuilder {
     
     /** 
      * Sets logger
-     * @param logger
+     * @param logger logger
      * @return SignalingServerBuilder
      */
     public SignalingServerBuilder setLogger(Logger logger) {
@@ -27,7 +27,7 @@ public class SignalingServerBuilder {
     
     /** 
      * Sets port
-     * @param port
+     * @param port port
      * @return SignalingServerBuilder
      */
     public SignalingServerBuilder setPort(int port) {
@@ -38,7 +38,7 @@ public class SignalingServerBuilder {
     
     /** 
      * Sets host
-     * @param host
+     * @param host host
      * @return SignalingServerBuilder
      */
     public SignalingServerBuilder setHost(String host) {

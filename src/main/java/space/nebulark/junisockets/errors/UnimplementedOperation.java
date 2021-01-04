@@ -12,7 +12,7 @@ public class UnimplementedOperation extends Exception {
 
     /**
      * Constructor UnimplementedOperation
-     * @param object
+     * @param object Unimplemented operation
      */
     public UnimplementedOperation(Object object) {
         super("unimplemented operation " + (String)object);

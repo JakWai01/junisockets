@@ -20,9 +20,9 @@ public class App {
   
   /** 
    * Executes SignalingServer. Possible environment variables are args[0] for port and args[1] for host
-   * @param args
-   * @throws InterruptedException
-   * @throws IOException
+   * @param args args args[0] = port, args[1] = host
+   * @throws InterruptedException Thrown if interrupted
+   * @throws IOException Thrown if there is a problem with the input
    */
   public static void main(String[] args) throws InterruptedException, IOException {
         PropertyConfigurator.configure("log4j.properties");

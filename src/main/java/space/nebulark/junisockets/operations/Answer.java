@@ -17,6 +17,9 @@ public class Answer implements IAnswer {
 
     /**
      * Constructor Answer
+     * @param offererId offererId
+     * @param answererId answererId
+     * @param answer answer
      */
     public Answer(String offererId, String answererId, String answer) {
         this.offererId = offererId;
@@ -54,7 +57,7 @@ public class Answer implements IAnswer {
     
     /** 
      * Returns operation as JSON
-     * @param operationObject
+     * @param operationObject operation
      * @return String
      */
     public String getAsJSON(Object operationObject) {

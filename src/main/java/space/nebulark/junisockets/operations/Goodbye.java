@@ -15,6 +15,7 @@ public class Goodbye implements IGoodbye {
 
    /**
     * Constructor Goodbye
+    * @param id id
     */
    public Goodbye(String id) {
         this.id = id;
@@ -32,7 +33,7 @@ public class Goodbye implements IGoodbye {
    
    /** 
     * Returns operation as JSON
-    * @param operationObject
+    * @param operationObject operation
     * @return String
     */
    public String getAsJSON(Object operationObject) {

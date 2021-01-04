@@ -16,8 +16,8 @@ public class Accept implements IAccept {
 
     /**
      * Constructor Accept
-     * @param boundAlias
-     * @param clientAlias
+     * @param boundAlias boundAlias
+     * @param clientAlias clientAlias
      */
     public Accept(String boundAlias, String clientAlias) {
         this.boundAlias = boundAlias;
@@ -45,7 +45,7 @@ public class Accept implements IAccept {
     
     /** 
      * Returns operation as JSON
-     * @param operationObject
+     * @param operationObject operation
      * @return String
      */
     public String getAsJSON(Object operationObject) {

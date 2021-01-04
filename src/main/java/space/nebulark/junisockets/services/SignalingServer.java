@@ -46,8 +46,8 @@ public class SignalingServer extends WebSocketServer {
 
     /**
      * Constructor SignalingServer
-     * @param logger
-     * @param address
+     * @param logger logger
+     * @param address address
      */
     public SignalingServer(Logger logger, InetSocketAddress address) {
         super(address);
@@ -59,8 +59,8 @@ public class SignalingServer extends WebSocketServer {
     
     /** 
      * Called after an opening handshake has been performed and the given websocket is ready to be written on.
-     * @param conn
-     * @param handshake
+     * @param conn conn
+     * @param handshake handshake
      */
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -72,10 +72,10 @@ public class SignalingServer extends WebSocketServer {
     
     /** 
      * Called after the websocket connection has been closed.
-     * @param conn
-     * @param code
-     * @param reason
-     * @param remote
+     * @param conn conn
+     * @param code code
+     * @param reason reason
+     * @param remote remote
      */
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
@@ -137,8 +137,8 @@ public class SignalingServer extends WebSocketServer {
     
     /** 
      * Callback for string messages received from the remote host
-     * @param conn
-     * @param message
+     * @param conn conn
+     * @param message message
      */
     @Override
     public void onMessage(WebSocket conn, String message) {
@@ -165,8 +165,8 @@ public class SignalingServer extends WebSocketServer {
     
     /** 
      * Called when errors occurs. If an error causes the websocket connection to fail onClose(WebSocket, int, String, boolean) will be called additionally. This method will be called primarily because of IO or protocol errors. If the given exception is an RuntimeException that probably means that you encountered a bug.
-     * @param conn
-     * @param ex
+     * @param conn conn
+     * @param ex exception
      */
     @Override
     public void onError(WebSocket conn, Exception ex) {
@@ -192,9 +192,9 @@ public class SignalingServer extends WebSocketServer {
     
     /** 
      * Handling the incoming operation by calling the right handler.
-     * @param operation
-     * @param conn
-     * @throws UnimplementedOperation
+     * @param operation operation
+     * @param conn conn
+     * @throws UnimplementedOperation Thrown if an unimplemented operation was received
      */
     private void handleOperation(JSONObject operation, WebSocket conn) throws UnimplementedOperation {
 
@@ -285,7 +285,7 @@ public class SignalingServer extends WebSocketServer {
     
     /** 
      * Send a ping to the other end
-     * @throws InterruptedException
+     * @throws InterruptedException Thrown if interrupted
      */
     public void ping() throws InterruptedException {
 

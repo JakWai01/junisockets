@@ -17,9 +17,9 @@ public class Candidate implements ICandidate {
 
     /**
      * Constructor Candidate
-     * @param offererId
-     * @param answererId
-     * @param candidate
+     * @param offererId offererId
+     * @param answererId answererId
+     * @param candidate candidate
      */
     public Candidate(String offererId, String answererId, String candidate) {
         this.offererId = offererId;
@@ -57,7 +57,7 @@ public class Candidate implements ICandidate {
     
     /** 
      * Returns operation as JSON
-     * @param operationObject
+     * @param operationObject operation
      * @return String
      */
     public String getAsJSON(Object operationObject) {

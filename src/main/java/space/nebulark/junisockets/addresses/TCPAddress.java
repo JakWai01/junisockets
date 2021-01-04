@@ -25,10 +25,10 @@ public class TCPAddress implements ITCPAddress {
 
     /**
      * Constructor TCPAddress
-     * @param logger
-     * @param mutex
-     * @param subnets
-     * @param ip
+     * @param logger logger
+     * @param mutex mutex
+     * @param subnets subnets
+     * @param ip ip
      */
     public TCPAddress(Logger logger, ReentrantLock mutex,
             ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets, IPAddress ip) {
@@ -41,10 +41,10 @@ public class TCPAddress implements ITCPAddress {
     
     /** 
      * Creates TCP address
-     * @param ipAddress
+     * @param ipAddress IP adress of client
      * @return String
-     * @throws SuffixDoesNotExist
-     * @throws SubnetDoesNotExist
+     * @throws SuffixDoesNotExist Thrown if suffix does not exist
+     * @throws SubnetDoesNotExist Thrown if subnet does not exist
      */
     public String createTCPAddress(String ipAddress) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.trace("Creating TCP address " + ipAddress);
@@ -87,9 +87,9 @@ public class TCPAddress implements ITCPAddress {
 
     /** 
      * Claims TCP address
-     * @param tcpAddress
-     * @throws PortAlreadyAllocatedError
-     * @throws SubnetDoesNotExist
+     * @param tcpAddress TCP address of client
+     * @throws PortAlreadyAllocated Thrown if port is already allocated
+     * @throws SubnetDoesNotExist Thrown if subnet does not exist
      */
     public void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocated, SubnetDoesNotExist {
         logger.trace("Claiming TCP address " + tcpAddress);
@@ -131,7 +131,7 @@ public class TCPAddress implements ITCPAddress {
 
     /** 
      * Removes TCP address
-     * @param tcpAddress
+     * @param tcpAddress TCP address of client
      */
     public void removeTCPAddress(String tcpAddress) {
         logger.trace("Removing TCP address " + tcpAddress);
@@ -162,8 +162,8 @@ public class TCPAddress implements ITCPAddress {
     
     /** 
      * Assembles TCP address out of ipAddress and port
-     * @param ipAddress
-     * @param port
+     * @param ipAddress IP address of client
+     * @param port port of client
      * @return String
      */
     public String toTCPAddress(String ipAddress, int port) {
@@ -176,8 +176,8 @@ public class TCPAddress implements ITCPAddress {
  
     
     /** 
-     * Parses TCP address into ipAddress and port (e.g. "127.0.0.1:8080" -> ["127.0.0.1", "8080"])
-     * @param tcpAddress
+     * Parses TCP address into ipAddress and port (e.g. "127.0.0.1:8080" = ["127.0.0.1", "8080"])
+     * @param tcpAddress TCP address of client
      * @return String[]
      */
     public String[] parseTCPAddress(String tcpAddress) {

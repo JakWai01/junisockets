@@ -22,9 +22,9 @@ public class IPAddress implements IIPAddress {
 
     /**
      * Constructor IPAddress
-     * @param logger
-     * @param mutex
-     * @param subnets
+     * @param logger logger
+     * @param mutex mutex
+     * @param subnets subnets
      */
     public IPAddress(Logger logger, ReentrantLock mutex,
             ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets) {
@@ -36,7 +36,7 @@ public class IPAddress implements IIPAddress {
     
     /** 
      * Creates IP address 
-     * @param subnet
+     * @param subnet subnet of client
      * @return String
      */
     public String createIPAddress(String subnet) {
@@ -88,7 +88,7 @@ public class IPAddress implements IIPAddress {
     
     /** 
      * Removes IP Address
-     * @param ipAddress
+     * @param ipAddress IP address of client
      */
     public void removeIPAddress(String ipAddress) {
         logger.trace("Removing IP address " + ipAddress);
@@ -114,8 +114,8 @@ public class IPAddress implements IIPAddress {
     
     /** 
      * Assembles IP address out of subnet and suffix
-     * @param subnet
-     * @param suffix
+     * @param subnet subnet of client
+     * @param suffix suffix of client
      * @return String
      */
     public String toIPAddress(String subnet, int suffix) {
@@ -128,8 +128,8 @@ public class IPAddress implements IIPAddress {
 
     
     /** 
-     * Parses IP address into octets (e.g. "127.0.0.1" -> ["127", "0", "0", "1"])
-     * @param ipAddress
+     * Parses IP address into octets (e.g. "127.0.0.1" = ["127", "0", "0", "1"])
+     * @param ipAddress IP Address of client
      * @return String[]
      */
     public String[] parseIPAddress(String ipAddress) {

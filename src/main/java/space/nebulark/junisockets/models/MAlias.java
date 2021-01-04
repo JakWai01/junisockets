@@ -9,8 +9,8 @@ public class MAlias {
 
     /**
      * Constructor for MAlias
-     * @param id
-     * @param accepting
+     * @param id id 
+     * @param accepting accepting
      */
     public MAlias(String id, boolean accepting) {
         this.id = id;

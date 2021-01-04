@@ -7,14 +7,14 @@ public interface IOperation {
    
     /**
      * Returns operation as JSON
-     * @param operation
-     * @return
+     * @param operation operation
+     * @return String
      */
     String getAsJSON(Object operation);
 
     /**
      * Returns opcode
-     * @return
+     * @return String
      */
     String getOpCode();
 }

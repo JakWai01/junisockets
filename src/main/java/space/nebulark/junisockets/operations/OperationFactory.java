@@ -9,7 +9,7 @@ public class OperationFactory {
 
     /**
      * Constructor OperationFactory
-     * @param opcode
+     * @param opcode opcode
      */
     public OperationFactory(ESignalingOperationCode opcode) {
         this.opcode = opcode;
@@ -32,7 +32,7 @@ public class OperationFactory {
     
     /** 
      * Sets boundAlias
-     * @param boundAlias
+     * @param boundAlias boundAlias
      * @return OperationFactory
      */
     public OperationFactory setBoundAlias(String boundAlias) {
@@ -43,7 +43,7 @@ public class OperationFactory {
     
     /** 
      * Sets clientAlias
-     * @param clientAlias
+     * @param clientAlias clientAlias
      * @return OperationFactory
      */
     public OperationFactory setClientAlias(String clientAlias) {
@@ -54,7 +54,7 @@ public class OperationFactory {
     
     /** 
      * Sets id
-     * @param id
+     * @param id id
      * @return OperationFactory
      */
     public OperationFactory setId(String id) {
@@ -65,7 +65,7 @@ public class OperationFactory {
     
     /** 
      * Sets rejected
-     * @param rejected
+     * @param rejected rejected
      * @return OperationFactory
      */
     public OperationFactory setRejected(Boolean rejected) {
@@ -76,7 +76,7 @@ public class OperationFactory {
     
     /** 
      * Sets alias
-     * @param alias
+     * @param alias alias
      * @return OperationFactory
      */
     public OperationFactory setAlias(String alias) {
@@ -87,7 +87,7 @@ public class OperationFactory {
     
     /** 
      * Sets clientConnectionId
-     * @param clientConnectionId
+     * @param clientConnectionId clientConnectionId
      * @return OperationFactory
      */
     public OperationFactory setClientConnectionId(String clientConnectionId) {
@@ -98,7 +98,7 @@ public class OperationFactory {
     
     /** 
      * Sets set
-     * @param set
+     * @param set set
      * @return OperationFactory
      */
     public OperationFactory setSet(Boolean set) {
@@ -109,7 +109,7 @@ public class OperationFactory {
     
     /** 
      * Sets isConnectionAlias
-     * @param isConnectionAlias
+     * @param isConnectionAlias isConnectionAlias
      * @return OperationFactory
      */
     public OperationFactory setIsConnectionAlias(Boolean isConnectionAlias) {
@@ -120,7 +120,7 @@ public class OperationFactory {
     
     /** 
      * Sets offererId
-     * @param offererId
+     * @param offererId offererId
      * @return OperationFactory
      */
     public OperationFactory setOffererId(String offererId) {
@@ -131,7 +131,7 @@ public class OperationFactory {
     
     /** 
      * Sets answererId
-     * @param answererId
+     * @param answererId answererId
      * @return OperationFactory
      */
     public OperationFactory setAnswererId(String answererId) {
@@ -142,7 +142,7 @@ public class OperationFactory {
     
     /** 
      * Sets answer
-     * @param answer
+     * @param answer answer
      * @return OperationFactory
      */
     public OperationFactory setAnswer(String answer) {
@@ -153,7 +153,7 @@ public class OperationFactory {
     
     /** 
      * Sets candidate
-     * @param candidate
+     * @param candidate candidate
      * @return OperationFactory
      */
     public OperationFactory setCandidate(String candidate) {
@@ -164,7 +164,7 @@ public class OperationFactory {
     
     /** 
      * Sets offer
-     * @param offer
+     * @param offer offer
      * @return OperationFactory
      */
     public OperationFactory setOffer(String offer) {

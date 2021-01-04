@@ -18,9 +18,9 @@ public class Alias implements IAlias {
 
     /**
      * Constructor Alias
-     * @param id
-     * @param alias
-     * @param set
+     * @param id id 
+     * @param alias alias
+     * @param set set
      */
     public Alias(String id, String alias, boolean set) {
         this.id = id;
@@ -30,10 +30,10 @@ public class Alias implements IAlias {
 
     /**
      * Constructor Alias
-     * @param id
-     * @param alias
-     * @param set
-     * @param clientConnectionId
+     * @param id id 
+     * @param alias alias
+     * @param set set
+     * @param clientConnectionId clientConnectionId
      */
     public Alias(String id, String alias, boolean set, String clientConnectionId) {
         this.id = id;
@@ -44,6 +44,11 @@ public class Alias implements IAlias {
 
     /**
      * Constructor Alias
+     * @param id id
+     * @param alias alias
+     * @param set set
+     * @param clientConnectionId clientConnectionId
+     * @param isConnectionAlias isConnectionAlias
      */
     public Alias(String id, String alias, boolean set, String clientConnectionId, boolean isConnectionAlias) {
         this.id = id;
@@ -101,7 +106,7 @@ public class Alias implements IAlias {
     
     /** 
      * Returns operation as JSON
-     * @param operationObject
+     * @param operationObject operation
      * @return String
      */
     public String getAsJSON(Object operationObject) {

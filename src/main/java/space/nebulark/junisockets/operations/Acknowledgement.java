@@ -16,8 +16,8 @@ public class Acknowledgement implements IAcknowledgement {
 
     /**
      * Constructor Acknowledgement
-     * @param id
-     * @param rejected
+     * @param id id
+     * @param rejected rejected
      */
     public Acknowledgement(String id, boolean rejected) {
         this.id = id;
@@ -45,7 +45,7 @@ public class Acknowledgement implements IAcknowledgement {
     
     /** 
      * Returns operation as JSON
-     * @param operationObject
+     * @param operationObject operation
      * @return String
      */
     public String getAsJSON(Object operationObject) {

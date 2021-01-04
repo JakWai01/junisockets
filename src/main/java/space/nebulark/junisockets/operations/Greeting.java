@@ -15,8 +15,8 @@ public class Greeting implements IGreeting {
 
     /**
      * Constructor Greeting
-     * @param offererId
-     * @param answererId
+     * @param offererId offererId
+     * @param answererId answererId
      */
     public Greeting(String offererId, String answererId) {
         this.offererId = offererId;
@@ -44,7 +44,7 @@ public class Greeting implements IGreeting {
     
     /** 
      * Returns operation as JSON
-     * @param operationObject
+     * @param operationObject operation
      * @return String
      */
     public String getAsJSON(Object operationObject) {
