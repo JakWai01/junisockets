@@ -70,6 +70,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc.run();
         s.stop();
     }
@@ -123,7 +124,9 @@ public class ServerOperationTest {
                 }
 
                 JSONObject operation = (JSONObject) jsonObj;
-
+                if (operation.get("opcode").equals(ESignalingOperationCode.ACKNOWLEDGED.getValue())) {
+                    send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\"},\"opcode\":\"bind\"}");
+                }
                 if (operation.get("opcode").equals(ESignalingOperationCode.ALIAS.getValue())) {
                     Assert.assertEquals(
                             "{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\",\"set\":true},\"opcode\":\"alias\"}",
@@ -135,10 +138,11 @@ public class ServerOperationTest {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
                 send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
-                send("{\"data\":{\"id\":\"127.0.0.0\",\"alias\":\"127.0.0.0:1234\"},\"opcode\":\"bind\"}");
+
             }
         };
 
+        Thread.sleep(300);
         cc.run();
         s.stop();
     }
@@ -191,6 +195,12 @@ public class ServerOperationTest {
                 }
                 ;
                 if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     close();
                 }
                 ;
@@ -200,6 +210,12 @@ public class ServerOperationTest {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
                 send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         };
 
@@ -232,6 +248,14 @@ public class ServerOperationTest {
                                     + "\",\"answererId\":\"" + ((JSONObject) operation.get("data")).get("answererId")
                                     + "\",\"offer\":\"o1\"},\"opcode\":\"offer\"}",
                             message);
+
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
                     close();
                 }
             }
@@ -242,6 +266,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc2.connect();
         cc.run();
         s.stop();
@@ -294,6 +319,13 @@ public class ServerOperationTest {
                     }
                 }
                 if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    ;
                     close();
                 }
 
@@ -344,6 +376,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc2.connect();
         cc.run();
         s.stop();
@@ -407,6 +440,12 @@ public class ServerOperationTest {
                     }
                 }
                 if (operation.get("opcode").equals(ESignalingOperationCode.GOODBYE.getValue())) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     close();
                 }
             }
@@ -457,6 +496,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc2.connect();
         cc.run();
         s.stop();
@@ -540,6 +580,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc.run();
         s.stop();
     }
@@ -599,6 +640,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc.run();
         s.stop();
     }
@@ -662,6 +704,7 @@ public class ServerOperationTest {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     Assert.assertEquals(true,
@@ -675,6 +718,8 @@ public class ServerOperationTest {
                 send("{\"data\":{\"subnet\":\"127.0.0\"},\"opcode\":\"knock\"}");
             }
         };
+
+        Thread.sleep(300);
         cc.run();
         s.stop();
     }
@@ -749,6 +794,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc.run();
         s.stop();
 
@@ -900,6 +946,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc2.connect();
         cc.run();
         s.stop();
@@ -1015,6 +1062,7 @@ public class ServerOperationTest {
             }
         };
 
+        Thread.sleep(300);
         cc2.connect();
         cc.run();
         Thread.sleep(300);
