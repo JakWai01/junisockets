@@ -1,9 +1,16 @@
 package space.nebulark.junisockets.operations;
 
+/**
+ * OperationFactory
+ */
 public class OperationFactory {
 
     ESignalingOperationCode opcode;
 
+    /**
+     * Constructor OperationFactory
+     * @param opcode
+     */
     public OperationFactory(ESignalingOperationCode opcode) {
         this.opcode = opcode;
     }
@@ -24,6 +31,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets boundAlias
      * @param boundAlias
      * @return OperationFactory
      */
@@ -34,6 +42,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets clientAlias
      * @param clientAlias
      * @return OperationFactory
      */
@@ -44,6 +53,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets id
      * @param id
      * @return OperationFactory
      */
@@ -54,6 +64,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets rejected
      * @param rejected
      * @return OperationFactory
      */
@@ -64,6 +75,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets alias
      * @param alias
      * @return OperationFactory
      */
@@ -74,6 +86,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets clientConnectionId
      * @param clientConnectionId
      * @return OperationFactory
      */
@@ -84,6 +97,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets set
      * @param set
      * @return OperationFactory
      */
@@ -94,6 +108,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets isConnectionAlias
      * @param isConnectionAlias
      * @return OperationFactory
      */
@@ -104,6 +119,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets offererId
      * @param offererId
      * @return OperationFactory
      */
@@ -114,6 +130,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets answererId
      * @param answererId
      * @return OperationFactory
      */
@@ -124,6 +141,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets answer
      * @param answer
      * @return OperationFactory
      */
@@ -134,6 +152,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets candidate
      * @param candidate
      * @return OperationFactory
      */
@@ -144,6 +163,7 @@ public class OperationFactory {
 
     
     /** 
+     * Sets offer
      * @param offer
      * @return OperationFactory
      */
@@ -154,6 +174,7 @@ public class OperationFactory {
 
     
     /** 
+     * Builds the defined object and returns the right operation based on the set parameters
      * @return Object
      */
     public Object getOperation() {

@@ -10,6 +10,12 @@ import org.apache.log4j.PropertyConfigurator;
 import space.nebulark.junisockets.services.SignalingServer;
 import space.nebulark.junisockets.services.SignalingServerBuilder;
 
+/**
+ * A WebRTC signaling server for unisockets to allow nodes to discover each other and exchange candidates
+ * @author Jakob Waibel
+ * @version 1.0
+ * @since 1.0
+ */
 public class App {
   
   /** 

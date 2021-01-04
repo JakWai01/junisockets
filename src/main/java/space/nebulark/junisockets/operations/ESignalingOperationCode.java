@@ -1,5 +1,8 @@
 package space.nebulark.junisockets.operations;
 
+/**
+ * ESignalingOperationCode
+ */
 public enum ESignalingOperationCode { 
     GOODBYE("goodbye"),
     KNOCK("knock"),
@@ -17,10 +20,18 @@ public enum ESignalingOperationCode {
 
     private String value;
 
+    /**
+     * Constructor ESignalingOperationCode
+     * @param value
+     */
     private ESignalingOperationCode(String value) {
         this.value = value;
     }    
 
+    /**
+     * Returns value
+     * @return String
+     */
     public String getValue() {
         return value;
     }

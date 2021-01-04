@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-import space.nebulark.junisockets.errors.PortAlreadyAllocatedError;
+import space.nebulark.junisockets.errors.PortAlreadyAllocated;
 import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
 
+/**
+ * TCP address
+ */
 public class TCPAddress implements ITCPAddress {
 
     Logger logger;
@@ -20,6 +23,13 @@ public class TCPAddress implements ITCPAddress {
     ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
     IPAddress ip;
 
+    /**
+     * Constructor TCPAddress
+     * @param logger
+     * @param mutex
+     * @param subnets
+     * @param ip
+     */
     public TCPAddress(Logger logger, ReentrantLock mutex,
             ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets, IPAddress ip) {
         this.logger = logger;
@@ -30,6 +40,7 @@ public class TCPAddress implements ITCPAddress {
 
     
     /** 
+     * Creates TCP address
      * @param ipAddress
      * @return String
      * @throws SuffixDoesNotExist
@@ -72,14 +83,15 @@ public class TCPAddress implements ITCPAddress {
             mutex.unlock();
         }
     }
-
     
+
     /** 
+     * Claims TCP address
      * @param tcpAddress
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */
-    public void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    public void claimTCPAddress(String tcpAddress) throws PortAlreadyAllocated, SubnetDoesNotExist {
         logger.trace("Claiming TCP address " + tcpAddress);
 
         mutex.lock();
@@ -105,7 +117,7 @@ public class TCPAddress implements ITCPAddress {
 
                 else {
                     logger.fatal("Port already allocated");
-                    throw new PortAlreadyAllocatedError();
+                    throw new PortAlreadyAllocated();
                 }
             } else {
                 logger.fatal("Subnet does not exist");
@@ -115,9 +127,10 @@ public class TCPAddress implements ITCPAddress {
             mutex.unlock();
         }
     }
-
     
+
     /** 
+     * Removes TCP address
      * @param tcpAddress
      */
     public void removeTCPAddress(String tcpAddress) {
@@ -145,9 +158,10 @@ public class TCPAddress implements ITCPAddress {
             mutex.unlock();
         }
     }
-
+  
     
     /** 
+     * Assembles TCP address out of ipAddress and port
      * @param ipAddress
      * @param port
      * @return String
@@ -159,9 +173,10 @@ public class TCPAddress implements ITCPAddress {
 
         return tcpAddress;
     }
-
+ 
     
     /** 
+     * Parses TCP address into ipAddress and port (e.g. "127.0.0.1:8080" -> ["127.0.0.1", "8080"])
      * @param tcpAddress
      * @return String[]
      */

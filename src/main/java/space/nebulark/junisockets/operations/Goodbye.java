@@ -5,17 +5,24 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Goodbye
+ */
 public class Goodbye implements IGoodbye {
    public ESignalingOperationCode opcode = ESignalingOperationCode.GOODBYE;
    
    private String id;
 
+   /**
+    * Constructor Goodbye
+    */
    public Goodbye(String id) {
         this.id = id;
    }
 
    
    /** 
+    * Returns id
     * @return String
     */
    public String getId() {
@@ -24,6 +31,7 @@ public class Goodbye implements IGoodbye {
 
    
    /** 
+    * Returns operation as JSON
     * @param operationObject
     * @return String
     */
@@ -47,6 +55,7 @@ public class Goodbye implements IGoodbye {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

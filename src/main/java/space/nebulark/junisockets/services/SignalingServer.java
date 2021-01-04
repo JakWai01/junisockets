@@ -19,7 +19,7 @@ import space.nebulark.junisockets.addresses.IPAddress;
 import space.nebulark.junisockets.addresses.TCPAddress;
 import space.nebulark.junisockets.errors.ClientClosed;
 import space.nebulark.junisockets.errors.ClientDoesNotExist;
-import space.nebulark.junisockets.errors.PortAlreadyAllocatedError;
+import space.nebulark.junisockets.errors.PortAlreadyAllocated;
 import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
 import space.nebulark.junisockets.errors.UnimplementedOperation;
@@ -29,6 +29,9 @@ import space.nebulark.junisockets.operations.ESignalingOperationCode;
 import space.nebulark.junisockets.operations.Goodbye;
 import space.nebulark.junisockets.operations.OperationFactory;
 
+/**
+ * SignalingServer
+ */
 public class SignalingServer extends WebSocketServer {
 
     private Logger logger = Logger.getLogger(SignalingServer.class);
@@ -41,6 +44,11 @@ public class SignalingServer extends WebSocketServer {
     private TCPAddress tcpAddress = new TCPAddress(logger, mutex, subnets, ip);
     private ServerOperation op = new ServerOperation(clients, aliases, ip, tcpAddress, logger);
 
+    /**
+     * Constructor SignalingServer
+     * @param logger
+     * @param address
+     */
     public SignalingServer(Logger logger, InetSocketAddress address) {
         super(address);
         setReuseAddr(true);
@@ -50,6 +58,7 @@ public class SignalingServer extends WebSocketServer {
 
     
     /** 
+     * Called after an opening handshake has been performed and the given websocket is ready to be written on.
      * @param conn
      * @param handshake
      */
@@ -62,6 +71,7 @@ public class SignalingServer extends WebSocketServer {
 
     
     /** 
+     * Called after the websocket connection has been closed.
      * @param conn
      * @param code
      * @param reason
@@ -126,6 +136,7 @@ public class SignalingServer extends WebSocketServer {
 
     
     /** 
+     * Callback for string messages received from the remote host
      * @param conn
      * @param message
      */
@@ -153,6 +164,7 @@ public class SignalingServer extends WebSocketServer {
 
     
     /** 
+     * Called when errors occurs. If an error causes the websocket connection to fail onClose(WebSocket, int, String, boolean) will be called additionally. This method will be called primarily because of IO or protocol errors. If the given exception is an RuntimeException that probably means that you encountered a bug.
      * @param conn
      * @param ex
      */
@@ -179,6 +191,7 @@ public class SignalingServer extends WebSocketServer {
 
     
     /** 
+     * Handling the incoming operation by calling the right handler.
      * @param operation
      * @param conn
      * @throws UnimplementedOperation
@@ -226,7 +239,7 @@ public class SignalingServer extends WebSocketServer {
             Thread thread = new Thread(() -> {
                 try {
                     op.handleBind((JSONObject) operation.get("data"));
-                } catch (PortAlreadyAllocatedError e) {
+                } catch (PortAlreadyAllocated e) {
                     e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
                     e.printStackTrace();
@@ -271,6 +284,7 @@ public class SignalingServer extends WebSocketServer {
 
     
     /** 
+     * Send a ping to the other end
      * @throws InterruptedException
      */
     public void ping() throws InterruptedException {

@@ -5,12 +5,20 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Accept
+ */
 public class Accept implements IAccept {
     public ESignalingOperationCode opcode = ESignalingOperationCode.ACCEPT;
 
     private String boundAlias;
     private String clientAlias;
 
+    /**
+     * Constructor Accept
+     * @param boundAlias
+     * @param clientAlias
+     */
     public Accept(String boundAlias, String clientAlias) {
         this.boundAlias = boundAlias;
         this.clientAlias = clientAlias;
@@ -18,6 +26,7 @@ public class Accept implements IAccept {
 
     
     /** 
+     * Returns boundAlias
      * @return String
      */
     public String getBoundAlias() {
@@ -26,6 +35,7 @@ public class Accept implements IAccept {
 
     
     /** 
+     * Returns clientAlias
      * @return String
      */
     public String getClientAlias() {
@@ -34,6 +44,7 @@ public class Accept implements IAccept {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -58,6 +69,7 @@ public class Accept implements IAccept {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

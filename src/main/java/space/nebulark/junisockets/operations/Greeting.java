@@ -5,11 +5,19 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Greeting
+ */
 public class Greeting implements IGreeting {
     public ESignalingOperationCode opcode = ESignalingOperationCode.GREETING;
     private String offererId;
     private String answererId;
 
+    /**
+     * Constructor Greeting
+     * @param offererId
+     * @param answererId
+     */
     public Greeting(String offererId, String answererId) {
         this.offererId = offererId;
         this.answererId = answererId;
@@ -17,6 +25,7 @@ public class Greeting implements IGreeting {
 
     
     /** 
+     * Returns offererId
      * @return String
      */
     public String getOffererId() {
@@ -25,6 +34,7 @@ public class Greeting implements IGreeting {
 
     
     /** 
+     * Returns answererId
      * @return String
      */
     public String getAnswererId() {
@@ -33,6 +43,7 @@ public class Greeting implements IGreeting {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -57,6 +68,7 @@ public class Greeting implements IGreeting {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

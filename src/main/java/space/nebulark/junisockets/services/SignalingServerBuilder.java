@@ -4,6 +4,9 @@ import java.net.InetSocketAddress;
 
 import org.apache.log4j.Logger;
 
+/**
+ * SignalingServerBuilder
+ */
 public class SignalingServerBuilder {
    
     private Logger logger;
@@ -12,6 +15,7 @@ public class SignalingServerBuilder {
 
     
     /** 
+     * Sets logger
      * @param logger
      * @return SignalingServerBuilder
      */
@@ -22,6 +26,7 @@ public class SignalingServerBuilder {
 
     
     /** 
+     * Sets port
      * @param port
      * @return SignalingServerBuilder
      */
@@ -32,6 +37,7 @@ public class SignalingServerBuilder {
 
     
     /** 
+     * Sets host
      * @param host
      * @return SignalingServerBuilder
      */
@@ -42,6 +48,7 @@ public class SignalingServerBuilder {
 
     
     /** 
+     * Builds SignalingServer based on set parameters
      * @return SignalingServer
      */
     public SignalingServer build() {

@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import space.nebulark.junisockets.errors.PortAlreadyAllocatedError;
+import space.nebulark.junisockets.errors.PortAlreadyAllocated;
 import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
 import space.nebulark.junisockets.services.SignalingServer;
@@ -109,7 +109,7 @@ public class TCPAddressTest {
      * @throws SubnetDoesNotExist
      */
     @Test
-    public void testClaimTCPAddress() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    public void testClaimTCPAddress() throws PortAlreadyAllocated, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
         ReentrantLock mutex = new ReentrantLock();
         ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
@@ -135,8 +135,8 @@ public class TCPAddressTest {
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */
-    @Test(expected = PortAlreadyAllocatedError.class) 
-    public void testClaimTCPAddressPortAlreadtAllocated() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    @Test(expected = PortAlreadyAllocated.class) 
+    public void testClaimTCPAddressPortAlreadtAllocated() throws PortAlreadyAllocated, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
         ReentrantLock mutex = new ReentrantLock();
         ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
@@ -156,7 +156,7 @@ public class TCPAddressTest {
      * @throws SubnetDoesNotExist
      */
     @Test(expected = SubnetDoesNotExist.class)
-    public void testClaimTCPAddressSubnetDoesNotExist() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    public void testClaimTCPAddressSubnetDoesNotExist() throws PortAlreadyAllocated, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
         ReentrantLock mutex = new ReentrantLock();
         ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();
@@ -173,7 +173,7 @@ public class TCPAddressTest {
      * @throws SubnetDoesNotExist
      */
     @Test
-    public void testRemoveTCPAddress() throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    public void testRemoveTCPAddress() throws PortAlreadyAllocated, SubnetDoesNotExist {
         Logger logger = Logger.getLogger(SignalingServer.class);
         ReentrantLock mutex = new ReentrantLock();
         ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets = new ConcurrentHashMap<String, HashMap<Integer, List<Integer>>>();

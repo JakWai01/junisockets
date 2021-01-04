@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Answer
+ */
 public class Answer implements IAnswer {
     public ESignalingOperationCode opcode = ESignalingOperationCode.ANSWER;
 
@@ -12,6 +15,9 @@ public class Answer implements IAnswer {
     private String answererId;
     private String answer;
 
+    /**
+     * Constructor Answer
+     */
     public Answer(String offererId, String answererId, String answer) {
         this.offererId = offererId;
         this.answererId = answererId;
@@ -20,6 +26,7 @@ public class Answer implements IAnswer {
 
     
     /** 
+     * Returns offererId
      * @return String
      */
     public String getOffererId() {
@@ -28,6 +35,7 @@ public class Answer implements IAnswer {
 
     
     /** 
+     * Returns answererId
      * @return String
      */
     public String getAnswererId() {
@@ -36,6 +44,7 @@ public class Answer implements IAnswer {
 
     
     /** 
+     * Returns answer
      * @return String
      */
     public String getAnswer() {
@@ -44,6 +53,7 @@ public class Answer implements IAnswer {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -69,6 +79,7 @@ public class Answer implements IAnswer {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Offer
+ */
 public class Offer implements IOffer {
     public ESignalingOperationCode opcode = ESignalingOperationCode.OFFER;
 
@@ -12,6 +15,12 @@ public class Offer implements IOffer {
     private String answererId;
     private String offer;
 
+    /**
+     * Constructor Offer
+     * @param offererId
+     * @param answererId
+     * @param offer
+     */
     public Offer(String offererId, String answererId, String offer) {
         this.offererId = offererId;
         this.answererId = answererId;
@@ -19,7 +28,8 @@ public class Offer implements IOffer {
     }
 
     
-    /** 
+    /**
+     * Returns offererId 
      * @return String
      */
     public String getOffererId() {
@@ -27,7 +37,8 @@ public class Offer implements IOffer {
     }
 
     
-    /** 
+    /**
+     * Returns answererId 
      * @return String
      */
     public String getAnswererId() {
@@ -35,7 +46,8 @@ public class Offer implements IOffer {
     }
 
     
-    /** 
+    /**
+     * Returns offer 
      * @return String
      */
     public String getOffer() {
@@ -44,6 +56,7 @@ public class Offer implements IOffer {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -69,6 +82,7 @@ public class Offer implements IOffer {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

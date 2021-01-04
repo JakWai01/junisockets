@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Candidate
+ */
 public class Candidate implements ICandidate {
     public ESignalingOperationCode opcode = ESignalingOperationCode.CANDIDATE;
 
@@ -12,6 +15,12 @@ public class Candidate implements ICandidate {
     private String answererId;
     private String candidate;
 
+    /**
+     * Constructor Candidate
+     * @param offererId
+     * @param answererId
+     * @param candidate
+     */
     public Candidate(String offererId, String answererId, String candidate) {
         this.offererId = offererId;
         this.answererId = answererId;
@@ -20,6 +29,7 @@ public class Candidate implements ICandidate {
 
     
     /** 
+     * Returns offererId
      * @return String
      */
     public String getOffererId() {
@@ -28,6 +38,7 @@ public class Candidate implements ICandidate {
 
     
     /** 
+     * Returns answererId
      * @return String
      */
     public String getAnswererId() {
@@ -36,6 +47,7 @@ public class Candidate implements ICandidate {
 
     
     /** 
+     * Returns candidate
      * @return String
      */
     public String getCandidate() {
@@ -44,6 +56,7 @@ public class Candidate implements ICandidate {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -70,6 +83,7 @@ public class Candidate implements ICandidate {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

@@ -11,12 +11,21 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
+/**
+ * IP address
+ */
 public class IPAddress implements IIPAddress {
 
     Logger logger;
     ReentrantLock mutex;
     ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
 
+    /**
+     * Constructor IPAddress
+     * @param logger
+     * @param mutex
+     * @param subnets
+     */
     public IPAddress(Logger logger, ReentrantLock mutex,
             ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets) {
         this.logger = logger;
@@ -26,6 +35,7 @@ public class IPAddress implements IIPAddress {
 
     
     /** 
+     * Creates IP address 
      * @param subnet
      * @return String
      */
@@ -77,6 +87,7 @@ public class IPAddress implements IIPAddress {
 
     
     /** 
+     * Removes IP Address
      * @param ipAddress
      */
     public void removeIPAddress(String ipAddress) {
@@ -102,6 +113,7 @@ public class IPAddress implements IIPAddress {
 
     
     /** 
+     * Assembles IP address out of subnet and suffix
      * @param subnet
      * @param suffix
      * @return String
@@ -116,6 +128,7 @@ public class IPAddress implements IIPAddress {
 
     
     /** 
+     * Parses IP address into octets (e.g. "127.0.0.1" -> ["127", "0", "0", "1"])
      * @param ipAddress
      * @return String[]
      */

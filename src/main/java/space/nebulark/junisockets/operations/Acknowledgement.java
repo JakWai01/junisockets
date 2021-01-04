@@ -5,12 +5,20 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Acknowledgement
+ */
 public class Acknowledgement implements IAcknowledgement {
     public ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
 
     private String id;
     private boolean rejected;
 
+    /**
+     * Constructor Acknowledgement
+     * @param id
+     * @param rejected
+     */
     public Acknowledgement(String id, boolean rejected) {
         this.id = id;
         this.rejected = rejected;
@@ -18,6 +26,7 @@ public class Acknowledgement implements IAcknowledgement {
 
     
     /** 
+     * Returns id
      * @return String
      */
     public String getId() {
@@ -26,6 +35,7 @@ public class Acknowledgement implements IAcknowledgement {
 
     
     /** 
+     * Returns rejected
      * @return boolean
      */
     public boolean getRejected() {
@@ -34,6 +44,7 @@ public class Acknowledgement implements IAcknowledgement {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -58,6 +69,7 @@ public class Acknowledgement implements IAcknowledgement {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {

@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 import space.nebulark.junisockets.addresses.IPAddress;
 import space.nebulark.junisockets.addresses.TCPAddress;
 import space.nebulark.junisockets.errors.ClientClosed;
-import space.nebulark.junisockets.errors.PortAlreadyAllocatedError;
+import space.nebulark.junisockets.errors.PortAlreadyAllocated;
 import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
 import space.nebulark.junisockets.models.MAlias;
@@ -26,6 +26,9 @@ import space.nebulark.junisockets.operations.IServerOperation;
 import space.nebulark.junisockets.operations.Offer;
 import space.nebulark.junisockets.operations.OperationFactory;
 
+/**
+ * ServerOperation
+ */
 public class ServerOperation implements IServerOperation {
     ConcurrentHashMap<String, WebSocket> clients;
     ConcurrentHashMap<String, MAlias> aliases;
@@ -33,6 +36,14 @@ public class ServerOperation implements IServerOperation {
     TCPAddress tcpAddress;
     Logger logger;
 
+    /**
+     * Constructor ServerOperation
+     * @param clients
+     * @param aliases
+     * @param ip
+     * @param tcpAddress
+     * @param logger
+     */
     public ServerOperation(ConcurrentHashMap<String, WebSocket> clients, ConcurrentHashMap<String, MAlias> aliases, IPAddress ip, TCPAddress tcpAddress, Logger logger) {
         this.clients = clients;
         this.aliases = aliases;
@@ -43,6 +54,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client knock
      * @param data
      * @param conn
      */
@@ -99,6 +111,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client offer
      * @param data
      */
     public void handleOffer(JSONObject data) {
@@ -121,6 +134,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client answer
      * @param data
      */
     public void handleAnswer(JSONObject data) {
@@ -143,6 +157,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client candidate
      * @param data
      */
     public void handleCandidate(JSONObject data) {
@@ -165,11 +180,12 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client bind
      * @param data
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */
-    public void handleBind(JSONObject data) throws PortAlreadyAllocatedError, SubnetDoesNotExist {
+    public void handleBind(JSONObject data) throws PortAlreadyAllocated, SubnetDoesNotExist {
         logger.debug("Handling bind " + data);
 
         if (aliases.containsKey(data.get("alias"))) {
@@ -211,6 +227,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client accepting
      * @param data
      */
     public void handleAccepting(JSONObject data) {
@@ -228,6 +245,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client shutdown
      * @param data
      */
     public void handleShutdown(JSONObject data) {
@@ -273,6 +291,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Handle client connect
      * @param data
      * @throws SuffixDoesNotExist
      * @throws SubnetDoesNotExist
@@ -359,6 +378,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Send goodbye from leaving client to all
      * @param operation
      */
     public void send(Goodbye operation) {
@@ -379,6 +399,7 @@ public class ServerOperation implements IServerOperation {
 
     
     /** 
+     * Send response to client. E depends on which handler is sending. E might be one of the operations implementing the IOperation interface
      * @param conn
      * @param operation
      * @throws ClientClosed

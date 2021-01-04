@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Alias
+ */
 public class Alias implements IAlias {
     public ESignalingOperationCode opcode = ESignalingOperationCode.ALIAS;
     private String id;
@@ -13,12 +16,25 @@ public class Alias implements IAlias {
     private boolean set;
     private boolean isConnectionAlias;
 
+    /**
+     * Constructor Alias
+     * @param id
+     * @param alias
+     * @param set
+     */
     public Alias(String id, String alias, boolean set) {
         this.id = id;
         this.alias = alias;
         this.set = set;
     }
 
+    /**
+     * Constructor Alias
+     * @param id
+     * @param alias
+     * @param set
+     * @param clientConnectionId
+     */
     public Alias(String id, String alias, boolean set, String clientConnectionId) {
         this.id = id;
         this.alias = alias;
@@ -26,6 +42,9 @@ public class Alias implements IAlias {
         this.clientConnectionId = clientConnectionId;
     }
 
+    /**
+     * Constructor Alias
+     */
     public Alias(String id, String alias, boolean set, String clientConnectionId, boolean isConnectionAlias) {
         this.id = id;
         this.alias = alias;
@@ -36,6 +55,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns id
      * @return String
      */
     public String getId() {
@@ -44,6 +64,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns alias
      * @return String
      */
     public String getAlias() {
@@ -52,6 +73,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns clientConnectionId
      * @return String
      */
     public String getClientConnectionId() {
@@ -60,6 +82,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns set
      * @return boolean
      */
     public boolean getSet() {
@@ -68,6 +91,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns isConnectionAlias
      * @return boolean
      */
     public boolean getIsConnectionAlias() {
@@ -76,6 +100,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns operation as JSON
      * @param operationObject
      * @return String
      */
@@ -109,6 +134,7 @@ public class Alias implements IAlias {
 
     
     /** 
+     * Returns opcode
      * @return String
      */
     public String getOpCode() {
