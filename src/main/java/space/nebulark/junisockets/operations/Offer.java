@@ -56,10 +56,11 @@ public class Offer implements IOffer {
 
     
     /** 
-     * Returns operation as JSON
+     * Returns operation as JSON. Warnings are suppressed because there are unavoidable ones when using json-simple in this case.
      * @param operationObject operation
      * @return String
      */
+    @SuppressWarnings("unchecked")
     public String getAsJSON(Object operationObject) {
 
         Offer operation = (Offer) operationObject;

@@ -44,10 +44,11 @@ public class Accept implements IAccept {
 
     
     /** 
-     * Returns operation as JSON
+     * Returns operation as JSON. Warnings are suppressed because there are unavoidable ones when using json-simple in this case.
      * @param operationObject operation
      * @return String
      */
+    @SuppressWarnings("unchecked")
     public String getAsJSON(Object operationObject) {
 
         Accept operation = (Accept)operationObject;
@@ -58,7 +59,7 @@ public class Accept implements IAccept {
         Map<Object, Object> m1 = new LinkedHashMap<Object, Object>();
         m1.put("boundAlias", (String) operation.getBoundAlias());
         m1.put("clientAlias", operation.getClientAlias());
-
+        
         obj.put("data", m1);
         obj.put("opcode", operation.opcode.getValue());
 
