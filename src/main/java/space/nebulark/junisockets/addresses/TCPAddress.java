@@ -14,13 +14,14 @@ import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
 
 public class TCPAddress implements ITCPAddress {
-    
+
     Logger logger;
     ReentrantLock mutex;
     ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
     IPAddress ip;
 
-    public TCPAddress(Logger logger, ReentrantLock mutex, ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets, IPAddress ip) {
+    public TCPAddress(Logger logger, ReentrantLock mutex,
+            ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets, IPAddress ip) {
         this.logger = logger;
         this.mutex = mutex;
         this.subnets = subnets;
@@ -36,25 +37,24 @@ public class TCPAddress implements ITCPAddress {
             final String[] partsIPAddress = ip.parseIPAddress(ipAddress);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            // parse suffix directly to int 
-            String suffix = partsIPAddress[3];
+            int suffix = Integer.parseInt(partsIPAddress[3]);
 
             if (subnets.containsKey(subnet)) {
-                if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
+                if (subnets.get(subnet).containsKey(suffix)) {
 
-                    subnets.get(subnet).get(Integer.parseInt(suffix)).sort((a, b) -> a - b);
+                    subnets.get(subnet).get(suffix).sort((a, b) -> a - b);
 
                     int newPort = 0;
 
-                    for (int i = 0; i < subnets.get(subnet).get(Integer.parseInt(suffix)).size(); i++) {
-                        if (subnets.get(subnet).get(Integer.parseInt(suffix)).get(i) != i) {
+                    for (int i = 0; i < subnets.get(subnet).get(suffix).size(); i++) {
+                        if (subnets.get(subnet).get(suffix).get(i) != i) {
                             newPort = i;
                         }
                     }
 
-                    subnets.get(subnet).get(Integer.parseInt(suffix)).add(newPort);
+                    subnets.get(subnet).get(suffix).add(newPort);
 
-                    return toTCPAddress(ip.toIPAddress(subnet, Integer.parseInt(suffix)), newPort);
+                    return toTCPAddress(ip.toIPAddress(subnet, suffix), newPort);
                 } else {
                     throw new SuffixDoesNotExist();
                 }
@@ -77,17 +77,17 @@ public class TCPAddress implements ITCPAddress {
             List<Integer> member = new ArrayList<Integer>();
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            String suffix = partsIPAddress[3];
+            int suffix = Integer.parseInt(partsIPAddress[3]);
 
             if (subnets.containsKey(subnet)) {
-                if (!(subnets.get(subnet).containsKey(Integer.parseInt(suffix)))) {
-                    subnets.get(subnet).put(Integer.parseInt(suffix), member);
+                if (!(subnets.get(subnet).containsKey(suffix))) {
+                    subnets.get(subnet).put(suffix, member);
                 }
 
-                if (subnets.get(subnet).get(Integer.parseInt(suffix)).stream()
+                if (subnets.get(subnet).get(suffix).stream()
                         .filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())
                         .size() == 0) {
-                    subnets.get(subnet).get(Integer.parseInt(suffix)).add(Integer.parseInt(partsTCPAddress[1]));
+                    subnets.get(subnet).get(suffix).add(Integer.parseInt(partsTCPAddress[1]));
                 }
 
                 else {

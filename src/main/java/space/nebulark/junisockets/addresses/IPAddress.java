@@ -11,13 +11,14 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-public class IPAddress implements IIPAddress{
-    
+public class IPAddress implements IIPAddress {
+
     Logger logger;
     ReentrantLock mutex;
     ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
-    
-    public IPAddress(Logger logger, ReentrantLock mutex, ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets) {
+
+    public IPAddress(Logger logger, ReentrantLock mutex,
+            ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets) {
         this.logger = logger;
         this.mutex = mutex;
         this.subnets = subnets;
@@ -78,11 +79,11 @@ public class IPAddress implements IIPAddress{
             final String[] partsIPAddress = parseIPAddress(ipAddress);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            String suffix = partsIPAddress[3];
+            int suffix = Integer.parseInt(partsIPAddress[3]);
 
             if (subnets.containsKey(subnet)) {
-                if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    subnets.get(subnet).remove(Integer.parseInt(suffix)); // We ensure above
+                if (subnets.get(subnet).containsKey(suffix)) {
+                    subnets.get(subnet).remove(suffix); // We ensure above
                 }
             }
         } finally {
