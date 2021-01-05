@@ -1,4 +1,4 @@
-package space.nebulark.junisockets.operations;
+package space.nebulark.junisockets.services;
 
 import org.java_websocket.WebSocket;
 import org.json.simple.JSONObject;
@@ -7,6 +7,8 @@ import space.nebulark.junisockets.errors.ClientClosed;
 import space.nebulark.junisockets.errors.PortAlreadyAllocated;
 import space.nebulark.junisockets.errors.SubnetDoesNotExist;
 import space.nebulark.junisockets.errors.SuffixDoesNotExist;
+import space.nebulark.junisockets.operations.Goodbye;
+import space.nebulark.junisockets.operations.IOperation;
 
 /**
  * Defines ServerOperation

@@ -22,14 +22,13 @@ import space.nebulark.junisockets.operations.ESignalingOperationCode;
 import space.nebulark.junisockets.operations.Goodbye;
 import space.nebulark.junisockets.operations.Greeting;
 import space.nebulark.junisockets.operations.IOperation;
-import space.nebulark.junisockets.operations.IServerOperation;
 import space.nebulark.junisockets.operations.Offer;
 import space.nebulark.junisockets.operations.OperationFactory;
 
 /**
  * ServerOperation
  */
-public class ServerOperation implements IServerOperation {
+public class ServerOperation {
     ConcurrentHashMap<String, WebSocket> clients;
     ConcurrentHashMap<String, MAlias> aliases;
     IPAddress ip;
@@ -44,7 +43,7 @@ public class ServerOperation implements IServerOperation {
      * @param tcpAddress tcpAddress
      * @param logger logger
      */
-    public ServerOperation(ConcurrentHashMap<String, WebSocket> clients, ConcurrentHashMap<String, MAlias> aliases, IPAddress ip, TCPAddress tcpAddress, Logger logger) {
+    protected ServerOperation(ConcurrentHashMap<String, WebSocket> clients, ConcurrentHashMap<String, MAlias> aliases, IPAddress ip, TCPAddress tcpAddress, Logger logger) {
         this.clients = clients;
         this.aliases = aliases;
         this.ip = ip;
@@ -58,7 +57,7 @@ public class ServerOperation implements IServerOperation {
      * @param data data
      * @param conn conn
      */
-    public void handleKnock(JSONObject data, WebSocket conn) {
+    protected void handleKnock(JSONObject data, WebSocket conn) {
 
         logger.debug("Handling knock");
 
@@ -114,7 +113,7 @@ public class ServerOperation implements IServerOperation {
      * Handle client offer
      * @param data data
      */
-    public void handleOffer(JSONObject data) {
+    protected void handleOffer(JSONObject data) {
         logger.debug("Handling offer: " + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
@@ -137,7 +136,7 @@ public class ServerOperation implements IServerOperation {
      * Handle client answer
      * @param data data
      */
-    public void handleAnswer(JSONObject data) {
+    protected void handleAnswer(JSONObject data) {
         logger.debug("Handling answer: " + data);
 
         final WebSocket client = clients.get(data.get("offererId"));
@@ -160,7 +159,7 @@ public class ServerOperation implements IServerOperation {
      * Handle client candidate
      * @param data data
      */
-    public void handleCandidate(JSONObject data) {
+    protected void handleCandidate(JSONObject data) {
         logger.debug("Handling candidate " + data);
 
         final WebSocket client = clients.get(data.get("answererId"));
@@ -185,7 +184,7 @@ public class ServerOperation implements IServerOperation {
      * @throws PortAlreadyAllocated Thrown if port is already allocated
      * @throws SubnetDoesNotExist Thrown if 
      */
-    public void handleBind(JSONObject data) throws PortAlreadyAllocated, SubnetDoesNotExist {
+    protected void handleBind(JSONObject data) throws PortAlreadyAllocated, SubnetDoesNotExist {
         logger.debug("Handling bind " + data);
 
         if (aliases.containsKey(data.get("alias"))) {
@@ -230,7 +229,7 @@ public class ServerOperation implements IServerOperation {
      * Handle client accepting
      * @param data data
      */
-    public void handleAccepting(JSONObject data) {
+    protected void handleAccepting(JSONObject data) {
         logger.debug("Handling accepting");
         
         if (!aliases.containsKey(data.get("alias"))
@@ -248,7 +247,7 @@ public class ServerOperation implements IServerOperation {
      * Handle client shutdown
      * @param data data
      */
-    public void handleShutdown(JSONObject data) {
+    protected void handleShutdown(JSONObject data) {
         logger.debug("Handling shutdown");
 
         if (aliases.containsKey(data.get("alias")) && aliases.get(data.get("alias")).getId() != data.get("id")) {
@@ -296,7 +295,7 @@ public class ServerOperation implements IServerOperation {
      * @throws SuffixDoesNotExist Thrown if suffix does not exist
      * @throws SubnetDoesNotExist Thrown if subent does not exist
      */
-    public void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
+    protected void handleConnect(JSONObject data) throws SuffixDoesNotExist, SubnetDoesNotExist {
         logger.debug("Handling connect");
 
         final String clientAlias = tcpAddress.createTCPAddress((String) data.get("id"));
@@ -381,7 +380,7 @@ public class ServerOperation implements IServerOperation {
      * Send goodbye from leaving client to all
      * @param operation operation
      */
-    public void send(Goodbye operation) {
+    protected void send(Goodbye operation) {
 
         logger.debug("Sending " + operation);
 
@@ -405,7 +404,7 @@ public class ServerOperation implements IServerOperation {
      * @param operation operation
      * @throws ClientClosed Thrown if client is closed
      */
-    public <E extends IOperation> void send(WebSocket conn, E operation) throws ClientClosed {
+    protected <E extends IOperation> void send(WebSocket conn, E operation) throws ClientClosed {
 
         logger.debug("Sending " + operation.getOpCode());
 

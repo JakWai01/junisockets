@@ -287,7 +287,7 @@ public class SignalingServer extends WebSocketServer {
      * Send a ping to the other end
      * @throws InterruptedException Thrown if interrupted
      */
-    public void ping() throws InterruptedException {
+    private void ping() throws InterruptedException {
 
         while (isOpen == true) {
 
