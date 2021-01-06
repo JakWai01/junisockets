@@ -69,12 +69,14 @@ public class ServerOperation {
             try {
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
+                logger.fatal("Client closed");
                 e.printStackTrace();
             }
         } else {
             try {
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
+                logger.fatal("Client closed");
                 e.printStackTrace();
             }
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
@@ -93,6 +95,7 @@ public class ServerOperation {
                     try {
                         send(existingClient, (Greeting) new OperationFactory(ESignalingOperationCode.GREETING).setOffererId(existingId).setAnswererId(id).getOperation());
                     } catch (ClientClosed e) {
+                        logger.fatal("Client closed");
                         e.printStackTrace();
                     }
                     logger.debug("Sent greeting " + existingId + " " + id);
@@ -122,6 +125,7 @@ public class ServerOperation {
             try {
                 send(client, (Offer) new OperationFactory(ESignalingOperationCode.OFFER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setOffer((String) data.get("offer")).getOperation());
             } catch (ClientClosed e) {
+                logger.fatal("Client closed");
                 e.printStackTrace();
             }
             logger.debug("Sent offer " + data.get("offererId") + " " + data.get("answererId") + " " + data.get("offer"));
@@ -145,6 +149,7 @@ public class ServerOperation {
             try {
                 send(client, (Answer) new OperationFactory(ESignalingOperationCode.ANSWER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setAnswer((String) data.get("answer")).getOperation());       
             } catch (ClientClosed e) {
+                logger.fatal("Client closed");
                 e.printStackTrace();
             }
             logger.debug("Send answer " + data);
@@ -168,6 +173,7 @@ public class ServerOperation {
             try {
                 send(client, (Candidate) new OperationFactory(ESignalingOperationCode.CANDIDATE).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setCandidate((String) data.get("candidate")).getOperation());
             } catch (ClientClosed e) {
+                logger.fatal("Client closed");
                 e.printStackTrace();
             }
             logger.debug("Sent candidate " + data);
@@ -213,9 +219,11 @@ public class ServerOperation {
                 Thread thread = new Thread(() -> {
                     try {
                         send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
-                    } catch (ClientClosed e) {
-                        e.printStackTrace();
                         logger.debug("Sent alias " + data);
+                    } catch (ClientClosed e) {
+                        logger.fatal("Client closed");
+                        e.printStackTrace();
+                        
                     }
                 });
 
@@ -262,9 +270,10 @@ public class ServerOperation {
                     try {
                         send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                     } catch (ClientClosed e) {
+                        logger.fatal("Client closed");
                         e.printStackTrace();
                     }
-                    logger.debug("Send alias " + id + data);
+                    logger.debug("Sent alias " + id + " " + data);
                 });
 
                 thread.start();
@@ -279,6 +288,7 @@ public class ServerOperation {
                 try {
                     send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                 } catch (ClientClosed e) {
+                    logger.fatal("Client closed");
                     e.printStackTrace();
                 }
             });
@@ -306,12 +316,16 @@ public class ServerOperation {
             logger.debug(aliases.toString());
             tcpAddress.removeTCPAddress(clientAlias);
 
+            final Alias aliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation();
+
             Thread thread = new Thread(() -> {
                 try {                
-                    send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation());
+                    send(client, aliasMessage);
                 } catch (ClientClosed e) {
+                    logger.fatal("Client closed");
                     e.printStackTrace();
                 }
+                logger.debug("Sent alias to client " + data + " " + aliasMessage);
             });
 
             thread.start();
@@ -328,7 +342,7 @@ public class ServerOperation {
                 } catch (ClientClosed e) {
                     e.printStackTrace();
                 }
-                logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage);
+                logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage.getAsJSON(clientAliasMessage));
             });
 
             thread.start();
@@ -417,6 +431,7 @@ public class ServerOperation {
             thread.start();
 
         } else {
+            logger.fatal("Client closed");
             throw new ClientClosed();
         }
     }
