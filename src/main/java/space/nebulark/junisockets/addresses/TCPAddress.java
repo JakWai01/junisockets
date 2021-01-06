@@ -74,11 +74,9 @@ public class TCPAddress implements ITCPAddress {
 
                     return toTCPAddress(ip.toIPAddress(subnet, suffix), newPort);
                 } else {
-                    logger.fatal("Suffix does not exist");
                     throw new SuffixDoesNotExist();
                 }
             } else {
-                logger.fatal("Subnet does not exist");
                 throw new SubnetDoesNotExist();
             }
         } finally {
@@ -118,11 +116,9 @@ public class TCPAddress implements ITCPAddress {
                 }
 
                 else {
-                    logger.fatal("Port already allocated");
                     throw new PortAlreadyAllocated();
                 }
             } else {
-                logger.fatal("Subnet does not exist");
                 throw new SubnetDoesNotExist();
             }
         } finally {

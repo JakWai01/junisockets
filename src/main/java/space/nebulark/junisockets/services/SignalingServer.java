@@ -107,8 +107,8 @@ public class SignalingServer extends WebSocketServer {
                         try {
                             op.send(clients.get(key), (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId(targetId).setAlias(clientId).setSet(false).getOperation());
                         } catch (ClientClosed e1) {
-                            logger.fatal("Client closed");
-                            e1.printStackTrace();
+                            logger.fatal(e1);
+                            //e1.printStackTrace();
                         }
 
                         logger.debug("Sent alias " + targetId + key);
@@ -126,8 +126,8 @@ public class SignalingServer extends WebSocketServer {
             try {
                 throw new ClientDoesNotExist();
             } catch (ClientDoesNotExist e1) {
-                logger.fatal("Client does not exist");
-                e1.printStackTrace();
+                logger.fatal(e1);
+                //e1.printStackTrace();
             }
         }
 
@@ -151,8 +151,8 @@ public class SignalingServer extends WebSocketServer {
         try {
             jsonObj = parser.parse(message);
         } catch (ParseException e) {
-            logger.fatal("Parse exception");
-            e.printStackTrace();
+            logger.fatal(e);
+            //e.printStackTrace();
         }
 
         JSONObject operation = (JSONObject) jsonObj;
@@ -160,8 +160,8 @@ public class SignalingServer extends WebSocketServer {
         try {
             handleOperation(operation, conn);
         } catch (UnimplementedOperation e) {
-            logger.fatal("Unimplemented operation: " + operation);
-            e.printStackTrace();
+            logger.fatal(e);
+            //e.printStackTrace();
         }
 
     }
@@ -186,7 +186,8 @@ public class SignalingServer extends WebSocketServer {
             try {
                 ping();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e);
+                //e.printStackTrace();
             }
         });
 
@@ -244,11 +245,11 @@ public class SignalingServer extends WebSocketServer {
                 try {
                     op.handleBind((JSONObject) operation.get("data"));
                 } catch (PortAlreadyAllocated e) {
-                    logger.fatal("Port already allocated");
-                    e.printStackTrace();
+                    logger.fatal(e);
+                    //e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
-                    logger.fatal("Subnet does not exist");
-                    e.printStackTrace();
+                    logger.fatal(e);
+                    //e.printStackTrace();
                 }
                 ;
             });
@@ -276,11 +277,11 @@ public class SignalingServer extends WebSocketServer {
                 try {
                     op.handleConnect((JSONObject) operation.get("data"));
                 } catch (SuffixDoesNotExist e) {
-                    logger.fatal("Suffix does not exist");
-                    e.printStackTrace();
+                    logger.fatal(e);
+                    //e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
-                    logger.fatal("Suffix does not exist");
-                    e.printStackTrace();
+                    logger.fatal(e);
+                    //e.printStackTrace();
                 }
                 ;
             });
@@ -305,8 +306,8 @@ public class SignalingServer extends WebSocketServer {
                 try {
                     clients.get(key).sendPing();
                 } catch (WebsocketNotConnectedException e) {
-                    logger.fatal("WebSocket not connected");
-                    e.printStackTrace();
+                    logger.fatal(e);
+                    //e.printStackTrace();
                 }
             }
             logger.debug("Sent ping!");
