@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
  * Acknowledgement
  */
 public class Acknowledgement implements IAcknowledgement {
-    public ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
-
+    private ESignalingOperationCode opcode = ESignalingOperationCode.ACKNOWLEDGED;
     private String id;
     private boolean rejected;
 

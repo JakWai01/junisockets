@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  * Alias
  */
 public class Alias implements IAlias {
-    public ESignalingOperationCode opcode = ESignalingOperationCode.ALIAS;
+    private ESignalingOperationCode opcode = ESignalingOperationCode.ALIAS;
     private String id;
     private String alias;
     private String clientConnectionId;

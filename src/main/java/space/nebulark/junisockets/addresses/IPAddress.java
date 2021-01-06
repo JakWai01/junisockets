@@ -16,9 +16,9 @@ import org.apache.log4j.Logger;
  */
 public class IPAddress implements IIPAddress {
 
-    Logger logger;
-    ReentrantLock mutex;
-    ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
+    private Logger logger;
+    private ReentrantLock mutex;
+    private ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
 
     /**
      * Constructor IPAddress

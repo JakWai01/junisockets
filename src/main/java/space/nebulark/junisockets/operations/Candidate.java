@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
  * Candidate
  */
 public class Candidate implements ICandidate {
-    public ESignalingOperationCode opcode = ESignalingOperationCode.CANDIDATE;
-
+    private ESignalingOperationCode opcode = ESignalingOperationCode.CANDIDATE;
     private String offererId;
     private String answererId;
     private String candidate;

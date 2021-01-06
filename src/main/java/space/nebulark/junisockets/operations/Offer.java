@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
  * Offer
  */
 public class Offer implements IOffer {
-    public ESignalingOperationCode opcode = ESignalingOperationCode.OFFER;
-
+    private ESignalingOperationCode opcode = ESignalingOperationCode.OFFER;
     private String offererId;
     private String answererId;
     private String offer;

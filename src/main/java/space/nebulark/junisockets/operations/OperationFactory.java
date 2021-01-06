@@ -5,7 +5,7 @@ package space.nebulark.junisockets.operations;
  */
 public class OperationFactory {
 
-    ESignalingOperationCode opcode;
+    private ESignalingOperationCode opcode;
 
     /**
      * Constructor OperationFactory

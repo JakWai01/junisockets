@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
  * Answer
  */
 public class Answer implements IAnswer {
-    public ESignalingOperationCode opcode = ESignalingOperationCode.ANSWER;
-
+    private ESignalingOperationCode opcode = ESignalingOperationCode.ANSWER;
     private String offererId;
     private String answererId;
     private String answer;

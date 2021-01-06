@@ -29,11 +29,11 @@ import space.nebulark.junisockets.operations.OperationFactory;
  * ServerOperation
  */
 public class ServerOperation {
-    ConcurrentHashMap<String, WebSocket> clients;
-    ConcurrentHashMap<String, MAlias> aliases;
-    IPAddress ip;
-    TCPAddress tcpAddress;
-    Logger logger;
+    private ConcurrentHashMap<String, WebSocket> clients;
+    private ConcurrentHashMap<String, MAlias> aliases;
+    private IPAddress ip;
+    private TCPAddress tcpAddress;
+    private Logger logger;
 
     /**
      * Constructor ServerOperation

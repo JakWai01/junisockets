@@ -18,10 +18,10 @@ import space.nebulark.junisockets.errors.SuffixDoesNotExist;
  */
 public class TCPAddress implements ITCPAddress {
 
-    Logger logger;
-    ReentrantLock mutex;
-    ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
-    IPAddress ip;
+    private Logger logger;
+    private ReentrantLock mutex;
+    private ConcurrentHashMap<String, HashMap<Integer, List<Integer>>> subnets;
+    private IPAddress ip;
 
     /**
      * Constructor TCPAddress

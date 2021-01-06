@@ -9,8 +9,7 @@ import org.json.simple.JSONObject;
  * Goodbye
  */
 public class Goodbye implements IGoodbye {
-   public ESignalingOperationCode opcode = ESignalingOperationCode.GOODBYE;
-   
+   private ESignalingOperationCode opcode = ESignalingOperationCode.GOODBYE;
    private String id;
 
    /**

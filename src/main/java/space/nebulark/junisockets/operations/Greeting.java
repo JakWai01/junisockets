@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  * Greeting
  */
 public class Greeting implements IGreeting {
-    public ESignalingOperationCode opcode = ESignalingOperationCode.GREETING;
+    private ESignalingOperationCode opcode = ESignalingOperationCode.GREETING;
     private String offererId;
     private String answererId;
 
