@@ -27,26 +27,23 @@ public class App {
   public static void main(String[] args) throws InterruptedException, IOException {
         PropertyConfigurator.configure("log4j.properties");
 
-        int port = 8892;
+        int port = 8893;
         String host = "localhost";
         Logger logger = Logger.getLogger(SignalingServer.class);
 
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
-            logger.error(ex);
+            logger.trace("No custom port was set. Default port: 8892");
         }
 
         try {
             host = args[1];
         } catch (Exception ex) {
-            logger.error(ex);
+            logger.trace("No custom host was set. Default host: localhost");
         }
 
-        SignalingServerBuilder builder = new SignalingServerBuilder();
-        
-        SignalingServer s = builder.setHost(host).setLogger(logger).setPort(port).build();
-        
+        SignalingServer s = new SignalingServerBuilder().setHost(host).setLogger(logger).setPort(port).build();
         s.start();
         System.out.println("SignalingServer started on port: " + s.getPort());
 
