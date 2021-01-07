@@ -34,13 +34,13 @@ public class App {
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception ex) {
-            logger.fatal(ex);
+            logger.error(ex);
         }
 
         try {
             host = args[1];
         } catch (Exception ex) {
-            logger.fatal(ex);
+            logger.error(ex);
         }
 
         SignalingServerBuilder builder = new SignalingServerBuilder();
