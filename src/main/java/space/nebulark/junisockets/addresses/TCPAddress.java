@@ -64,14 +64,17 @@ public class TCPAddress implements ITCPAddress {
 
                     int newPort = 0;
 
+                    // Find available port
                     for (int i = 0; i < subnets.get(subnet).get(suffix).size(); i++) {
                         if (subnets.get(subnet).get(suffix).get(i) != i) {
                             newPort = i;
                         }
                     }
 
+                    // Add port to suffix
                     subnets.get(subnet).get(suffix).add(newPort);
 
+                    // Create a TCP address consisting of the subnet, suffix and the found port
                     return toTCPAddress(ip.toIPAddress(subnet, suffix), newPort);
                 } else {
                     throw new SuffixDoesNotExist();
@@ -104,11 +107,14 @@ public class TCPAddress implements ITCPAddress {
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
             int suffix = Integer.parseInt(partsIPAddress[3]);
 
+            
             if (subnets.containsKey(subnet)) {
                 if (!(subnets.get(subnet).containsKey(suffix))) {
+                    // If subnet does not contain the suffix and the member so far, create it
                     subnets.get(subnet).put(suffix, member);
                 }
 
+                // If the port is not allocated so far, allocate it
                 if (subnets.get(subnet).get(suffix).stream()
                         .filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())
                         .size() == 0) {
@@ -141,12 +147,13 @@ public class TCPAddress implements ITCPAddress {
             final String[] partsIPAddress = ip.parseIPAddress(partsTCPAddress[0]);
 
             String subnet = String.join(".", partsIPAddress[0], partsIPAddress[1], partsIPAddress[2]);
-            String suffix = partsIPAddress[3];
+            int suffix = Integer.parseInt(partsIPAddress[3]);
 
             if (subnets.containsKey(subnet)) {
-                if (subnets.get(subnet).containsKey(Integer.parseInt(suffix))) {
-                    subnets.get(subnet).put(Integer.parseInt(suffix),
-                            subnets.get(subnet).get(Integer.parseInt(suffix)).stream()
+                if (subnets.get(subnet).containsKey(suffix)) {
+                    // Go through all ports of the suffix and filter out the port to remove
+                    subnets.get(subnet).put(suffix,
+                            subnets.get(subnet).get(suffix).stream()
                                     .filter(e -> e != Integer.parseInt(partsTCPAddress[1]))
                                     .collect(Collectors.toList())); // We ensure above
                 }
