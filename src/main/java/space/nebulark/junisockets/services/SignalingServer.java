@@ -80,6 +80,8 @@ public class SignalingServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id = "";
+
+        // Get the current key of the connection in the client map
         for (int i = 0; i < clients.size(); i++) {
             String currentKey = (String) clients.keySet().toArray()[i];
 
@@ -91,24 +93,25 @@ public class SignalingServer extends WebSocketServer {
         logger.debug("Registering goodbye " + id);
 
         if (clients.containsKey(id)) {
-
+            // If clients contains that id, remove it from clients
             clients.remove(id);
 
             final String targetId = id;
 
             aliases.forEach((clientId, alias) -> {
+                // Check if id of alias matches the targetId
                 if (alias.getId().equals(targetId)) {
+                    // If id of alias matches the targetId remove current alias and remove TCP address
                     aliases.remove(clientId);
-                    logger.debug("after ip");
                     tcpAddress.removeTCPAddress(clientId);
 
+                    // Send each client an alias that the targetId is not set anymore
                     clients.forEach((key, client) -> {
 
                         try {
                             op.send(clients.get(key), (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId(targetId).setAlias(clientId).setSet(false).getOperation());
                         } catch (ClientClosed e1) {
                             logger.error(e1);
-                            //e1.printStackTrace();
                         }
 
                         logger.debug("Sent alias " + targetId + key);
@@ -116,9 +119,10 @@ public class SignalingServer extends WebSocketServer {
                 }
             });
 
-    
-            ip.removeIPAddress(tcpAddress.parseTCPAddress(id)[0]);
+            // Remove IP address of targetId
+            ip.removeIPAddress(tcpAddress.parseTCPAddress(targetId)[0]);
 
+            // Broadcast Goodbye to all remaining clients
             op.send((Goodbye) new OperationFactory(ESignalingOperationCode.GOODBYE).setId(targetId).getOperation());
 
             logger.debug("Sent goodbye " + targetId);
@@ -127,7 +131,6 @@ public class SignalingServer extends WebSocketServer {
                 throw new ClientDoesNotExist();
             } catch (ClientDoesNotExist e1) {
                 logger.error(e1);
-                //e1.printStackTrace();
             }
         }
 
@@ -152,16 +155,15 @@ public class SignalingServer extends WebSocketServer {
             jsonObj = parser.parse(message);
         } catch (ParseException e) {
             logger.error(e);
-            //e.printStackTrace();
         }
 
         JSONObject operation = (JSONObject) jsonObj;
 
         try {
+            // Handle the incoming operation
             handleOperation(operation, conn);
         } catch (UnimplementedOperation e) {
             logger.error(e);
-            //e.printStackTrace();
         }
 
     }
@@ -173,8 +175,8 @@ public class SignalingServer extends WebSocketServer {
      * @param ex exception
      */
     @Override
-    public void onError(WebSocket conn, Exception ex) {
-        ex.printStackTrace();
+    public void onError(WebSocket conn, Exception e) {
+       logger.error(e); 
     }
 
     @Override
@@ -184,10 +186,10 @@ public class SignalingServer extends WebSocketServer {
 
         Thread thread = new Thread(() -> {
             try {
+                // Call ping in seperate thread
                 ping();
             } catch (InterruptedException e) {
                 logger.error(e);
-                //e.printStackTrace();
             }
         });
 
@@ -205,6 +207,7 @@ public class SignalingServer extends WebSocketServer {
 
         logger.debug("Handling operation: " + operation + conn);
 
+        // Check which operations was send by the client and call the corresponding handler
         if (operation.get("opcode").equals(ESignalingOperationCode.KNOCK.getValue())) {
 
             logger.trace("Received knock");
@@ -246,12 +249,9 @@ public class SignalingServer extends WebSocketServer {
                     op.handleBind((JSONObject) operation.get("data"));
                 } catch (PortAlreadyAllocated e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
-                ;
             });
             thread.start();
         } else if (operation.get("opcode").equals(ESignalingOperationCode.ACCEPTING.getValue())) {
@@ -278,12 +278,9 @@ public class SignalingServer extends WebSocketServer {
                     op.handleConnect((JSONObject) operation.get("data"));
                 } catch (SuffixDoesNotExist e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 } catch (SubnetDoesNotExist e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
-                ;
             });
             thread.start();
         } else {
@@ -300,6 +297,7 @@ public class SignalingServer extends WebSocketServer {
 
         while (isOpen == true) {
 
+            // Send ping to all clients every 30 seconds
             for (int i = 0; i < clients.size(); i++) {
                 String key = (String) clients.keySet().toArray()[i];
 
