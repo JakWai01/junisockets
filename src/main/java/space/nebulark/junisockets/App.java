@@ -27,7 +27,7 @@ public class App {
   public static void main(String[] args) throws InterruptedException, IOException {
         PropertyConfigurator.configure("log4j.properties");
 
-        int port = 8893;
+        int port = 8892;
         String host = "localhost";
         Logger logger = Logger.getLogger(SignalingServer.class);
 
