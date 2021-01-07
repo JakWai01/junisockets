@@ -45,18 +45,19 @@ public class IPAddress implements IIPAddress {
         mutex.lock();
 
         try {
-
+            // Check if the given subnet is in subnets
             if (!subnets.containsKey(subnet)) {
                 subnets.put(subnet, new HashMap<Integer, List<Integer>>());
             }
 
             List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
-
+            
             Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2));
 
             boolean foundSuffix = false;
             int newSuffix = 0;
 
+            // Find free suffix for given subnet
             for (int i = 0; i < existingMembersSorted.size(); i++) {
                 if (i != existingMembersSorted.get(i)) {
                     newSuffix = i;
@@ -66,10 +67,12 @@ public class IPAddress implements IIPAddress {
                 }
             }
 
+            // If there is no free suffix in between other suffixes, extend the number of suffixes by one
             if (!foundSuffix) {
                 newSuffix = existingMembersSorted.size();
             }
 
+            // Return -1 if there are more than 255 suffixes used
             if (newSuffix > 255) {
                 return "-1";
             }
@@ -103,6 +106,7 @@ public class IPAddress implements IIPAddress {
 
             if (subnets.containsKey(subnet)) {
                 if (subnets.get(subnet).containsKey(suffix)) {
+                    // remove the suffix so that the given IP is available again
                     subnets.get(subnet).remove(suffix); // We ensure above
                 }
             }
