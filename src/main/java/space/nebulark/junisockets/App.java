@@ -50,6 +50,7 @@ public class App {
         s.start();
         System.out.println("SignalingServer started on port: " + s.getPort());
 
+        // If exit is entered in the console, the application will terminate
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             String in = sysin.readLine();

@@ -21,6 +21,7 @@ import space.nebulark.junisockets.addresses.TCPAddress;
 import space.nebulark.junisockets.operations.ESignalingOperationCode;
 
 /**
+ * These testcases work independently and mock to the point where the handler can be used
  * @see space.nebulark.junisockets.services.ServerOperation
  */
 @RunWith(MockitoJUnitRunner.class)
