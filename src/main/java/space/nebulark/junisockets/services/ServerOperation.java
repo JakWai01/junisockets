@@ -65,25 +65,25 @@ public class ServerOperation {
 
         final String id = ip.createIPAddress(subnet);
 
+        // If Id == -1, we exceeded the maximum of 255 subnets
         if (id != "-1") {
             try {
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
                 logger.error(e);
-                //e.printStackTrace();
             }
         } else {
             try {
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
                 logger.error(e);
-                //e.printStackTrace();
             }
             logger.debug("Knock rejected " + "{" + id + ", reason: subnet overflow}");
 
             return;
         }
 
+        // Send Greeting to all clients, except the new one 
         for (int i = 0; i < clients.size(); i++) {
             String existingId = (String) clients.keySet().toArray()[i];
             WebSocket existingClient = clients.get(existingId);
@@ -96,7 +96,6 @@ public class ServerOperation {
                         send(existingClient, (Greeting) new OperationFactory(ESignalingOperationCode.GREETING).setOffererId(existingId).setAnswererId(id).getOperation());
                     } catch (ClientClosed e) {
                         logger.error(e);
-                        //e.printStackTrace();
                     }
                     logger.debug("Sent greeting " + existingId + " " + id);
                 });
@@ -126,7 +125,6 @@ public class ServerOperation {
                 send(client, (Offer) new OperationFactory(ESignalingOperationCode.OFFER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setOffer((String) data.get("offer")).getOperation());
             } catch (ClientClosed e) {
                 logger.error(e);
-                //e.printStackTrace();
             }
             logger.debug("Sent offer " + data.get("offererId") + " " + data.get("answererId") + " " + data.get("offer"));
         });
@@ -150,7 +148,6 @@ public class ServerOperation {
                 send(client, (Answer) new OperationFactory(ESignalingOperationCode.ANSWER).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setAnswer((String) data.get("answer")).getOperation());       
             } catch (ClientClosed e) {
                 logger.error(e);
-                //e.printStackTrace();
             }
             logger.debug("Send answer " + data);
         });
@@ -174,7 +171,6 @@ public class ServerOperation {
                 send(client, (Candidate) new OperationFactory(ESignalingOperationCode.CANDIDATE).setOffererId((String) data.get("offererId")).setAnswererId((String) data.get("answererId")).setCandidate((String) data.get("candidate")).getOperation());
             } catch (ClientClosed e) {
                 logger.error(e);
-                //e.printStackTrace();
             }
             logger.debug("Sent candidate " + data);
         });
@@ -193,6 +189,7 @@ public class ServerOperation {
     protected void handleBind(JSONObject data) throws PortAlreadyAllocated, SubnetDoesNotExist {
         logger.debug("Handling bind " + data);
 
+        // Check if alias is alreay taken
         if (aliases.containsKey(data.get("alias"))) {
             logger.debug("Rejecting bind, alias already taken " + data);
 
@@ -203,7 +200,6 @@ public class ServerOperation {
                    send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
             });
 
@@ -214,8 +210,10 @@ public class ServerOperation {
 
             tcpAddress.claimTCPAddress((String) data.get("alias"));
 
+            // Add alias to aliases
             aliases.put((String) data.get("alias"), new MAlias((String) data.get("id"), false));
 
+            // Send alias to all clients
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
@@ -223,8 +221,6 @@ public class ServerOperation {
                         logger.debug("Sent alias " + data);
                     } catch (ClientClosed e) {
                         logger.error(e);
-                        //e.printStackTrace();
-                        
                     }
                 });
 
@@ -259,6 +255,7 @@ public class ServerOperation {
     protected void handleShutdown(JSONObject data) {
         logger.debug("Handling shutdown");
 
+        // If aliases contains alias, remove alias, TCP address and IP address
         if (aliases.containsKey(data.get("alias")) && aliases.get(data.get("alias")).getId() != data.get("id")) {
             aliases.remove(data.get("alias"));
             tcpAddress.removeTCPAddress((String) data.get("alias"));
@@ -266,13 +263,13 @@ public class ServerOperation {
 
             logger.debug("Accepting shutdown " + data);
 
+            // Send alias to all clients
             clients.forEach((id, client) -> {
                 Thread thread = new Thread(() -> {
                     try {
                         send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).getOperation());
                     } catch (ClientClosed e) {
                         logger.error(e);
-                        //e.printStackTrace();
                     }
                     logger.debug("Sent alias " + id + " " + data);
                 });
@@ -290,7 +287,6 @@ public class ServerOperation {
                     send(client, (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(true).getOperation());
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
             });
 
@@ -312,9 +308,9 @@ public class ServerOperation {
         final String clientAlias = tcpAddress.createTCPAddress((String) data.get("id"));
         final WebSocket client = clients.get(data.get("id"));
 
+        // If aliases does not contain alias, reject connect
         if (!aliases.containsKey(data.get("remoteAlias")) || !aliases.get(data.get("remoteAlias")).getAccepting()) {
             logger.debug("Rejecting connect, remote alias does not exists " + data);
-            //logger.debug(aliases.toString());
             tcpAddress.removeTCPAddress(clientAlias);
 
             final Alias aliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias((String) data.get("alias")).setSet(false).setClientConnectionId((String) data.get("clientConnectionId")).getOperation();
@@ -324,7 +320,6 @@ public class ServerOperation {
                     send(client, aliasMessage);
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
                 logger.debug("Sent alias to client " + data + " " + aliasMessage);
             });
@@ -334,6 +329,7 @@ public class ServerOperation {
         } else {
             logger.debug("Accepting connect " + data);
 
+            // Add clientAlias to aliases
             aliases.put(clientAlias, new MAlias((String) data.get("id"), false));
 
             final Alias clientAliasMessage = (Alias) new OperationFactory(ESignalingOperationCode.ALIAS).setId((String) data.get("id")).setAlias(clientAlias).setSet(true).setClientConnectionId((String) data.get("clientConnectionId")).setIsConnectionAlias(true).getOperation();
@@ -342,7 +338,6 @@ public class ServerOperation {
                     send(client, clientAliasMessage);
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
                 logger.debug("Sent alias for connection to client " + data + " " + clientAliasMessage.getAsJSON(clientAliasMessage));
             });
@@ -359,7 +354,6 @@ public class ServerOperation {
                     send(server, serverAliasMessage);
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
                 logger.debug("Sent alias for connection to server " + data + " " + serverAliasMessage);
             });
@@ -372,7 +366,6 @@ public class ServerOperation {
                     send(server, serverAcceptMessage);
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
                 logger.debug("Sent accept to server " + data + " " + serverAcceptMessage);
             });
@@ -385,7 +378,6 @@ public class ServerOperation {
                     send(client, serverAliasForClientsMessage);
                 } catch (ClientClosed e) {
                     logger.error(e);
-                    //e.printStackTrace();
                 }
                 logger.debug("Sent alias for server to client " + data + " " + serverAliasForClientsMessage);
             });
@@ -404,6 +396,7 @@ public class ServerOperation {
         logger.debug("Sending " + operation);
 
         Thread thread = new Thread(() -> {
+            // Broadcast Goodbye
             clients.forEach( (id, conn) -> {
                 conn.send(operation.getAsJSON(operation));
             });
@@ -430,6 +423,7 @@ public class ServerOperation {
         if (conn != null) {
 
             Thread thread = new Thread(() -> {
+                // Send operations to given connection
                 conn.send(operation.getAsJSON(operation));
             });
 
