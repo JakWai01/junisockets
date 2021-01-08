@@ -11,20 +11,24 @@ import space.nebulark.junisockets.services.SignalingServer;
 import space.nebulark.junisockets.services.SignalingServerBuilder;
 
 /**
- * A WebRTC signaling server for unisockets to allow nodes to discover each other and exchange candidates
+ * A WebRTC signaling server for unisockets to allow nodes to discover each
+ * other and exchange candidates
+ * 
  * @author Jakob Waibel
  * @version 1.0
  * @since 1.0
  */
 public class App {
-  
-  /** 
-   * Executes SignalingServer. Possible environment variables are args[0] for port and args[1] for host
-   * @param args args args[0] = port, args[1] = host
-   * @throws InterruptedException Thrown if interrupted
-   * @throws IOException Thrown if there is a problem with the input
-   */
-  public static void main(String[] args) throws InterruptedException, IOException {
+
+    /**
+     * Executes SignalingServer. Possible environment variables are args[0] for port
+     * and args[1] for host
+     * 
+     * @param args args args[0] = port, args[1] = host
+     * @throws InterruptedException Thrown if interrupted
+     * @throws IOException          Thrown if there is a problem with the input
+     */
+    public static void main(String[] args) throws InterruptedException, IOException {
         PropertyConfigurator.configure("log4j.properties");
 
         int port = 8892;
@@ -32,13 +36,13 @@ public class App {
         Logger logger = Logger.getLogger(SignalingServer.class);
 
         try {
-            port = Integer.parseInt(args[0]);
+            port = Integer.parseInt(System.getenv("PORT"));
         } catch (Exception ex) {
             logger.trace("No custom port was set. Default port: 8892");
         }
 
         try {
-            host = args[1];
+            host = System.getenv("HOST");
         } catch (Exception ex) {
             logger.trace("No custom host was set. Default host: localhost");
         }
@@ -57,5 +61,5 @@ public class App {
                 break;
             }
         }
-    }  
+    }
 }
