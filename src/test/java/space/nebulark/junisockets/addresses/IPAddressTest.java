@@ -1,4 +1,4 @@
-package space.nebulark.junisockets.addresses; 
+package dev.webnetes.junisockets.addresses; 
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,15 +9,15 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import space.nebulark.junisockets.services.SignalingServer;
+import dev.webnetes.junisockets.services.SignalingServer;
 
 /**
- * @see space.nebulark.junisockets.addresses.IPAddress
+ * @see dev.webnetes.junisockets.addresses.IPAddress
  */
 public class IPAddressTest {
    
     /**
-     * @see space.nebulark.junisockets.addresses.IPAddress#parseIPAddress()
+     * @see dev.webnetes.junisockets.addresses.IPAddress#parseIPAddress()
      */
     @Test public void testParseIPAddress() {
 
@@ -32,7 +32,7 @@ public class IPAddressTest {
     }
 
     /**
-     * @see space.nebulark.junisockets.addresses.IPAddress#toIPAddress()
+     * @see dev.webnetes.junisockets.addresses.IPAddress#toIPAddress()
      */
     @Test 
     public void testToIPAddress() {
@@ -49,7 +49,7 @@ public class IPAddressTest {
     }
 
     /**
-     * @see space.nebulark.junisockets.addresses.IPAddress#createIPAddress()
+     * @see dev.webnetes.junisockets.addresses.IPAddress#createIPAddress()
      */
     @Test
     public void testCreateIPAddress() {
@@ -70,7 +70,7 @@ public class IPAddressTest {
     }
     
     /**
-     * @see space.nebulark.junisockets.addresses.IPAddress#removeIPAddress()
+     * @see dev.webnetes.junisockets.addresses.IPAddress#removeIPAddress()
      */
     @Test 
     public void testRemoveIPAddress() {

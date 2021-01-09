@@ -1,15 +1,15 @@
-package space.nebulark.junisockets.operations;
+package dev.webnetes.junisockets.operations;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @see space.nebulark.junisockets.operations.Acknowledgement
+ * @see dev.webnetes.junisockets.operations.Acknowledgement
  */
 public class AcknowledgementTest {
    
     /**
-     * @see space.nebulark.junisockets.operations.Acknowledgement#getAsJSON()
+     * @see dev.webnetes.junisockets.operations.Acknowledgement#getAsJSON()
      */
     @Test 
     public void testGetAsJSON() {

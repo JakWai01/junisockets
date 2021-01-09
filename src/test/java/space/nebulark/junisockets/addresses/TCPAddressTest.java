@@ -1,4 +1,4 @@
-package space.nebulark.junisockets.addresses;
+package dev.webnetes.junisockets.addresses;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,18 +9,18 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import space.nebulark.junisockets.errors.PortAlreadyAllocated;
-import space.nebulark.junisockets.errors.SubnetDoesNotExist;
-import space.nebulark.junisockets.errors.SuffixDoesNotExist;
-import space.nebulark.junisockets.services.SignalingServer;
+import dev.webnetes.junisockets.errors.PortAlreadyAllocated;
+import dev.webnetes.junisockets.errors.SubnetDoesNotExist;
+import dev.webnetes.junisockets.errors.SuffixDoesNotExist;
+import dev.webnetes.junisockets.services.SignalingServer;
 
 /**
- * @see space.nebulark.junisockets.addresses.TCPAddress
+ * @see dev.webnetes.junisockets.addresses.TCPAddress
  */
 public class TCPAddressTest {
 
     /**
-     * @see space.nebulark.junisockets.addresses.TCPAddress#parseTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#parseTCPAddress()
      */
     @Test
     public void testParseTCPAddress() {
@@ -38,7 +38,7 @@ public class TCPAddressTest {
     }
 
     /**
-     * @see space.nebulark.junisockets.addresses.TCPAddress#toTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#toTCPAddress()
      */
     @Test
     public void testToTCPAddress() {
@@ -56,7 +56,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#createTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#createTCPAddress()
      * @throws SuffixDoesNotExist
      * @throws SubnetDoesNotExist
      */
@@ -78,7 +78,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#createTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#createTCPAddress()
      * @throws SuffixDoesNotExist
      * @throws SubnetDoesNotExist
      */
@@ -96,7 +96,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#createTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#createTCPAddress()
      * @throws SuffixDoesNotExist
      * @throws SubnetDoesNotExist
      */
@@ -117,7 +117,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#claimTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#claimTCPAddress()
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */
@@ -145,7 +145,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#claimTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#claimTCPAddress()
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */
@@ -166,7 +166,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#claimTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#claimTCPAddress()
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */
@@ -184,7 +184,7 @@ public class TCPAddressTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.addresses.TCPAddress#removeTCPAddress()
+     * @see dev.webnetes.junisockets.addresses.TCPAddress#removeTCPAddress()
      * @throws PortAlreadyAllocatedError
      * @throws SubnetDoesNotExist
      */

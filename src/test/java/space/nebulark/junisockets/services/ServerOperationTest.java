@@ -1,4 +1,4 @@
-package space.nebulark.junisockets.services;
+package dev.webnetes.junisockets.services;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,20 +16,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import space.nebulark.junisockets.addresses.IPAddress;
-import space.nebulark.junisockets.addresses.TCPAddress;
-import space.nebulark.junisockets.operations.ESignalingOperationCode;
+import dev.webnetes.junisockets.addresses.IPAddress;
+import dev.webnetes.junisockets.addresses.TCPAddress;
+import dev.webnetes.junisockets.operations.ESignalingOperationCode;
 
 /**
  * These testcases work independently and mock to the point where the handler can be used
- * @see space.nebulark.junisockets.services.ServerOperation
+ * @see dev.webnetes.junisockets.services.ServerOperation
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleKnock()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleKnock()
      * @throws URISyntaxException
      * @throws InterruptedException
      * @throws IOException
@@ -85,7 +85,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleBind()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleBind()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException
@@ -164,7 +164,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleOffer()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleOffer()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException
@@ -293,7 +293,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleAnswer()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleAnswer()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException
@@ -409,7 +409,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleCandidate()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleCandidate()
      * @throws IOException
      * @throws InterruptedException
      * @throws URISyntaxException
@@ -542,7 +542,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleShutdown()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleShutdown()
      * @throws IOException
      * @throws InterruptedException
      * @throws URISyntaxException
@@ -631,7 +631,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleShutdown()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleShutdown()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException
@@ -698,7 +698,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleAccepting()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleAccepting()
      * @throws IOException
      * @throws InterruptedException
      * @throws URISyntaxException
@@ -783,7 +783,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleAccepting()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleAccepting()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException
@@ -866,7 +866,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleConnect()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleConnect()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException
@@ -1024,7 +1024,7 @@ public class ServerOperationTest {
 
     
     /** 
-     * @see space.nebulark.junisockets.services.ServerOperation#handleConnect()
+     * @see dev.webnetes.junisockets.services.ServerOperation#handleConnect()
      * @throws URISyntaxException
      * @throws IOException
      * @throws InterruptedException

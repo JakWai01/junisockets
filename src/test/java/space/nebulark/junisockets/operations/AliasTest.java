@@ -1,15 +1,15 @@
-package space.nebulark.junisockets.operations;
+package dev.webnetes.junisockets.operations;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @see space.nebulark.junisockets.operations.Alias
+ * @see dev.webnetes.junisockets.operations.Alias
  */
 public class AliasTest {
    
     /**
-     * @see space.nebulark.junisockets.operations.Alias#getAsJSON()
+     * @see dev.webnetes.junisockets.operations.Alias#getAsJSON()
      */
     @Test
     public void testGetAsJSON() {

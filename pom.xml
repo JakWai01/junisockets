@@ -4,7 +4,7 @@
 
   <packaging>jar</packaging>
 
-  <groupId>space.nebulark.junisockets</groupId>
+  <groupId>dev.webnetes.junisockets</groupId>
   <artifactId>junisockets</artifactId>
   <name>junisockets</name>
   <version>1.0-SNAPSHOT</version>
@@ -18,7 +18,7 @@
   <properties>
     <appLicense>AGPL-3.0</appLicense>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <mainClass>space.nebulark.junisockets.App</mainClass>
+    <mainClass>dev.webnetes.junisockets.App</mainClass>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
