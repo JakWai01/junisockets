@@ -1,5 +1,6 @@
 # junisockets
-
+![Maven CI](https://github.com/JakWai01/junisockets/workflows/Maven%20CI/badge.svg)
+![Mirror](https://github.com/JakWai01/junisockets/workflows/Mirror/badge.svg)
 ## Overview 
 
 A WebRTC **signaling server** for [unisockets](https://github.com/pojntfx/unisockets) to allow nodes to discover each other and exchange candidates. The signaling server is not involved in any actual connections between clients.
