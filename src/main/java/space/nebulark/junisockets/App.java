@@ -14,7 +14,7 @@ import space.nebulark.junisockets.services.SignalingServerBuilder;
  * A WebRTC signaling server for unisockets to allow nodes to discover each
  * other and exchange candidates
  * 
- * @author Jakob Waibel
+ * @author Jakob Waibel and contributors
  * @version 1.0
  * @since 1.0
  */
