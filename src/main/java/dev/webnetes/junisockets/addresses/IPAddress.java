@@ -50,7 +50,7 @@ public class IPAddress implements IIPAddress {
                 subnets.put(subnet, new HashMap<Integer, List<Integer>>());
             }
 
-            List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().collect(Collectors.toList());
+            List<Integer> existingMembersSorted = subnets.get(subnet).keySet().stream().parallel().collect(Collectors.toList());
             
             Collections.sort(existingMembersSorted, (o1, o2) -> o1.compareTo(o2));
 

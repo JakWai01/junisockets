@@ -115,7 +115,7 @@ public class TCPAddress implements ITCPAddress {
                 }
 
                 // If the port is not allocated so far, allocate it
-                if (subnets.get(subnet).get(suffix).stream()
+                if (subnets.get(subnet).get(suffix).stream().parallel()
                         .filter(e -> e == Integer.parseInt(partsTCPAddress[1])).collect(Collectors.toList())
                         .size() == 0) {
                     subnets.get(subnet).get(suffix).add(Integer.parseInt(partsTCPAddress[1]));
@@ -153,7 +153,7 @@ public class TCPAddress implements ITCPAddress {
                 if (subnets.get(subnet).containsKey(suffix)) {
                     // Go through all ports of the suffix and filter out the port to remove
                     subnets.get(subnet).put(suffix,
-                            subnets.get(subnet).get(suffix).stream()
+                            subnets.get(subnet).get(suffix).stream().parallel()
                                     .filter(e -> e != Integer.parseInt(partsTCPAddress[1]))
                                     .collect(Collectors.toList())); // We ensure above
                 }
