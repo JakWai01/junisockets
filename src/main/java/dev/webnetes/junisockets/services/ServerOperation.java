@@ -66,7 +66,7 @@ public class ServerOperation {
         final String id = ip.createIPAddress(subnet);
 
         // If Id == -1, we exceeded the maximum of 255 subnets
-        if (id != "-1") {
+        if (!id.equals("-1")) {
             try {
                 send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
             } catch (ClientClosed e) {
@@ -74,7 +74,7 @@ public class ServerOperation {
             }
         } else {
             try {
-                send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(false).getOperation());
+                send(conn, (Acknowledgement) new OperationFactory(ESignalingOperationCode.ACKNOWLEDGED).setId(id).setRejected(true).getOperation());
             } catch (ClientClosed e) {
                 logger.error(e);
             }
